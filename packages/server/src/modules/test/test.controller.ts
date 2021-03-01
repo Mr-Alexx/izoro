@@ -1,3 +1,10 @@
+/**
+ * @desc Test Controller.
+ * @file 测试模块路由服务
+ * @module module/test/controller
+ * @author 潜
+ */
+
 import { All, Controller, Delete, Get, Head, Options, Patch, Post, Put } from '@nestjs/common';
 
 @Controller('test')

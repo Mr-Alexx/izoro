@@ -12,3 +12,6 @@
 
 nest-cli 创建控制器快捷方法
 `nest g controller 控制器名称`
+
+## 依赖说明
++ `@typegoose/typegoose`  解决单独定义interface和model时修改model又要修改interface的情形，包装了一些装饰器解决这些痛点
