@@ -13,14 +13,7 @@
     "incremental": true,
     "paths": {
       "@": ["./"],
-      "@/*": ["./*"],
-      "@common": ["./common"],
-      "@common/*": ["./common/*"],
-      "@decorators": ["./decorators"],
-      "@decorators/*": ["./decorators/*"],
-      "@interfaces/*": ["./interfaces/*"],
-      "@modules": ["./src/modules"],
-      "@modules/*": ["./src/modules/*"]
+      "@/*": ["./*"]
     }
   },
   "exclude": ["node_modules", "dist"]

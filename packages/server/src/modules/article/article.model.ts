@@ -6,7 +6,7 @@
 
 import { prop } from "@typegoose/typegoose";
 import { IsIn, IsNotEmpty, IsString, Length } from "class-validator";
-import { PulishStatus } from '@interfaces/status.interface'
+import { PublishStatus } from '@/interfaces/status.interface'
 
 export class Article {
   // id
@@ -37,7 +37,7 @@ export class Article {
 
   // 发布状态
   // @IsIn()
-  status: PulishStatus;
+  status: PublishStatus;
 
   // seo关键字
   @Length(0, 500)
