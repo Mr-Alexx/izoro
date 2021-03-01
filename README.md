@@ -15,3 +15,6 @@ nest-cli 创建控制器快捷方法
 
 ## 依赖说明
 + `@typegoose/typegoose`  解决单独定义interface和model时修改model又要修改interface的情形，包装了一些装饰器解决这些痛点
+
+https://blog.csdn.net/weixin_43595755/article/details/113786870
+https://github.com/definitelytyped/definitelytyped/issues/49950
