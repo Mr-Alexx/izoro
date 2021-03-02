@@ -3,7 +3,8 @@ import { AppModule } from './app.module';
 import { NestFastifyApplication } from '@nestjs/platform-fastify'
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule);
+  // const app = await NestFactory.create<NestFastifyApplication>(AppModule);
+  const app = await NestFactory.create(AppModule);
   await app.listen(3000);
   console.log(`App is listen on http://localhost:${3000}`)
 }

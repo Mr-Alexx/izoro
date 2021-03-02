@@ -9,4 +9,8 @@ import { Article } from './article.model';
   controllers: [ArticleController],
   providers: [ArticleService]
 })
-export class ArticleModule {}
+export class ArticleModule {
+  constructor () {
+    console.log(this)
+  }
+}
