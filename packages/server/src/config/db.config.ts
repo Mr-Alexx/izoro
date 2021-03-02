@@ -1,8 +1,8 @@
 export default {
-  HOST: 'localhost',
-  PORT: 27017,
-  DATABASE: 'blog',
-  USER: 'admin',
-  PWD: '123456',
-  RECONNECT_INTERVAL: 3000
+  host: '193.112.29.151', // 'localhost',
+  port: 27017,
+  database: 'qian',
+  user: 'test',
+  pwd: 'test1234',
+  reconnect_interval: 3000
 }

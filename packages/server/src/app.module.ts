@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose'
+import db from '@/config/db.config'
 
 // 全局模块（公用）
 import { DbModule } from '@/common/db/db.module'
@@ -9,8 +11,8 @@ import { ArticleModule } from './modules/article/article.module' // 文章模块
 
 @Module({
   imports: [
-    DbModule,
-
+    // DbModule,
+    MongooseModule.forRoot(`mongodb://${db.user}:${db.pwd}@${db.host}:${db.port}/${db.database}`),
     TestModule,
     ArticleModule
   ],

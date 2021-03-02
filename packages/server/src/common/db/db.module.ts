@@ -1,5 +1,5 @@
 import { Global, Module } from "@nestjs/common";
-import dbConfig from '@/config/db.config'
+import db from '@/config/db.config'
 import mongoose from 'mongoose'
 
 @Global()
@@ -11,7 +11,7 @@ export class DbModule {
     let reconnectTimer = null // 重连定时器
 
     function connect () {
-      return mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DATABASE}`, {})
+      return mongoose.connect(`mongodb://${db.user}:${db.pwd}@${db.host}:${db.port}/${db.database}`, {})
     }
     mongoose.connection.on('connecting', () => console.log('连接mongoose中...'))
 
@@ -24,7 +24,7 @@ export class DbModule {
     })
 
     mongoose.connection.on('disconnected', () => {
-      console.error(`mongoose连接失败，${dbConfig.RECONNECT_INTERVAL / 1000}s后尝试重连！`)
+      console.error(`mongoose连接失败，${db.reconnect_interval / 1000}s后尝试重连！`)
       reconnectTimer = setTimeout(mongoose.connect)
     })
 

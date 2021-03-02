@@ -29,6 +29,7 @@
     "@typegoose/typegoose": "^7.4.8",
     "class-validator": "^0.13.1",
     "mongoose": "^5.11.18",
+    "nestjs-typegoose": "^7.1.38",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6"
