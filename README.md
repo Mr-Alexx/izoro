@@ -75,3 +75,11 @@ db.auth("user", "pwd")
 
 ## nest操作mongo，定义model并生成swagger接口文档
 [https://segmentfault.com/a/1190000021868839?utm_source=tag-newest](https://segmentfault.com/a/1190000021868839?utm_source=tag-newest)
+
+nest分析
+[https://zhuanlan.zhihu.com/p/161928960](https://zhuanlan.zhihu.com/p/161928960)
+
+[nest swagger](https://liubf.com/2020/01/11/nestjs%e5%85%a5%e9%97%a8swagger%ef%bc%8c%e5%bf%ab%e9%80%9f%e6%90%ad%e5%bb%barestfulapi%e6%96%87%e6%a1%a3/)
+
+### provider说明
+[provider含义、使用](https://www.jianshu.com/p/bbed4b83370a)

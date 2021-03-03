@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Article } from './article.model'
+import { Article as ArticleSchema } from './article.model'
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { Model } from 'mongoose'
 import { ReturnModelType, getModelForClass } from "@typegoose/typegoose";
@@ -14,19 +14,22 @@ export class ArticleService {
   // constructor(
   //   @InjectModel(getModelForClass(Article)) private readonly articleModel
   // ) {}
+  // constructor(
+  //   @InjectModel('ArticleSchema') private readonly articleModel: ModelType<ArticleSchema>
+  // ) {}
 
   /**
    * @desc 获取文章列表
    * @param { any } query 查询参数
    */
   async findAll(query: any = {}): Promise<object> {
-    const articleModel = getModelForClass(Article)
-    try {
-      const res = await articleModel.find()
-      console.log('res', res)
-    } catch (err) {
-      console.error(err)
-    }
+    // const articleModel = getModelForClass(Article)
+    // try {
+    //   const res = await articleModel.find()
+    //   console.log('res', res)
+    // } catch (err) {
+    //   console.error(err)
+    // }
     return Promise.resolve({
       total: 2,
       list: [
