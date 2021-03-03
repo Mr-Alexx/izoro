@@ -9,8 +9,7 @@ import { IsIn, IsNotEmpty, IsString, Length } from "class-validator";
 import { PublishStatus } from '@/interfaces/status.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document } from 'mongoose'
-import { TypegooseClass } from "nestjs-typegoose/dist/typegoose-class.interface";
-import { Inject } from "@nestjs/common";
+import { getProviderByTypegooseClass } from '@/transformers/model.transformer'
 
 // 给添加的数据加入时间戳
 @modelOptions({
@@ -75,7 +74,5 @@ export class Article extends Document {
   update_at?: Date;
 }
 
-export function InjectModel(model: TypegooseClass) {
-  // return Inject(getModelToken(model.name))
-}
- 
+// 导出Provider
+export const ArticleProvider = getProviderByTypegooseClass(Article)

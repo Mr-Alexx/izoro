@@ -1,21 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Article as ArticleSchema } from './article.model'
 import { ModelType } from '@typegoose/typegoose/lib/types';
-import { Model } from 'mongoose'
-import { ReturnModelType, getModelForClass } from "@typegoose/typegoose";
-import {  } from '@typegoose/typegoose';
+import { Article } from './article.model'
 
 @Injectable()
 export class ArticleService {
-  // constructor (
-  //   @InjectModel('Article') private readonly articleModel: ReturnModelType<typeof Article>
-  // ) {}
   // constructor(
-  //   @InjectModel(getModelForClass(Article)) private readonly articleModel
-  // ) {}
-  // constructor(
-  //   @InjectModel('ArticleSchema') private readonly articleModel: ModelType<ArticleSchema>
+  //   @InjectModel('Article') private readonly artcleModel: ModelType<Article>
   // ) {}
 
   /**

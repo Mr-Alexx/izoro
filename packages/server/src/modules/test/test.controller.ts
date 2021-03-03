@@ -6,6 +6,8 @@
  */
 
 import { All, Controller, Delete, Get, Head, Options, Patch, Post, Put } from '@nestjs/common';
+import { getModelToken } from "@nestjs/mongoose";
+import { TypegooseClass } from "nestjs-typegoose/dist/typegoose-class.interface";
 
 @Controller('test')
 export class TestController {
@@ -14,7 +16,9 @@ export class TestController {
    */
   @Get()
   findAll(): String {
-    return `<div>Test</div>`
+    let a: TypegooseClass;
+    console.log(a)
+    return getModelToken('Test')
   }
 
   /**

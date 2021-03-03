@@ -4,5 +4,6 @@ export default {
   database: 'qian',
   user: 'test',
   pwd: 'test1234',
-  reconnect_interval: 3000
+  reconnect_interval: 3000,
+  connect_token: 'MongoDbConnectToken'
 }
