@@ -83,3 +83,9 @@ nest分析
 
 ### provider说明
 [provider含义、使用](https://www.jianshu.com/p/bbed4b83370a)
+
+
+## Mysql
+1. 时间类型比较：`timestamp`和`datetime`
+timestamp: 4字节，与时区有关，不同时区显示时间不一样
+datetime: 8字节，与时区无关

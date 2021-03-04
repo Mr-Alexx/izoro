@@ -1,39 +1,39 @@
-import { Global, Module } from "@nestjs/common";
-// import { TypegooseModule } from 'nestjs-typegoose';
-import db from '@/config/db.config'
-import mongoose from 'mongoose'
+// import { Global, Module } from "@nestjs/common";
+// // import { TypegooseModule } from 'nestjs-typegoose';
+// import db from '@/config/db.config'
+// import mongoose from 'mongoose'
 
-@Global()
-@Module({
-  exports: []
-})
-export class DbModule {
-  async useFactory () {
-    let reconnectTimer = null // 重连定时器
+// @Global()
+// @Module({
+//   exports: []
+// })
+// export class DbModule {
+//   async useFactory () {
+//     let reconnectTimer = null // 重连定时器
 
-    function connect () {
-      return mongoose.connect(`mongodb://${db.user}:${db.pwd}@${db.host}:${db.port}/${db.database}`, {})
-    }
-    mongoose.connection.on('connecting', () => console.log('连接mongoose中...'))
+//     function connect () {
+//       return mongoose.connect(`mongodb://${db.user}:${db.pwd}@${db.host}:${db.port}/${db.database}`, {})
+//     }
+//     mongoose.connection.on('connecting', () => console.log('连接mongoose中...'))
 
-    mongoose.connection.on('open', () => {
-      console.log('mongoose连接成功！')
-      if (reconnectTimer) { // 如果是重连，需要清除定时器
-        clearTimeout(reconnectTimer)
-        reconnectTimer = null
-      }
-    })
+//     mongoose.connection.on('open', () => {
+//       console.log('mongoose连接成功！')
+//       if (reconnectTimer) { // 如果是重连，需要清除定时器
+//         clearTimeout(reconnectTimer)
+//         reconnectTimer = null
+//       }
+//     })
 
-    mongoose.connection.on('disconnected', () => {
-      console.error(`mongoose连接失败，${db.reconnect_interval / 1000}s后尝试重连！`)
-      reconnectTimer = setTimeout(mongoose.connect)
-    })
+//     mongoose.connection.on('disconnected', () => {
+//       console.error(`mongoose连接失败，${db.reconnect_interval / 1000}s后尝试重连！`)
+//       reconnectTimer = setTimeout(mongoose.connect)
+//     })
 
-    mongoose.connection.on('error', err => {
-      console.error(`连接mongoose时发生异常！`, err)
-      mongoose.disconnect()
-      // 其它操作，如发邮件提醒
-    })
-    return await connect()
-  }
-}
+//     mongoose.connection.on('error', err => {
+//       console.error(`连接mongoose时发生异常！`, err)
+//       mongoose.disconnect()
+//       // 其它操作，如发邮件提醒
+//     })
+//     return await connect()
+//   }
+// }

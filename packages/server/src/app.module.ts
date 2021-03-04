@@ -1,20 +1,25 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose'
-import db from '@/config/db.config'
+import dbConfig from '@/config/db.config'
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 // 全局模块（公用）
-import { DbModule } from '@/common/db/db.module'
+// import { DbModule } from '@/common/db/db.module'
 
 // 业务模块
-import { TestModule } from './modules/test/test.module'
 import { ArticleModule } from './modules/article/article.module' // 文章模块
+import { TagModule } from './modules/tag/tag.module';
 
 @Module({
   imports: [
-    // DbModule,
-    MongooseModule.forRoot(`mongodb://${db.user}:${db.pwd}@${db.host}:${db.port}/${db.database}`),
-    TestModule,
-    ArticleModule
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => ({
+        type: 'mysql',
+        entities: [`${__dirname}/modules/**/*.entity{.ts,.js}`],
+        ...dbConfig
+      })
+    }),
+    ArticleModule,
+    TagModule
   ],
   controllers: [],
   providers: [],

@@ -19,7 +19,7 @@ export enum PublishStatus {
 
 // 公开状态
 export enum PublicStatus {
-  public = 1, // 公开
+  public = 0, // 公开
   password = 1, // 需要密码
   secret = 2 // 私密
 }

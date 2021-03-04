@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { ModelType } from '@typegoose/typegoose/lib/types';
-import { Article } from './article.model'
 
 @Injectable()
 export class ArticleService {
   // constructor(
   //   @InjectModel('Article') private readonly artcleModel: ModelType<Article>
   // ) {}
+  // constructor(@InjectModel(ArticleSchema) private readonly articleModel: ModelType<ArticleSchema>) {
+  // }
 
   /**
    * @desc 获取文章列表
