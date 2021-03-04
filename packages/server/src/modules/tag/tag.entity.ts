@@ -17,9 +17,11 @@ export class Tag {
   @Column()
   name: String;
 
+  @ApiProperty({ description: '关联文章id', example: 123 })
   @ManyToMany(() => Article, (article) => article.tags)
   articles: Array<Article>;
 
+  @ApiProperty({ description: '创建时间', example: '2021-03-34 21:18:00' })
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
@@ -27,6 +29,7 @@ export class Tag {
   })
   create_at: Date;
 
+  @ApiProperty({ description: '更新时间', example: '2021-03-34 21:18:00' })
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',

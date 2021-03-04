@@ -7,8 +7,9 @@
 import { IsIn, IsNotEmpty, IsString, Length } from "class-validator";
 import { PublicStatus, PublishStatus } from '@/interfaces/status.interface';
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import { Tag } from "../tag/tag.entity";
+import { Category } from "../category/category.entity";
 
 // 给添加的数据加入时间戳
 @Entity()
@@ -99,7 +100,7 @@ export class Article {
 
   // 发布时间
   @ApiProperty({ description: '发布时间', example: '2021-03-03 09:16:25' })
-  @CreateDateColumn({
+  @UpdateDateColumn({
     type: 'datetime',
     comment: '发布时间',
     name: 'publish_at'
@@ -108,7 +109,7 @@ export class Article {
 
   // 更新时间
   @ApiProperty({ description: '更新时间', example: '2021-03-03 09:16:25' })
-  @CreateDateColumn({
+  @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
     name: 'update_at'
@@ -116,10 +117,22 @@ export class Article {
   update_at: Date;
 
   // 标签--关联标签表
-  // @ManyToMany()
-  @ManyToMany(() => Tag, (tag) => tag.articles, { cascade: true })
+  @ApiProperty({ description: '关联的标签', example: ['tag1', 'tag2'] })
+  @ManyToMany(
+    () => Tag,
+    tag => tag.articles,
+    { cascade: true }
+  )
   @JoinTable()
   tags: Array<Tag>;
 
   // 分类--关联分类表
+  @ApiProperty({ description: '关联的分类', example: '一级分类' })
+  @ManyToOne(
+    () => Category,
+    category => category.articles,
+    { cascade: true }
+  )
+  @JoinTable()
+  category: Category
 }

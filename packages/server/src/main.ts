@@ -12,7 +12,7 @@ async function bootstrap() {
     .setTitle('nestjs swagger测试文档')
     .setDescription('nestjs实现的restful接口')
     .setVersion('1.0.0')
-    .addTag('nest') // 每个tag标签都可以对应着几个@ApiUseTags('用户,安全') 然后被ApiUseTags注释，字符串一致的都会变成同一个标签下的
+    .addTag('文章模块') // 每个tag标签都可以对应着几个@ApiUseTags('用户,安全') 然后被ApiUseTags注释，字符串一致的都会变成同一个标签下的
     // .setBasePath('http://localhost:5000')
     .build();
   // 为了创建完整的文档（具有定义的HTTP路由），我们使用类的createDocument()方法SwaggerModule。此方法带有两个参数，分别是应用程序实例和基本Swagger选项。
