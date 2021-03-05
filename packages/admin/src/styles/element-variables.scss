@@ -1,0 +1,65 @@
+/**
+* I think element-ui's default theme color is too light for long-term use.
+* So I modified the default color and you can modify it to your liking.
+**/
+
+/* theme color */
+$--color-primary: #1890ff; // #8101d9;
+$--color-success: #009900; // #13ce66;
+$--color-warning: #FFBA00;
+$--color-danger: #ff0000; // #ff4949;
+// $--color-info: #1E1E1E;
+$--background-color-base: #f5f5f5 !default;
+$--disabled-color-base: rgba(0, 0, 0, 0.25) !default;
+
+$--button-font-weight: 400;
+
+// $--color-text-regular: #1f2d3d;
+
+$--border-color-light: #dfe4ed;
+$--border-color-lighter: #e6ebf5;
+// 去掉border-radius
+$--border-radius-base: 2px !default;
+$--border-radius-small: 2px !default;
+$--border-radius-mini: 2px !default;
+
+$--table-border:1px solid#dfe6ec;
+
+// 修改card的默认box-shadow
+$--box-shadow-light: 0px 2px 6px 0px rgba(0,0,0,0.05) !default;
+
+// button
+/// borderRadius||Border|2
+$--button-medium-border-radius: 2px !default;
+/// padding||Spacing|3
+$--button-medium-padding-vertical: 8px !default;
+/// padding||Spacing|3
+$--button-medium-padding-horizontal: 14px !default;
+
+/* Button
+-------------------------- */
+$--button-padding-vertical: 10px !default;
+$--button-padding-horizontal: 16px !default;
+
+$--button-medium-border-radius: 2px !default;
+$--button-medium-padding-vertical: 8px !default;
+$--button-medium-padding-horizontal: 14px !default;
+
+$--button-small-border-radius: 2px !default;
+$--button-small-padding-vertical: 6px !default;
+$--button-small-padding-horizontal: 12px !default;
+
+$--button-mini-border-radius: 2px !default;
+$--button-mini-padding-vertical: 4px !default;
+$--button-mini-padding-horizontal: 10px !default;
+
+/* icon font path, required */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+ 
+@import "~element-ui/packages/theme-chalk/src/index";
+
+// the :export directive is the magic sauce for webpack
+// https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
+:export {
+  theme: $--color-primary;
+}

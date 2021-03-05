@@ -2,10 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestFastifyApplication } from '@nestjs/platform-fastify'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'; // api文档插件
+import { ResponseInterceptor } from './interceptors/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule);
   // const app = await NestFactory.create(AppModule);
+
+  // 允许跨域
+  app.enableCors();
+
+  // 响应拦截器
+  app.useGlobalInterceptors(new ResponseInterceptor())
 
   // DocumentBuilder是一个辅助类，有助于结构的基本文件SwaggerModule。它包含几种方法，可用于设置诸如标题，描述，版本等属性。
   const options = new DocumentBuilder()
