@@ -24,3 +24,10 @@
 
 18578782498
 123123
+
+
+## view.js 图片查看器
+[https://github.com/fengyuanchen/viewerjs](https://github.com/fengyuanchen/viewerjs)
+
+## juejin markdown主题
+[https://github.com/xitu/juejin-markdown-themes](https://github.com/xitu/juejin-markdown-themes)
