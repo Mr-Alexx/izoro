@@ -28,4 +28,12 @@ export class UserService {
     await this.userRepository.save(newUser)
     return newUser
   }
+
+  /**
+   * @desc 查找帐号列表
+   * @param { Object } query
+   */
+  aysnc getUsers (query: Object): Promise<User[], Number> {
+    const list = await this.userRepository.findAndCount
+  }
 }
