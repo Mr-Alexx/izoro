@@ -30,6 +30,13 @@ export enum sourceType {
   reprint = 1 // 转载
 }
 
+// 账号状态
+export enum UserStatus {
+  invalid = -1, // 作废
+  frozen = 0, // 冻结
+  active = 1 // 正常
+}
+
 // 评论状态
 export enum CommentStatus {
   trash = -2, // 垃圾

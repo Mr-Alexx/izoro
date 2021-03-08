@@ -1,3 +1,4 @@
+import { UserStatus } from "@/interfaces/status.interface";
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -22,6 +23,14 @@ export class User {
 
   @Column({ comment: '角色' })
   role: String;
+
+  @Column({
+    type: 'enum',
+    enum: UserStatus,
+    default: UserStatus.active,
+    comment: '账号状态：-1 作废，0 冻结，1 正常'
+  })
+  status: UserStatus;
 
   @CreateDateColumn({
     type: 'datetime',
