@@ -14,12 +14,12 @@ export class UserController {
   // @ApiBody({ name: 'account', description: '账号', required: true, type: String, example: 'test@qq.com' })
   // @ApiBody({ name: 'password', description: '密码', required: true, type: String, example: '2021-03-04 22:53:00' })
   // @ApiBody({ name: 'role', description: '角色', required: true, type: Number, example: 1 })
-  async register (@Body() user: User): Promise<User> {
+  async register (@Body() user: User): Promise<Object> {
     return this.userService.create(user)
   }
 
-  @Get()
-  findAll (): Promise<any> {
-    return this.userService.getUsers()
-  }
+  // @Get()
+  // findAll (): Promise<any> {
+  //   return this.userService.getUsers()
+  // }
 }

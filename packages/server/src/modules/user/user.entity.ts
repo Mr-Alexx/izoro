@@ -1,4 +1,6 @@
 import { UserStatus } from "@/interfaces/status.interface";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -6,23 +8,32 @@ export class User {
   @PrimaryGeneratedColumn()
   id: Number;
 
+  @ApiProperty({ description: '账号' })
+  @IsNotEmpty({ message: '账号不能为空' })
   @Column({ comment: '账号' })
   account: String;
 
+  @ApiProperty({ description: '密码' })
+  @IsNotEmpty({ message: '密码不能为空' })
   @Column({ comment: '密码' })
   password: String;
 
+  @ApiProperty({ description: '角色' })
+  @IsNotEmpty({ message: '角色不能为空' })
+  @Column({ comment: '角色' })
+  role: String;
+
+  @ApiProperty({ required: false,description: '昵称' })
   @Column({ comment: '昵称', default: null, length: 20 })
   nickname: String;
 
+  @ApiProperty({ required: false,description: '头像' })
   @Column({ comment: '头像', default: null })
   avatar: String;
 
+  @ApiProperty({ required: false,description: '邮箱' })
   @Column({ comment: '邮箱', default: null })
   email: String;
-
-  @Column({ comment: '角色' })
-  role: String;
 
   @Column({
     type: 'enum',

@@ -3,16 +3,18 @@ import { AppModule } from './app.module';
 import { NestFastifyApplication } from '@nestjs/platform-fastify'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'; // api文档插件
 import { ResponseInterceptor } from './interceptors/response.interceptor';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { ValidationPipe } from './pipes/validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule);
   // const app = await NestFactory.create(AppModule);
 
-  // 允许跨域
-  app.enableCors();
+  app.enableCors() // 允许跨域
 
-  // 响应拦截器
-  app.useGlobalInterceptors(new ResponseInterceptor())
+  app.useGlobalFilters(new HttpExceptionFilter()) // 自定义接口异常详情
+  app.useGlobalPipes(new ValidationPipe()) // 数据验证器
+  app.useGlobalInterceptors(new ResponseInterceptor()) // 自定义接口响应，输出日志
 
   // DocumentBuilder是一个辅助类，有助于结构的基本文件SwaggerModule。它包含几种方法，可用于设置诸如标题，描述，版本等属性。
   const options = new DocumentBuilder()

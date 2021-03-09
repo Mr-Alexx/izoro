@@ -92,3 +92,151 @@ datetime: 8字节，与时区无关
 
 ## 响应拦截、全局错误处理
 [https://blog.csdn.net/kuangshp128/article/details/97240664](https://blog.csdn.net/kuangshp128/article/details/97240664)
+
+## docker部署sentry
+参考[Sentry部署](https://www.bookstack.cn/read/node-in-debugging/6.5Sentry.md)  
+
+1. 安装docker，宝塔内有一键安装
+
+2. 启动redis容器，命名为 `sentry-redis`  
+```shell
+docker run -d --name sentry-redis redis
+```  
+
+3. 启动一个postgres容器，命名为 `sentry-postgress`，配置初始用户和密码（USER和PASSWORD字段）   
+```shell
+docker run -d --name sentry-postgress -e POSTGRES_PASSWORD=secret -e POSTGRES_USER=sentry postgres
+```  
+
+4. 生成一个sentry的秘钥  
+```shell
+docker run --rm sentry config generate-secret-key
+```  
+生成完后保存秘钥，如：`p&03jv^yh*p5qn9cip_85=w88uuet+(vonhx8uxd(d#ulu^!71`  
+
+5. 如果是第一次运行，要运行update  
+```shell
+docker run -it --rm -e SENTRY_SECRET_KEY='生成的秘钥' --link sentry-postgres:postgres --link sentry-redis:redis sentry upgrade
+```  
+按步骤填写邮箱和密码（sentry管理员账号和密码）
+
+6. 启动sentry，暴露 `9000` 端口  
+```shell
+docker run -d --name my-sentry -e SENTRY_SECRET_KEY='你的秘钥' --link sentry-redis:redis --link sentry-postgres:postgres -p 9000:9000 sentry
+```  
+
+7. 启动 Celery cron 和 Celery workers（？？？）  
+提示：Celery 是用 Python 写的一个分布式任务调度模块。  
+```shell
+docker run -d --name sentry-cron -e SENTRY_SECRET_KEY='你的秘钥' --link sentry-postgres:postgres --link sentry-redis:redis sentry run cron
+```    
+
+```shell
+docker run -d --name sentry-worker-1 -e SENTRY_SECRET_KEY='你的秘钥' --link sentry-postgres:postgres --link sentry-redis:redis sentry run worker
+```   
+
+## nest接口字段错误信息关联数据库实体数据验证
+参考[nestjs管道](https://docs.nestjs.cn/7/pipes?id=%e7%ae%a1%e9%81%93)  
+1. 安装 `class-validator` 和 `class-transformer` 两个插件  
+```shell
+npm install class-validator class-transformer  
+```
+
+2. `entity` 文件内定义 `column` 时，添加 `class-validator` 定义验证信息  
+ex: `/modules/user/user.entity.ts`
+```typescript
+import { IsEmail, IsNotEmpty } from "class-validator";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: Number;
+
+  @IsEmail({ message: '账号必须为邮箱' })
+  @IsNotEmpty({ message: '账号不能为空' })
+  @Column({ comment: '账号' })
+  account: String;
+
+  @IsNotEmpty({ message: '密码不能为空' })
+  @Column({ comment: '密码' })
+  password: String;
+}
+```
+
+3. 新建 `/pipes/validation.pipe.ts` 文件，根据 `entity` 的定义验证数据  
+ex:
+```typescript
+import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from "@nestjs/common";
+import { plainToClass } from "class-transformer";
+import { validate } from "class-validator";
+
+@Injectable()
+export class ValidationPipe implements PipeTransform<any> {
+  async transform(value: any, { metatype }: ArgumentMetadata) {
+    if (!metatype || !this.toValidate(metatype)) {
+      return value
+    }
+    const object = plainToClass(metatype, value)
+    const errors = await validate(object)
+    if (errors.length > 0) {
+      // entity定义的验证信息合并返回
+      const errorMessage = errors.map(error => {
+        return Object.values(error.constraints).join(';')
+      }).join(';')
+      throw new BadRequestException(errorMessage)
+    }
+    return value
+  }
+
+  private toValidate(metatype: Function): boolean {
+    const types: Function[] = [String, Boolean, Number, Array, Object]
+    return !types.includes(metatype)
+  }
+}
+```  
+
+3. 在 `controller` 里定义路由方法时，参数需要关联 `实体`  
+ex: `/modules/user/user.controller.ts`
+```typescript
+import { Body, Controller, Post } from '@nestjs/common';
+import { User } from './user.entity';
+import { UserService } from './user.service';
+
+@Controller('user')
+export class UserController {
+  constructor (
+    private readonly userService: UserService
+  ) {}
+
+  // user参数必须关联User实体，才能使用class-validator定义的验证信息
+  @Post()
+  async register (@Body() user: User): Promise<Object> {
+    return this.userService.create(user)
+  }
+}
+```  
+
+4. 最后一步，在 `main.ts` 内将 `ValidationPipe` 定义为全局的管道器  
+```typescript
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { NestFastifyApplication } from '@nestjs/platform-fastify'
+import { ResponseInterceptor } from './interceptors/response.interceptor';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { ValidationPipe } from './pipes/validation.pipe';
+
+async function bootstrap() {
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule);
+
+  app.enableCors() // 允许跨域
+
+  app.useGlobalFilters(new HttpExceptionFilter()) // 自定义接口异常详情
+  app.useGlobalPipes(new ValidationPipe()) // 数据验证器
+  app.useGlobalInterceptors(new ResponseInterceptor()) // 自定义接口响应，输出日志
+
+  await app.listen(3000);
+  console.log(`App is listen on http://localhost:${3000}`)
+}
+bootstrap();
+```

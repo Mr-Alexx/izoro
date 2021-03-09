@@ -15,7 +15,7 @@ export class UserService {
    * @desc 创建用户
    * @param { Object } user
    */
-  async create (user: User): Promise<User> {
+  async create (user: { [propsName: string]: any }): Promise<Number> {
     // 判断用户是否存在
     const { account } = user
     const isExist = await this.userRepository.findOne({ where: { account } })
@@ -24,16 +24,20 @@ export class UserService {
     }
 
     // 不存在则新建账号
-    const newUser = await this.userRepository.create(user)
-    await this.userRepository.save(newUser)
-    return newUser
+    try {
+      const newUser = await this.userRepository.create(user)
+      await this.userRepository.save(newUser)
+      return newUser.id
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST)
+    }
   }
 
   /**
    * @desc 查找帐号列表
    * @param { Object } query
    */
-  aysnc getUsers (query: Object): Promise<User[], Number> {
-    const list = await this.userRepository.findAndCount
-  }
+  // aysnc getUsers (query: Object): Promise<User[], Number> {
+  //   const list = await this.userRepository.findAndCount
+  // }
 }

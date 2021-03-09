@@ -20,7 +20,8 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
     return next.handle().pipe(map(data => ({
       data,
       code: 0,
-      msg: 'success'
+      success: true,
+      _t: new Date().getTime()
     })))
   }
 }
