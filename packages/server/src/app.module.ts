@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ArticleModule } from './modules/article/article.module' // 文章模块
 import { TagModule } from './modules/tag/tag.module';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { UserModule } from './modules/user/user.module';
     }),
     ArticleModule,
     TagModule,
-    UserModule
+    UserModule,
+    AuthModule
   ],
   providers: [],
 })

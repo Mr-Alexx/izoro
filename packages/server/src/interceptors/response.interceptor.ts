@@ -3,7 +3,7 @@
  * @desc 全局成功响应拦截器，添加自定义code和msg
  * @author 潜
  */
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
+import { CallHandler, ExecutionContext, HttpStatus, Injectable, NestInterceptor } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { map } from 'rxjs/operators'
 
@@ -19,7 +19,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
   ): Observable<Response<T>> {
     return next.handle().pipe(map(data => ({
       data,
-      code: 0,
+      code: HttpStatus.OK,
       success: true,
       _t: new Date().getTime()
     })))

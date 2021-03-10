@@ -11,6 +11,7 @@ import fastifyRateLimit from 'fastify-rate-limit';
 import fastifyCompress from 'fastify-compress';
 import fastifyCookie from 'fastify-cookie';
 import { errorLogger } from './logger/log4.logger';
+import fastifySwagger from 'fastify-swagger';
 
 async function bootstrap() {
   const adapter = new FastifyAdapter()
@@ -30,8 +31,20 @@ async function bootstrap() {
   })
   adapter.register(fastifyCookie) // 使用fastifyCsrf必须引入此插件
   adapter.register(fastifyCsrf) // 防跨站点请求伪造
-  adapter.register(fastifyHelmet) // 通过适当地设置 HTTP 头，Helmet 可以帮助保护您的应用免受一些众所周知的 Web 漏洞的影响
+  adapter.register(fastifyHelmet, { // https://docs.nestjs.cn/7/security?id=helmet
+    // contentSecurityPolicy: {
+    //   directives: {
+    //     defaultSrc: [`'self'`],
+    //     styleSrc: [`'self'`, `'unsafe-inline'`, 'cdn.jsdelivr.net', 'fonts.googleapis.com'],
+    //     fontSrc: [`'self'`, 'fonts.gstatic.com'],
+    //     imgSrc: [`'self'`, 'data:', 'cdn.jsdelivr.net'],
+    //     scriptSrc: [`'self'`, `https: 'unsafe-inline'`, `cdn.jsdelivr.net`],
+    //   },
+    // }
+    contentSecurityPolicy: false
+  }) // 通过适当地设置 HTTP 头，Helmet 可以帮助保护您的应用免受一些众所周知的 Web 漏洞的影响
   adapter.register(fastifyCompress) // 压缩请求
+  adapter.register(fastifySwagger)
 
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter)
   // const app = await NestFactory.create(AppModule);
