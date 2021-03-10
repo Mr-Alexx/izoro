@@ -8,7 +8,7 @@ import { PublicStatus, PublishStatus } from '@/interfaces/status.interface';
 //   model: Article // Article采用增删改查接口模式
 // })
 @Controller('article')
-@ApiTags('文章模块')
+@ApiTags('Article')
 export class ArticleController {
   // 注入service，this调用
   constructor (

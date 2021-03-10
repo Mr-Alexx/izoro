@@ -20,8 +20,8 @@ export class ValidationPipe implements PipeTransform<any> {
     if (errors.length > 0) {
       // entity定义的验证信息合并返回
       const errorMessage = errors.map(error => {
-        return Object.values(error.constraints).join(';')
-      }).join(';')
+        return Object.values(error.constraints).map(v => `${v}!`).join(' && ')
+      }).join('; ')
       throw new BadRequestException(errorMessage)
     }
     return value

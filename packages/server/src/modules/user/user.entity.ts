@@ -1,39 +1,64 @@
 import { UserStatus } from "@/interfaces/status.interface";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { IsNotEmpty, IsString } from "class-validator";
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert } from "typeorm";
+import * as bcrypt from 'bcrypt'
+import { Exclude } from "class-transformer";
+
+const SALT_OR_ROUNDS = 10
 
 @Entity()
 export class User {
+  /**
+   * @desc 对比密码，登录用
+   * @param { string } password1 加密前密码
+   * @param { string } password2 加密后密码
+   */
+  static async comparePassword (password1: string, password2: string): Promise<boolean> {
+    return bcrypt.compareSync(password1, password2)
+  }
+
+  /**
+   * @desc 加密密码，入库用
+   * @param { string } password
+   */
+  static encryptPassword (password: string): string {
+    return bcrypt.hashSync(password, SALT_OR_ROUNDS)
+  }
+
   @PrimaryGeneratedColumn()
-  id: Number;
+  id: number;
 
   @ApiProperty({ description: '账号' })
-  @IsNotEmpty({ message: '账号不能为空' })
-  @Column({ comment: '账号' })
-  account: String;
+  @IsNotEmpty()
+  @IsString()
+  @Column({ length: 100, comment: '账号' })
+  account: string;
 
   @ApiProperty({ description: '密码' })
-  @IsNotEmpty({ message: '密码不能为空' })
-  @Column({ comment: '密码' })
-  password: String;
+  @IsNotEmpty()
+  @IsString()
+  @Exclude()
+  @Column({ length: 100, comment: '密码' })
+  password: string;
 
   @ApiProperty({ description: '角色' })
-  @IsNotEmpty({ message: '角色不能为空' })
-  @Column({ comment: '角色' })
-  role: String;
+  @IsNotEmpty()
+  @IsString()
+  @Column({ length: 100, comment: '角色' })
+  role: string;
 
   @ApiProperty({ required: false,description: '昵称' })
-  @Column({ comment: '昵称', default: null, length: 20 })
-  nickname: String;
+  @Column({ length: 100, comment: '昵称', default: null})
+  nickname: string;
 
   @ApiProperty({ required: false,description: '头像' })
-  @Column({ comment: '头像', default: null })
-  avatar: String;
+  @Column({ length: 255, comment: '头像', default: null })
+  avatar: string;
 
-  @ApiProperty({ required: false,description: '邮箱' })
+  @ApiProperty({ required: false, description: '邮箱' })
   @Column({ comment: '邮箱', default: null })
-  email: String;
+  email: string;
 
   @Column({
     type: 'enum',
@@ -56,4 +81,10 @@ export class User {
     name: 'update_at',
   })
   update_at: Date;
+
+  // 插入密码前，进行加密
+  @BeforeInsert()
+  encrypt () {
+    this.password = bcrypt.hashSync(this.password, SALT_OR_ROUNDS)
+  }
 }

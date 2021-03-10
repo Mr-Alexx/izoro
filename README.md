@@ -240,3 +240,8 @@ async function bootstrap() {
 }
 bootstrap();
 ```
+
+## 宝塔公益4040
+[404公益](https://www.dnpw.org/cn/pa-notfound.html?bt)
+
+[miantijing](https://v2ee.cn/)

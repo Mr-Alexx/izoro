@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('标签模块')
+@ApiTags('Tag')
 @Controller('tag')
 export class TagController {
   @Get()
