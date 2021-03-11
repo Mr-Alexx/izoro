@@ -96,15 +96,28 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/article',
+    path: '/artcile',
     component: Layout,
-    redirect: '/article/index',
+    redirect: 'index',
     children: [
       {
         path: 'index',
         name: 'ArticleManage',
-        meta: { title: '文章管理', icon: 'tiktok' },
-        component: () => import('@/views/article')
+        component: () => import('@/views/article'),
+        meta: { title: '文章管理', icon: 'tiktok' }
+      }
+    ]
+  },
+  {
+    path: '/account',
+    component: Layout,
+    redirect: 'index',
+    children: [
+      {
+        path: 'index',
+        name: 'AccountManage',
+        meta: { title: '帐号管理', icon: 'tiktok' },
+        component: () => import('@/views/account')
       }
     ]
   }

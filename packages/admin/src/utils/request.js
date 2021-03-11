@@ -15,6 +15,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     config.headers.token = getToken()
+    config.headers.Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjE1NDcyMTA4LCJleHAiOjE2MTU0ODY1MDh9.nvHOSn9OFQIpvV9BYbk1RQ9sja1YsKXg2FkgQ5IO6rU'
     return config
   },
   error => {
@@ -42,7 +43,7 @@ service.interceptors.response.use(
       })
       router.replace('/login')
       return
-    } else if (code === 0) {
+    } else if (code === 0 || res.success) {
       return res.response || res.data
     } else {
       Message({

@@ -38,3 +38,14 @@ export function logout () {
     method: 'post'
   })
 }
+
+export function fetchUserList () {
+  return request({
+    url: 'http://localhost:3000/user',
+    method: 'GET',
+    params: {
+      page: 1,
+      limit: 10
+    }
+  })
+}

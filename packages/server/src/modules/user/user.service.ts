@@ -63,10 +63,27 @@ export class UserService {
   /**
    * @desc 查找帐号列表
    * @param { Object } query
+   * 复杂查询：https://www.jianshu.com/p/0fcf45030dd4
    */
-  // aysnc getUsers (query: Object): Promise<User[], Number> {
-  //   const list = await this.userRepository.findAndCount
-  // }
+  async findAll (query): Promise<any> {
+    let { page, limit, status, create_at } = query
+    page = page || 1
+    limit = limit || 20
+    const where = {}
+    status && (where['status'] = status)
+    create_at && (where['create_at'] = create_at)
+
+    const [list, total] = await this.userRepository.findAndCount({
+      where,
+      order: {
+        id: 'ASC'
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+      cache: false
+    })
+    return { list, total }
+  }
 
   /**
    * @desc 查找单个用户
@@ -76,10 +93,8 @@ export class UserService {
   }
 
   async updateById (id: number, user: Partial<User>) {
-    console.log(user)
     try {
       const oldUser = await this.findById(id)
-      console.log(oldUser)
       const updatedUser = await this.userRepository.merge(oldUser, user)
       return this.userRepository.save(updatedUser)
     } catch (err) {

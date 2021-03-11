@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { query } from '_@types_express@4.17.11@@types/express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -25,22 +26,29 @@ export class UserController {
   }
 
   /**
-   * @desc
+   * @desc 获取用户列表
    */
+  @ApiOperation({ summary: '用户列表' })
+  @Get()
+  @ApiQuery({ name: 'page', description: '页码' })
+  @ApiQuery({ name: 'limit', description: '每页条数' })
+  @UseGuards(JwtAuthGuard)
+  async findAll (@Query() query): Promise<any> {
+    return await this.userService.findAll(query)
+  }
+
+  /**
+   * @desc 根据用户id获取用户信息
+   */
+  @ApiOperation({ summary: '用户个人信息' })
   @Get(':id')
-  @ApiHeader({ name: 'token' })
   @ApiParam({ name: 'id', description: '用户id' })
   @UseGuards(JwtAuthGuard)
   GetInfo (@Param() id: number): Promise<User> {
     return this.userService.findById(id)
   }
 
-  // @Get()
-  // findAll (): Promise<any> {
-  //   return this.userService.getUsers()
-  // }
-
-  @ApiOperation({ summary: '用户更新' })
+  @ApiOperation({ summary: '更新用户信息' })
   @ApiParam({ name: 'id', description: '用户id' })
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
