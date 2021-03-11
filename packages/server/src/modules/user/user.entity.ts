@@ -82,6 +82,13 @@ export class User {
   })
   update_at: Date;
 
+  @UpdateDateColumn({
+    type: 'datetime',
+    comment: '最后登录时间',
+    name: 'last_login_at',
+  })
+  last_login_at: Date;
+
   // 插入密码前，进行加密
   @BeforeInsert()
   encrypt () {

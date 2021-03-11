@@ -245,3 +245,30 @@ bootstrap();
 [404公益](https://www.dnpw.org/cn/pa-notfound.html?bt)
 
 [miantijing](https://v2ee.cn/)
+
+## Entity内@Exclude()装饰器不生效生效问题
+`@Exclude`的作用是当在`entity`实体取出数据时忽略改属性  
+```typescript
+// test.entity.ts
+@Entity()
+export class TestEntity {
+  account: string;
+
+  @Exclude()
+  password: string;
+}
+```  
+
+需在`main.ts`内增加如下配置
+```typescript
+// main.ts
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule)
+
+  // ....
+  
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector)) // 关键配置
+  )
+}
+```

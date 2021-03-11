@@ -1,34 +1,26 @@
-import { HttpExceptionFilter } from "@/filters/http-exception.filter";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { User } from "../user/user.entity";
+import { UserService } from "../user/user.service";
 
 @Injectable()
 export class AuthService {
   constructor (
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService
   ) {}
 
-  async generateJwt (payload ): Promise<any> {}
+  /**
+   * @desc 生成jwt
+   * @param { Partial<User> } user
+   * @return { string } token
+   */
+  generateJwt (user: Partial<User> ): string {
+    return this.jwtService.sign(user)
+  }
 
-  async login (body: Partial<User>) {
-    const { account, password } = body
-    const user = await this.userRepository.findOne({
-      where: {
-        account
-      }
-    })
-    if (!user) {
-      throw new HttpException('帐号不存在！', HttpStatus.NOT_FOUND)
-    }
-
-    const isPass = await User.comparePassword(password, user.password)
-    if (!isPass) {
-      throw new HttpException('密码错误！', HttpStatus.FORBIDDEN)
-    }
-    
-    return 'jwt-token'
+  async login (user: Partial<User>) {
+    const { id, role } = await this.userService.login(user)
+    return this.generateJwt({ id, role })
   }
 }

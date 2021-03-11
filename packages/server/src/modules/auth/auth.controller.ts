@@ -16,7 +16,7 @@ export class AuthController {
    */
   @ApiOperation({ summary: '用户登录' })
   @Post('login')
-  async login (@Body() body: Partial<User>): Promise<string> {
-    return this.authService.login(body)
+  async login (@Body() user: Partial<User>): Promise<string> {
+    return this.authService.login(user)
   }
 }

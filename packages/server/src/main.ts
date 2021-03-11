@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'; // api文档插件
@@ -12,6 +12,7 @@ import fastifyCompress from 'fastify-compress';
 import fastifyCookie from 'fastify-cookie';
 import { errorLogger } from './logger/log4.logger';
 import fastifySwagger from 'fastify-swagger';
+import { ClassSerializerInterceptor } from '@nestjs/common';
 
 async function bootstrap() {
   const adapter = new FastifyAdapter()
@@ -53,19 +54,19 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter()) // 自定义接口异常详情
   app.useGlobalPipes(new ValidationPipe()) // 数据验证器
-  app.useGlobalInterceptors(new ResponseInterceptor()) // 自定义接口响应，输出日志
+  app.useGlobalInterceptors(
+    new ResponseInterceptor(), // 自定义接口响应，输出日志
+    new ClassSerializerInterceptor(app.get(Reflector)) // 要使entity内的@Exclude生效，需加这个
+  )
 
-  // DocumentBuilder是一个辅助类，有助于结构的基本文件SwaggerModule。它包含几种方法，可用于设置诸如标题，描述，版本等属性。
   const options = new DocumentBuilder()
     .setTitle('nestjs swagger测试文档')
     .setDescription('nestjs实现的restful接口')
     .setVersion('1.0.0')
-    // .addTag('文章模块') // 每个tag标签都可以对应着几个@ApiUseTags('用户,安全') 然后被ApiUseTags注释，字符串一致的都会变成同一个标签下的
+    // .addTag('文章模块')
     // .setBasePath('http://localhost:5000')
     .build();
-  // 为了创建完整的文档（具有定义的HTTP路由），我们使用类的createDocument()方法SwaggerModule。此方法带有两个参数，分别是应用程序实例和基本Swagger选项。
   const document = SwaggerModule.createDocument(app, options);
-   // 最后一步是setup()。它依次接受（1）装入Swagger的路径，（2）应用程序实例, （3）描述Nest应用程序的文档。
   SwaggerModule.setup('/api-doc', app, document);
 
   await app.listen(3000);

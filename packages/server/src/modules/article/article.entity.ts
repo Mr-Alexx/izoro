@@ -124,7 +124,7 @@ export class Article {
     { cascade: true }
   )
   @JoinTable()
-  tags: Array<Tag>;
+  tags: Array<Tag>
 
   // 分类--关联分类表
   @ApiProperty({ description: '关联的分类', example: '一级分类' })

@@ -8,6 +8,7 @@ import { UserService } from './user.service';
   // service内要想使用repository，必须在此处导入Entity
   imports: [TypeOrmModule.forFeature([User])],
   providers: [UserService],
-  controllers: [UserController]
+  controllers: [UserController],
+  exports: [UserService]
 })
 export class UserModule {}

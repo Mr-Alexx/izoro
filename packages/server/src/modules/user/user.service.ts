@@ -34,10 +34,56 @@ export class UserService {
   }
 
   /**
+   * @desc 用户登录
+   * @param { Partial<User> } user
+   * @return { User }
+   */
+  async login (user: Partial<User>) {
+    const { account, password } = user
+    const existUser = await this.userRepository.findOne({
+      where: {
+        account
+      }
+    })
+    if (!existUser) {
+      throw new HttpException('帐号不存在！', HttpStatus.BAD_REQUEST)
+    }
+
+    const isPass = await User.comparePassword(password, existUser.password)
+    if (!isPass) {
+      throw new HttpException('密码错误！', HttpStatus.BAD_REQUEST)
+    }
+
+    if (existUser.status !== 1) {
+      throw new HttpException('账号不可用，请联系管理员！', HttpStatus.FORBIDDEN)
+    }
+    return existUser
+  }
+
+  /**
    * @desc 查找帐号列表
    * @param { Object } query
    */
   // aysnc getUsers (query: Object): Promise<User[], Number> {
   //   const list = await this.userRepository.findAndCount
   // }
+
+  /**
+   * @desc 查找单个用户
+   */
+  async findById (id: number): Promise<User> {
+    return this.userRepository.findOne(id)
+  }
+
+  async updateById (id: number, user: Partial<User>) {
+    console.log(user)
+    try {
+      const oldUser = await this.findById(id)
+      console.log(oldUser)
+      const updatedUser = await this.userRepository.merge(oldUser, user)
+      return this.userRepository.save(updatedUser)
+    } catch (err) {
+      console.error(err)
+    }
+  }
 }
