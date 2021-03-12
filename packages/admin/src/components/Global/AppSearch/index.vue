@@ -32,7 +32,7 @@
       <el-button @click="handleClearSearch">
         重置
       </el-button>
-      <el-button :loading="loading" type="primary" @click="handleSearch">
+      <el-button :loading="loading" type="primary" @click="handleSearch" @keypress.enter="enterSearch">
         搜索
       </el-button>
     </div>
@@ -132,6 +132,15 @@ export default {
         // console.error(err)
       } finally {
         this.loading = false
+      }
+    },
+    enterSearch () {
+      document.onkeydown = e => {
+        // 13表示回车键，baseURI是当前页面的地址，为了更严谨，也可以加别的，可以打印e看一下
+        if (e.keyCode === 13 && e.target.baseURI.match(/freshmanage/)) {
+          // 回车后执行搜索方法
+          this.handleSearch()
+        }
       }
     },
     /**

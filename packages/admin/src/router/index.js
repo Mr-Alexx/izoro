@@ -59,6 +59,7 @@ export const asyncRoutes = [
     path: '/tiktok',
     component: Layout,
     redirect: '/tiktok/talent-library',
+    hidden: true,
     meta: { title: '抖音数据', icon: 'tiktok' },
     children: [
       {
@@ -104,9 +105,13 @@ export const asyncRoutes = [
         path: 'index',
         name: 'ArticleManage',
         component: () => import('@/views/article'),
-        meta: { title: '文章管理', icon: 'tiktok' }
+        meta: { title: 'A&M', icon: 'tiktok' } // 文章管理
       }
     ]
+  },
+  {
+    path: '/editor',
+    component: () => import('@/views/article/editor')
   },
   {
     path: '/account',
@@ -116,7 +121,7 @@ export const asyncRoutes = [
       {
         path: 'index',
         name: 'AccountManage',
-        meta: { title: '帐号管理', icon: 'tiktok' },
+        meta: { title: 'U&M', icon: 'tiktok' }, // 帐号管理
         component: () => import('@/views/account')
       }
     ]

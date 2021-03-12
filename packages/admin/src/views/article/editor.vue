@@ -1,0 +1,345 @@
+<template>
+  <div>
+    <el-row :gutter="20" class="base-box">
+      <el-col :xs="24" :sm="12">
+        <el-input placeholder="请输入标题" />
+      </el-col>
+      <el-col :xs="24" :sm="12">
+        <el-button type="primary">Test</el-button>
+      </el-col>
+    </el-row>
+    <Editor
+      :value="value"
+      :plugins="plugins"
+      :toolbar-items="[]"
+      :editor-config="config"
+      :locale="locale"
+      @change="handleChange"
+    />
+  </div>
+</template>
+
+<script>
+// 配置 https://codemirror.net/doc/manual.html#config
+import 'bytemd/dist/index.min.css'
+// import zhHans from 'bytemd/lib/locales/zh_Hans.json' // 基础语言包（看源码找到的...）
+import zh from './zh' // 整合的语言包
+import { Editor } from '@bytemd/vue'
+import highlight from '@bytemd/plugin-highlight'
+import math from '@bytemd/plugin-math'
+// import mermaid from '@bytemd/plugin-mermaid';
+import gfm from '@bytemd/plugin-gfm'
+import breaks from '@bytemd/plugin-breaks'
+import frontmatter from '@bytemd/plugin-frontmatter'
+import axios from 'axios'
+import theme from './theme'
+
+export default {
+  components: {
+    Editor
+    // Viewer
+  },
+  data () {
+    return {
+      value: '404',
+      plugins: [
+        highlight(),
+        math({ locale: zh.math }),
+        gfm({ locale: zh.gfm }),
+        breaks(),
+        frontmatter(),
+        theme()
+        // {
+        //   viewerEffect ({ file }) {
+        //     const $style = document.createElement('style')
+        //     console.log(file)
+        //     $style.innerHTML =
+        //       themes[file.frontmatter.theme]?.style ?? themes.juejin.style
+        //     document.head.appendChild($style)
+        //     return () => {
+        //       $style.remove()
+        //     }
+        //   }
+        // }
+      ],
+      config: {},
+      locale: zh.default
+    }
+  },
+  async mounted () {
+    axios.get('/example.md').then(res => {
+      this.value = res.data
+    })
+  },
+  methods: {
+    handleChange (v) {
+      this.value = v
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+.bytemd {
+  height: 90vh !important;
+}
+$theme-color: #a862ea;
+$sub-color: #e7daff;
+$text-color: #383838;
+$bg-color: #ffffff;
+$light-color: #f8f5ff;
+$font-size: 15px;
+$line-space: 15px;
+$line-height: 2.5 * $line-space;
+$monospace-font: Operator Mono, Consolas, Monaco, Menlo, monospace;
+$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+  Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+@mixin hoverUnderLine {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    width: 98%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    transform: scaleX(0);
+    background-color: $theme-color;
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+}
+
+.markdown-body {
+  color: $text-color;
+  font-size: $font-size;
+  line-height: $line-height;
+  letter-spacing: 2px;
+  word-break: break-word;
+  font-family: $font-family;
+  scroll-behavior: smooth;
+  background-image: linear-gradient(
+      0deg,
+      transparent 24%,
+      rgba(201, 195, 195, 0.329) 25%,
+      rgba(209, 201, 201, 0.05) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(209, 204, 204, 0.185) 75%,
+      rgba(180, 176, 176, 0.05) 76%,
+      transparent 77%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      rgba(204, 196, 196, 0.226) 25%,
+      rgba(172, 165, 165, 0.05) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(209, 204, 204, 0.185) 75%,
+      rgba(180, 176, 176, 0.05) 76%,
+      transparent 77%,
+      transparent
+    );
+  background-color: $bg-color;
+  background-size: 50px 50px;
+  padding-bottom: 120px;
+
+  ::selection {
+    color: #fff;
+    background-color: $theme-color;
+  }
+
+  // header
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: $line-space * 2 0 $line-space 0;
+    color: $theme-color;
+  }
+
+  h1 {
+    line-height: 2;
+    font-size: 1.4em;
+
+    & ~ p:first-of-type::first-letter {
+      color: $theme-color;
+      float: left;
+      font-size: 2em;
+      margin-right: 0.4em;
+      font-weight: bolder;
+    }
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  h3 {
+    font-size: 1.1em;
+  }
+
+  // ul, ol
+  ol,
+  ul {
+    padding-left: 2em;
+
+    li {
+      margin-bottom: 0;
+      padding-left: 0.2em;
+      & .task-list-item {
+        list-style: none;
+        ul,
+        ol {
+          margin-top: 0;
+        }
+      }
+    }
+
+    ul,
+    ol {
+      margin-top: 10px;
+    }
+  }
+
+  li::marker {
+    color: $theme-color;
+  }
+
+  p,
+  li {
+    opacity: 0.9;
+    vertical-align: baseline;
+    transition: all 0.1s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  // link
+  a {
+    position: relative;
+    display: inline-block;
+    color: $theme-color;
+    cursor: pointer;
+    padding-bottom: 2px;
+    text-decoration: none;
+    @include hoverUnderLine();
+
+    &:active,
+    &:link {
+      color: $theme-color;
+    }
+  }
+
+  img {
+    max-width: 100%;
+    user-select: none;
+    margin: 1em 0;
+    box-shadow: 0 0 20px 0 $sub-color;
+    transition: transform 0.2s ease 0s;
+    background-color: $light-color;
+
+    &:hover {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+  }
+
+  blockquote {
+    padding: 0.5em 1em;
+    margin: $line-space 0;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-left: 4px solid $theme-color;
+    background-color: $light-color;
+    & > p {
+      margin: 0;
+    }
+  }
+
+  code {
+    padding: 2px 0.4em;
+    overflow-x: auto;
+    color: $theme-color;
+    font-weight: bold;
+    word-break: break-word;
+    font-family: $monospace-font;
+    background-color: $light-color;
+  }
+
+  pre {
+    margin: 2em 0;
+    box-shadow: 0 0 20px $sub-color;
+    > code {
+      display: block;
+      padding: 1.5em;
+      word-break: normal;
+      font-size: 0.9em;
+      font-style: normal;
+      font-weight: normal;
+      font-family: $monospace-font;
+      line-height: 1.5 * $line-space;
+      color: $text-color;
+      border-radius: 3px;
+      scroll-behavior: smooth;
+
+      &::-webkit-scrollbar {
+        height: 6px;
+        background-color: $light-color;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: $sub-color;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+      }
+    }
+  }
+
+  hr {
+    margin: 2em 0;
+    border-top: 1px solid $theme-color;
+  }
+
+  table {
+    font-size: 12px;
+    max-width: 100%;
+    overflow: auto;
+    border-collapse: collapse;
+    border: solid 1px $sub-color;
+  }
+
+  thead {
+    color: $theme-color;
+    background: $light-color;
+  }
+
+  td,
+  th {
+    padding: 1em 0.5em;
+  }
+
+  tr {
+    background-color: #fcfcfc;
+  }
+}
+
+@media (max-width: 720px) {
+  .markdown-body {
+    font-size: 12px;
+  }
+}
+
+</style>
