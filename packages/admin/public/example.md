@@ -1,8 +1,9 @@
 ---
-# themes:
 theme: juejin
+highlight: agate
 ---
 
+![火箭.svg](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1d83f1236394406a9ff9c6b161ae1980~tplv-k3u1fbpfcp-watermark.image)
 ## Markdown Basic Syntax
 
 I just love **bold text**. Italicized text is the _cat's meow_. At the command prompt, type `nano`.

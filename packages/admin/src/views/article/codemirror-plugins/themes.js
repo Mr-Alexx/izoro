@@ -1,7 +1,6 @@
-// @ts-check
-
 /**
- * @type {Record<string, {owner:string,repo:string,path:string,ref:string,highlight?:string}>}
+ * @desc 掘金markdown主题
+ * @source https://github.com/xitu/juejin-markdown-themes
  */
 const themes = {
   juejin: {

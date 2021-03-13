@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-row :gutter="20" class="base-box">
+  <div class="editor">
+    <el-row :gutter="20" class="editor-header">
       <el-col :xs="24" :sm="12">
         <el-input placeholder="请输入标题" />
       </el-col>
@@ -14,6 +14,7 @@
       :toolbar-items="[]"
       :editor-config="config"
       :locale="locale"
+      class="editor-wrapper"
       @change="handleChange"
     />
   </div>
@@ -27,12 +28,90 @@ import zh from './zh' // 整合的语言包
 import { Editor } from '@bytemd/vue'
 import highlight from '@bytemd/plugin-highlight'
 import math from '@bytemd/plugin-math'
-// import mermaid from '@bytemd/plugin-mermaid';
+// import mermaid from '@bytemd/plugin-mermaid'
 import gfm from '@bytemd/plugin-gfm'
 import breaks from '@bytemd/plugin-breaks'
 import frontmatter from '@bytemd/plugin-frontmatter'
 import axios from 'axios'
-import theme from './theme'
+import setStyleConfig from './codemirror-plugins/set-style-config'
+import themes from './codemirror-plugins/themes'
+import highlights from './codemirror-plugins/highlights'
+
+function themeSelectPlugin () {
+  return {
+    actions: [
+      {
+        icon: '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1615626469740" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="929" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><defs><style type="text/css"></style></defs><path d="M529.28450378 228.16310942h-301.64928059c-24.88606564 0-45.24739209-20.36132644-45.2473921-45.24739209s20.36132644-45.24739209 45.2473921-45.24739209h301.64928059c24.88606564 0 45.24739209 20.36132644 45.24739208 45.24739209s-20.36132644 45.24739209-45.24739208 45.24739209zM649.94421602 424.23514181h-422.30899283c-24.88606564 0-45.24739209-20.36132644-45.2473921-45.24739208s20.36132644-45.24739209 45.2473921-45.2473921h422.30899283c24.88606564 0 45.24739209 20.36132644 45.24739209 45.2473921s-20.36132644 45.24739209-45.24739209 45.24739208z" fill="#333333" p-id="930"></path><path d="M511.36653651 18.18504521c-360.28990075 0-493.63396523 315.23858069-493.63396524 492.02014157s128.15569686 495.23270641 483.13657027 495.23270644c0 0 88.23241457 1.53841133 88.23241458-78.05175137 0-79.60524515-39.68196286-54.17621079-39.68196286-111.44432671a75.894959 75.894959 0 0 1 58.7461974-82.80272753c71.9131885 5.95757328 144.30901585 0.01508246 214.29164893-17.58615306a286.05401279 286.05401279 0 0 0 182.51289722-259.28263914C982.25614597 202.65866275 765.88311701 10.64381318 511.36653651 18.18504521zM210.44121419 511.81901043a86.03037482 86.03037482 0 1 1 85.6985606-86.0002099 85.84938527 85.84938527 0 0 1-85.6985606 86.0002099z m161.65384948-212.81356746a86.01529237 86.01529237 0 1 1 85.71364306-86.00020991 85.86446772 85.86446772 0 0 1-85.69856061 86.07562223v-0.07541232z m274.8929894 0a86.03037482 86.03037482 0 1 1 85.6985606-86.00020991 85.87955019 85.87955019 0 0 1-85.57790089 86.07562223l-0.12065971-0.07541232z m163.20734326 212.81356746a86.03037482 86.03037482 0 1 1 85.69856063-86.0002099 85.89463264 85.89463264 0 0 1-85.69856063 86.0002099z m0 0" fill="#333333" p-id="931"></path></svg>',
+        handler: {
+          type: 'dropdown',
+          actions: Object.keys(themes).map(theme => {
+            return {
+              title: theme,
+              icon: '',
+              cheatsheet: '',
+              handler: {
+                type: 'action',
+                click (codemirrorInstance) {
+                  setStyleConfig(codemirrorInstance, { name: 'theme', value: theme })
+                  // 设置主题css
+                  const themeEl = document.head.querySelector('#theme')
+                  const cssRoot = `/css/juejin-markdown-theme/${theme}.min.css`
+                  console.log(cssRoot)
+                  if (themeEl) {
+                    themeEl.setAttribute('href', cssRoot)
+                  } else {
+                    const link = document.createElement('link')
+                    link.setAttribute('rel', 'stylesheet')
+                    link.setAttribute('href', cssRoot)
+                    link.setAttribute('id', 'theme')
+                    document.head.prepend(link)
+                  }
+                }
+              }
+            }
+          })
+        }
+      }
+    ]
+  }
+}
+
+function highlightSelectPlugin () {
+  return {
+    actions: [
+      {
+        icon: '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1615626337759" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1054" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><defs><style type="text/css"></style></defs><path d="M251.456 93.728L80 251.408l157.728 171.456 528 569.136 171.408-150.864zM148.592 251.408l96-82.272 96 96-96 82.272-96-96z m233.136 562.32l-27.408 61.728-61.728 6.864 48 41.136L326.864 992l54.864-27.408L436.592 992l-6.864-68.592 41.136-48-61.728-6.864-27.408-54.864z m-212.592-281.136l-41.136 96-96 13.728 68.592 68.592-13.728 102.864 82.272-48 82.272 48-13.728-102.864 68.592-68.592-96-13.728zM800 32l-54.864 123.408L614.864 176l96 96-20.592 137.136 116.592-68.592 116.592 68.592L902.864 272 992 176l-130.272-20.592L800 32z" p-id="1055"></path></svg>',
+        handler: {
+          type: 'dropdown',
+          actions: highlights.map(highlight => {
+            return {
+              title: highlight,
+              handler: {
+                type: 'action',
+                click (codemirrorInstance) {
+                  // 设置highlight
+                  setStyleConfig(codemirrorInstance, { name: 'highlight', value: highlight })
+                  // 添加样式
+                  const highlightEl = document.head.querySelector('#highlight')
+                  const cssRoot = `/css/highlight/${highlight}.min.css`
+                  if (highlightEl) {
+                    highlightEl.setAttribute('href', cssRoot)
+                  } else {
+                    const link = document.createElement('link')
+                    link.setAttribute('rel', 'stylesheet')
+                    link.setAttribute('href', cssRoot)
+                    link.setAttribute('id', 'highlight')
+                    document.head.append(link)
+                  }
+                }
+              }
+            }
+          })
+        }
+      }
+    ]
+  }
+}
 
 export default {
   components: {
@@ -48,25 +127,14 @@ export default {
         gfm({ locale: zh.gfm }),
         breaks(),
         frontmatter(),
-        theme()
-        // {
-        //   viewerEffect ({ file }) {
-        //     const $style = document.createElement('style')
-        //     console.log(file)
-        //     $style.innerHTML =
-        //       themes[file.frontmatter.theme]?.style ?? themes.juejin.style
-        //     document.head.appendChild($style)
-        //     return () => {
-        //       $style.remove()
-        //     }
-        //   }
-        // }
+        themeSelectPlugin(),
+        highlightSelectPlugin()
       ],
       config: {},
       locale: zh.default
     }
   },
-  async mounted () {
+  async created () {
     axios.get('/example.md').then(res => {
       this.value = res.data
     })
@@ -74,272 +142,74 @@ export default {
   methods: {
     handleChange (v) {
       this.value = v
+      this.changeStyle()
+    },
+    changeStyle () {
+      const lines = this.value.split('\n')
+
+      if (
+        lines[0].match(/---/) &&
+        lines.filter(line => line.match(/---/)).length >= 2
+      ) {
+        const themeLine = lines.filter(line => line.indexOf('theme: ') > -1)[0]
+        const highlightLine = lines.filter(line => line.indexOf('highlight: ') > -1)[0]
+        const theme = themeLine.substring(6).trim()
+        const highlight = highlightLine.substring(10).trim()
+
+        this.createLink('theme', `/css/juejin-markdown-theme/${theme}.min.css`)
+        this.createLink('highlight', `/css/highlight/${highlight}.min.css`)
+      }
+    },
+    createLink (type, root) {
+      const link = document.createElement('link')
+      link.setAttribute('rel', 'stylesheet')
+      link.setAttribute('href', root)
+      link.setAttribute('id', type)
+      document.head.append(link)
     }
   }
 }
 </script>
 
+<style lang="scss" scoped>
+$header-height: 50px;
+
+.editor {
+  box-sizing: border-box;
+  overflow: hidden;
+  height: 100vh;
+  // display: flex;
+  // flex-direction: column;
+
+  .editor-header {
+    height: $header-height;
+    display: flex;
+    align-items: center;
+  }
+
+  .editor-wrapper {
+    flex: 1;
+  }
+}
+>>>.bytemd {
+  // height: 90vh !important;
+  height: calc(100vh - #{$header-height})// 100% !important;
+}
+</style>
+
 <style lang="scss">
-.bytemd {
-  height: 90vh !important;
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-$theme-color: #a862ea;
-$sub-color: #e7daff;
-$text-color: #383838;
-$bg-color: #ffffff;
-$light-color: #f8f5ff;
-$font-size: 15px;
-$line-space: 15px;
-$line-height: 2.5 * $line-space;
-$monospace-font: Operator Mono, Consolas, Monaco, Menlo, monospace;
-$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-  Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-
-@mixin hoverUnderLine {
-  position: relative;
-  &::after {
-    content: '';
-    position: absolute;
-    width: 98%;
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    transform: scaleX(0);
-    background-color: $theme-color;
-    transform-origin: bottom right;
-    transition: transform 0.3s ease-in-out;
-  }
-
-  &:hover::after {
-    transform: scaleX(1);
-    transform-origin: bottom left;
-  }
+::-webkit-scrollbar-thumb {
+  background-color: #dcdfe6; // #c9cdd4;
+  outline: none;
+  // border-radius: 3px;
 }
-
-.markdown-body {
-  color: $text-color;
-  font-size: $font-size;
-  line-height: $line-height;
-  letter-spacing: 2px;
-  word-break: break-word;
-  font-family: $font-family;
-  scroll-behavior: smooth;
-  background-image: linear-gradient(
-      0deg,
-      transparent 24%,
-      rgba(201, 195, 195, 0.329) 25%,
-      rgba(209, 201, 201, 0.05) 26%,
-      transparent 27%,
-      transparent 74%,
-      rgba(209, 204, 204, 0.185) 75%,
-      rgba(180, 176, 176, 0.05) 76%,
-      transparent 77%,
-      transparent
-    ),
-    linear-gradient(
-      90deg,
-      transparent 24%,
-      rgba(204, 196, 196, 0.226) 25%,
-      rgba(172, 165, 165, 0.05) 26%,
-      transparent 27%,
-      transparent 74%,
-      rgba(209, 204, 204, 0.185) 75%,
-      rgba(180, 176, 176, 0.05) 76%,
-      transparent 77%,
-      transparent
-    );
-  background-color: $bg-color;
-  background-size: 50px 50px;
-  padding-bottom: 120px;
-
-  ::selection {
-    color: #fff;
-    background-color: $theme-color;
-  }
-
-  // header
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    margin: $line-space * 2 0 $line-space 0;
-    color: $theme-color;
-  }
-
-  h1 {
-    line-height: 2;
-    font-size: 1.4em;
-
-    & ~ p:first-of-type::first-letter {
-      color: $theme-color;
-      float: left;
-      font-size: 2em;
-      margin-right: 0.4em;
-      font-weight: bolder;
-    }
-  }
-
-  h2 {
-    font-size: 1.2em;
-  }
-
-  h3 {
-    font-size: 1.1em;
-  }
-
-  // ul, ol
-  ol,
-  ul {
-    padding-left: 2em;
-
-    li {
-      margin-bottom: 0;
-      padding-left: 0.2em;
-      & .task-list-item {
-        list-style: none;
-        ul,
-        ol {
-          margin-top: 0;
-        }
-      }
-    }
-
-    ul,
-    ol {
-      margin-top: 10px;
-    }
-  }
-
-  li::marker {
-    color: $theme-color;
-  }
-
-  p,
-  li {
-    opacity: 0.9;
-    vertical-align: baseline;
-    transition: all 0.1s ease;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-
-  // link
-  a {
-    position: relative;
-    display: inline-block;
-    color: $theme-color;
-    cursor: pointer;
-    padding-bottom: 2px;
-    text-decoration: none;
-    @include hoverUnderLine();
-
-    &:active,
-    &:link {
-      color: $theme-color;
-    }
-  }
-
-  img {
-    max-width: 100%;
-    user-select: none;
-    margin: 1em 0;
-    box-shadow: 0 0 20px 0 $sub-color;
-    transition: transform 0.2s ease 0s;
-    background-color: $light-color;
-
-    &:hover {
-      opacity: 1;
-      transform: translateY(-2px);
-    }
-  }
-
-  blockquote {
-    padding: 0.5em 1em;
-    margin: $line-space 0;
-    border-top-left-radius: 2px;
-    border-bottom-left-radius: 2px;
-    border-left: 4px solid $theme-color;
-    background-color: $light-color;
-    & > p {
-      margin: 0;
-    }
-  }
-
-  code {
-    padding: 2px 0.4em;
-    overflow-x: auto;
-    color: $theme-color;
-    font-weight: bold;
-    word-break: break-word;
-    font-family: $monospace-font;
-    background-color: $light-color;
-  }
-
-  pre {
-    margin: 2em 0;
-    box-shadow: 0 0 20px $sub-color;
-    > code {
-      display: block;
-      padding: 1.5em;
-      word-break: normal;
-      font-size: 0.9em;
-      font-style: normal;
-      font-weight: normal;
-      font-family: $monospace-font;
-      line-height: 1.5 * $line-space;
-      color: $text-color;
-      border-radius: 3px;
-      scroll-behavior: smooth;
-
-      &::-webkit-scrollbar {
-        height: 6px;
-        background-color: $light-color;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background-color: $sub-color;
-        border-bottom-left-radius: 3px;
-        border-bottom-right-radius: 3px;
-      }
-    }
-  }
-
-  hr {
-    margin: 2em 0;
-    border-top: 1px solid $theme-color;
-  }
-
-  table {
-    font-size: 12px;
-    max-width: 100%;
-    overflow: auto;
-    border-collapse: collapse;
-    border: solid 1px $sub-color;
-  }
-
-  thead {
-    color: $theme-color;
-    background: $light-color;
-  }
-
-  td,
-  th {
-    padding: 1em 0.5em;
-  }
-
-  tr {
-    background-color: #fcfcfc;
-  }
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  // border-radius: 3px;
 }
-
-@media (max-width: 720px) {
-  .markdown-body {
-    font-size: 12px;
-  }
-}
-
 </style>

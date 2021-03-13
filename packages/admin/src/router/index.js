@@ -105,12 +105,13 @@ export const asyncRoutes = [
         path: 'index',
         name: 'ArticleManage',
         component: () => import('@/views/article'),
-        meta: { title: 'A&M', icon: 'tiktok' } // 文章管理
+        meta: { title: '文章管理', icon: 'tiktok' }
       }
     ]
   },
   {
     path: '/editor',
+    meta: { title: '写文章' },
     component: () => import('@/views/article/editor')
   },
   {
@@ -121,7 +122,7 @@ export const asyncRoutes = [
       {
         path: 'index',
         name: 'AccountManage',
-        meta: { title: 'U&M', icon: 'tiktok' }, // 帐号管理
+        meta: { title: '帐号管理', icon: 'tiktok' },
         component: () => import('@/views/account')
       }
     ]
