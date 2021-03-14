@@ -10,6 +10,7 @@ import { ArticleModule } from './modules/article/article.module' // 文章模块
 import { TagModule } from './modules/tag/tag.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { AuthModule } from './modules/auth/auth.module';
     ArticleModule,
     TagModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    CategoryModule
   ],
   providers: [],
 })

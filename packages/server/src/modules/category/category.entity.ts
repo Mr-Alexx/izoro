@@ -1,19 +1,24 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 import { Article } from "../article/article.entity";
+// 分类表设计
 
 @Entity()
 export class Category {
   @PrimaryGeneratedColumn()
   id: Number;
 
-  @ApiProperty({ description: '父类id', example: '一级分类' })
-  @Column()
+  @ApiProperty({ description: '父类id', example: 0 })
+  @Column({ default: 0 })
   pid: Number;
 
-  @ApiProperty({ description: '分类名称', example: '二级分类' })
+  @ApiProperty({ description: '分类名称', example: '测试分类' })
   @Column()
   name: String;
+
+  @ApiProperty({ description: '分类层级', example: 1 })
+  @Column({ default: 1 })
+  level: number;
   
   @ApiProperty({ description: '创建时间', example: '2021-03-34 21:18:00' })
   @CreateDateColumn({

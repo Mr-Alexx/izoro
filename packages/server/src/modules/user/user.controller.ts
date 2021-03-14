@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Put, Query, UseGuards, Request } from '@nestjs/common';
 import { ApiBody, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from './user.entity';
@@ -40,11 +40,11 @@ export class UserController {
    * @desc 根据用户id获取用户信息
    */
   @ApiOperation({ summary: '用户个人信息' })
-  @Get(':id')
-  @ApiParam({ name: 'id', description: '用户id' })
+  @Get('info')
+  @ApiHeader({ name: 'Authorization', description: 'bearer token' })
   @UseGuards(JwtAuthGuard)
-  GetInfo (@Param() id: number): Promise<User> {
-    return this.userService.findById(id)
+  GetInfo (@Request() req): Promise<any> {
+    return this.userService.findById(req.user.id)
   }
 
   @ApiOperation({ summary: '更新用户信息' })
