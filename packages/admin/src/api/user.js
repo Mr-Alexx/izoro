@@ -22,7 +22,7 @@ export function login (data) {
  */
 export function getInfo () {
   return request({
-    url: '/auth/list',
+    url: 'user/info', // '/auth/list',
     method: 'get'
   })
 }

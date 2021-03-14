@@ -2,11 +2,11 @@
   <el-row class="login-wrapper">
     <el-col :sm="24" :md="12" class="left hidden-sm-and-down">
       <div class="logo">
-        <img src="/images/harvest-logo.png" alt="logo" class="responsive-img">
+        <!-- <img src="/images/harvest-logo.png" alt="logo" class="responsive-img"> -->
       </div>
       <div class="content">
-        <h1>数据分析系统</h1>
-        <p>Data Analysis System</p>
+        <h1>内容管理系统</h1>
+        <p>Content Management System</p>
       </div>
     </el-col>
     <el-col :sm="24" :md="12" class="right">
@@ -15,12 +15,12 @@
           <h1 class="hidden-sm-and-down">登录</h1>
           <div class="hidden-sm-and-up mobile-header">
             <img src="/images/harvest-logo.png" alt="logo" class="responsive-img">
-            <h1>数据分析系统</h1>
+            <h1>内容管理系统</h1>
           </div>
 
-          <el-form-item prop="userNumber">
+          <el-form-item prop="account">
             <p>账号</p>
-            <el-input ref="account" v-model="form.userNumber" minlength="3" maxlength="20" />
+            <el-input ref="account" v-model="form.account" minlength="3" maxlength="20" />
           </el-form-item>
           <el-form-item prop="password">
             <p>密码</p>
@@ -56,17 +56,17 @@ export default {
     return {
       form: {
         // remember: true,
-        userNumber: '',
+        account: '',
         password: ''
       },
       rules: {
-        userNumber: [
+        account: [
           { required: true, message: '请输入账号', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度为 2~20 个字符', trigger: 'blur' }
+          { min: 4, max: 20, message: '长度为 4~20 位', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 5, max: 20, message: '长度为 5~20 个字符', trigger: 'blur' }
+          { min: 6, max: 20, message: '长度为 6~20 位', trigger: 'blur' }
         ]
       },
       loading: false,

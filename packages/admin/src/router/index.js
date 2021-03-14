@@ -41,7 +41,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/article/index',
     meta: {},
     children: [
       {
@@ -97,9 +97,9 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/artcile',
+    path: '/article',
     component: Layout,
-    redirect: 'index',
+    redirect: '/article/index',
     children: [
       {
         path: 'index',
@@ -117,13 +117,26 @@ export const asyncRoutes = [
   {
     path: '/account',
     component: Layout,
-    redirect: 'index',
+    redirect: '/account/index',
     children: [
       {
         path: 'index',
         name: 'AccountManage',
         meta: { title: '帐号管理', icon: 'tiktok' },
         component: () => import('@/views/account')
+      }
+    ]
+  },
+  {
+    path: '/category',
+    component: Layout,
+    redirect: '/category/index',
+    children: [
+      {
+        path: 'category',
+        name: 'CategoryManage',
+        meta: { title: '分类管理', icon: '' },
+        component: () => import('@/views/category')
       }
     ]
   }

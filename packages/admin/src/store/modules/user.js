@@ -1,4 +1,5 @@
-import { login, getInfo } from '@/api/user'
+import { getInfo } from '@/api/user'
+import { login } from '@/api/auth'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -25,10 +26,11 @@ const actions = {
   login ({ commit }, userInfo) {
     return login(userInfo)
       .then(data => {
-        commit('SET_TOKEN', data.token)
+        const token = 'Bearer ' + data
+        commit('SET_TOKEN', token)
         // 如果选择了当天内免登录，则cookie设置当天23:59:59为过期时间
         // 否则，设置过期时间为1个小时
-        setToken(data.token)
+        setToken(token)
         return Promise.resolve()
       })
       .catch(err => Promise.reject(err))
@@ -38,7 +40,7 @@ const actions = {
       .then(data => {
         // console.log('这是store')
         // console.log(data)
-        commit('SET_ROLES', data.data || data)
+        commit('SET_ROLES', [data.role])
         return Promise.resolve(data)
       })
       .catch(err => Promise.reject(err))

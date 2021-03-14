@@ -14,8 +14,8 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-    config.headers.token = getToken()
-    config.headers.Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjE1NDcyMTA4LCJleHAiOjE2MTU0ODY1MDh9.nvHOSn9OFQIpvV9BYbk1RQ9sja1YsKXg2FkgQ5IO6rU'
+    // config.headers.token = getToken()
+    config.headers.Authorization = getToken()
     return config
   },
   error => {

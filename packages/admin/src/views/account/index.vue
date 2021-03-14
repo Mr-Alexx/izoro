@@ -2,7 +2,7 @@
   <div class="base-box table-box">
     <AppSearch :options="searchOptions" :action="fetchList" block-button />
 
-    <el-card class="base-box--top artcile-list table-box__table">
+    <el-card class="base-box--top article-list table-box__table">
       <div class="table-wrapper">
         <vxe-grid
           :loading="loading"
