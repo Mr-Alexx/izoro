@@ -1,5 +1,6 @@
-import { Controller, Get, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { CategoryService } from "./category.service";
 
 @ApiTags('Category')
@@ -13,5 +14,20 @@ export class CategoryController {
   @Get()
   findAll (@Query() query): Promise<object> {
     return this.categoryService.findAll(query)
+  }
+
+  @ApiOperation({ summary: '更新分类' })
+  @Put()
+  @UseGuards(JwtAuthGuard)
+  updateById (@Body() category) {
+    return this.categoryService.updateById(category)
+  }
+
+  @ApiOperation({ summary: '删除分类' })
+  @Delete()
+  @UseGuards(JwtAuthGuard)
+  delete (@Body() body) {
+    const { ids } = body
+    return this.categoryService.delete(ids)
   }
 }

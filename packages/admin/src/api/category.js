@@ -7,3 +7,23 @@ export function fetchCategories () {
     method: 'GET'
   })
 }
+
+// 更新分类
+export function updateCategory (data) {
+  return request({
+    url: '/category',
+    method: 'PUT',
+    data
+  })
+}
+
+// 删除分类
+export function deleteCategories (ids) {
+  return request({
+    url: '/category',
+    method: 'DELETE',
+    data: {
+      ids
+    }
+  })
+}

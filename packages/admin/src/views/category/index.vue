@@ -13,17 +13,28 @@
           :empty-render="{ name: 'Empty' }"
         />
       </div>
-      <AppPagination v-model="pagination" @update="fetchList" />
+
+      <div>
+        <el-button type="primary" @click="handleEdit('add')">新增分类</el-button>
+        <AppPagination v-model="pagination" @update="fetchList" />
+      </div>
     </el-card>
 
     <el-dialog :visible.sync="showDialog" :title="currentTitle">
-      xxx
+      <el-row :gutter="20">
+        <el-col :span="14">
+          <el-input v-model="name" placeholder="请输入分类名称" />
+        </el-col>
+        <el-col :span="10">
+          <el-button type="primary" :loading="updateLoading" @click="updateCategory">确定</el-button>
+        </el-col>
+      </el-row>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchCategories } from '@/api/category'
+import { fetchCategories, updateCategory, deleteCategories } from '@/api/category'
 
 export default {
   name: 'CategoryManage',
@@ -33,7 +44,6 @@ export default {
       data: [],
       currentRow: {},
       showDialog: false,
-      currentTitle: '粉丝总量',
       pagination: {
         page: 1,
         pageSize: 20,
@@ -51,13 +61,23 @@ export default {
           default: ({ row, rowIndex }) => {
             return [
               <div>
-                <el-button type='primary' size='mini'>编辑</el-button>
-                <el-button type='danger' size='mini' onClick={ this.handleDelete.bind(this, row, rowIndex) }>删除</el-button>
+                <el-button type='primary' size='mini' onClick={ this.handleEdit.bind(this, 'edit', row) }>编辑</el-button>
+                <el-popconfirm
+                  icon='el-icon-info'
+                  icon-color='red'
+                  title='确定要删除该分类吗？'
+                  onConfirm={ this.handleDelete.bind(this, row, rowIndex) }
+                >
+                  <el-button slot='reference' type='danger' size='mini'>删除</el-button>
+                </el-popconfirm>
               </div>
             ]
           }
         }}
-      ]
+      ],
+      currentTitle: '',
+      name: '',
+      updateLoading: false
     }
   },
   created () {
@@ -77,13 +97,53 @@ export default {
       }
     },
     /**
+     * @create 2021/03/15 22:37
+     * @desc 编辑分类
+     * @param { string } type
+     * @param { object } row
+     */
+    handleEdit (type = 'edit', row) {
+      if (type === 'add') {
+        this.name = ''
+        this.currentTitle = '新增一级分类'
+      } else {
+        this.name = row.name
+        this.currentTitle = `${row.name} (id: ${row.id})`
+      }
+      this.currentRow = row
+      this.showDialog = true
+    },
+    /**
      * @create 2021/01/12 17:37
      * @desc 删除行
      * @param { Object } row
      * @param { Number } rowIndex
      */
-    handleDelete (row, rowIndex) {
-      console.log(row, rowIndex)
+    async handleDelete (row, rowIndex) {
+      this.deleteLoading = true
+      try {
+        const ids = [row.id]
+        await deleteCategories(ids)
+        this.$message.success('删除成功！')
+        this.data = this.data.filter(v => !ids.includes(v.id))
+      } catch (err) {
+        console.error(err)
+      }
+      this.deleteLoading = false
+    },
+    async updateCategory () {
+      if (!this.name) { return }
+
+      this.updateLoading = true
+      try {
+        await updateCategory({ ...this.currentRow, name: this.name })
+        this.showDialog = false
+        this.$set(this.currentRow, 'name', this.name)
+        this.$message.success('更新成功！')
+      } catch (err) {
+        console.error(err)
+      }
+      this.updateLoading = false
     }
   }
 }
