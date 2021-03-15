@@ -36,6 +36,7 @@ import axios from 'axios'
 import setStyleConfig from './codemirror-plugins/set-style-config'
 import themes from './codemirror-plugins/themes'
 import highlights from './codemirror-plugins/highlights'
+import { debounce } from '@/utils'
 
 function themeSelectPlugin () {
   return {
@@ -131,7 +132,10 @@ export default {
         highlightSelectPlugin()
       ],
       config: {},
-      locale: zh.default
+      locale: zh.default,
+      uploadImages () {
+        console.log('upload')
+      }
     }
   },
   async created () {
@@ -142,8 +146,12 @@ export default {
   methods: {
     handleChange (v) {
       this.value = v
-      this.changeStyle()
+      this.handleChangeStyle()
     },
+    handleChangeStyle: debounce(function () {
+      this.changeStyle()
+      this.saveDraft()
+    }, 1000),
     changeStyle () {
       const lines = this.value.split('\n')
 
@@ -153,7 +161,7 @@ export default {
       ) {
         const themeLine = lines.filter(line => line.indexOf('theme: ') > -1)[0]
         const highlightLine = lines.filter(line => line.indexOf('highlight: ') > -1)[0]
-        const theme = themeLine.substring(6).trim()
+        const theme = themeLine.substring(6).trim() || 'juejin'
         const highlight = highlightLine.substring(10).trim()
 
         this.createLink('theme', `/css/juejin-markdown-theme/${theme}.min.css`)
@@ -166,6 +174,12 @@ export default {
       link.setAttribute('href', root)
       link.setAttribute('id', type)
       document.head.append(link)
+    },
+    /**
+     * @desc 存草稿
+     */
+    saveDraft () {
+      console.log(222)
     }
   }
 }
