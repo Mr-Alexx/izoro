@@ -9,6 +9,18 @@ export function fetchCategories () {
 }
 
 // 更新分类
+export function addCategory ({ name, pid }) {
+  return request({
+    url: '/category',
+    method: 'POST',
+    data: {
+      name,
+      pid
+    }
+  })
+}
+
+// 更新分类
 export function updateCategory (data) {
   return request({
     url: '/category',

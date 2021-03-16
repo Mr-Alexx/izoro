@@ -83,7 +83,7 @@ export default {
     }
   },
   created () {
-    this.fetchTalentConditions()
+    // this.fetchTalentConditions()
     this.fetchList()
   },
   methods: {

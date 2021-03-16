@@ -466,3 +466,14 @@ div:focus {
     text-decoration: underline;
   }
 }
+
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: $main-space;
+
+  .el-pagination {
+    padding-top: 0 !important;
+  }
+}

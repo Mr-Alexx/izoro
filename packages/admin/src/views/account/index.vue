@@ -39,7 +39,7 @@ export default {
       data: [],
       currentRow: {},
       showDialog: false,
-      currentTitle: '粉丝总量',
+      currentTitle: '',
       pagination: {
         page: 1,
         pageSize: 20,
@@ -81,7 +81,7 @@ export default {
     }
   },
   created () {
-    this.fetchTalentConditions()
+    // this.fetchTalentConditions()
     this.fetchList()
   },
   methods: {

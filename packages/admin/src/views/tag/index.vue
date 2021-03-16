@@ -3,6 +3,7 @@
     <el-card class="article-list table-box__table">
       <div class="table-wrapper">
         <vxe-grid
+          ref="table"
           :loading="loading"
           :data="data"
           border="inner"
@@ -14,8 +15,18 @@
         />
       </div>
 
-      <div>
-        <el-button type="primary" @click="handleEdit('add')">新增标签</el-button>
+      <div class="table-footer">
+        <div>
+          <el-button type="primary" @click="handleEdit('add')">新增标签</el-button>
+          <el-popconfirm
+            icon="el-icon-info"
+            icon-color="red"
+            title="确定要删除选中的标签吗？"
+            @confirm="handleDelete"
+          >
+            <el-button slot="reference" type="danger">批量删除</el-button>
+          </el-popconfirm>
+        </div>
         <AppPagination v-model="pagination" @update="fetchList" />
       </div>
     </el-card>
@@ -56,11 +67,11 @@ export default {
         { field: 'name', title: '标签名称', minWidth: 120 },
         { field: 'create_at', title: '创建时间', minWidth: 120 },
         { field: 'update_at', title: '更新时间', minWidth: 120 },
-        { title: '操作', minWidth: 140, fixed: 'right', slots: {
+        { title: '操作', minWidth: 100, fixed: 'right', slots: {
           default: ({ row, rowIndex }) => {
             return [
               <div>
-                <el-button type='primary' size='mini' onClick={ this.handleEdit.bind(this, 'edit', row) }>编辑</el-button>
+                <el-button type='primary' size='mini' onClick={ this.handleEdit.bind(this, 'edit', row) } style='margin-right: 5px;'>编辑</el-button>
                 <el-popconfirm
                   icon='el-icon-info'
                   icon-color='red'
@@ -116,15 +127,17 @@ export default {
      * @create 2021/01/12 17:37
      * @desc 删除行
      * @param { Object } row
-     * @param { Number } rowIndex
      */
-    async handleDelete (row, rowIndex) {
+    async handleDelete (row) {
       this.deleteLoading = true
+      const ids = row ? [row.id] : this.$refs.table.getCheckboxRecords().map(v => v.id)
+      if (ids.length === 0) {
+        return this.$message.info('请选择要删除的标签！')
+      }
       try {
-        const ids = [row.id]
         await deleteTags(ids)
         this.$message.success('删除成功！')
-        this.data = this.data.filter(v => !ids.includes(v.id))
+        this.fetchList()
       } catch (err) {
         console.error(err)
       }

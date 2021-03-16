@@ -3,6 +3,7 @@
     <el-card class="article-list table-box__table">
       <div class="table-wrapper">
         <vxe-grid
+          ref="table"
           :loading="loading"
           :data="data"
           border="inner"
@@ -14,8 +15,17 @@
         />
       </div>
 
-      <div>
-        <el-button type="primary" @click="handleEdit('add')">新增分类</el-button>
+      <div class="table-footer">
+        <div>
+          <el-button type="primary" @click="handleEdit('add')">新增分类</el-button>
+          <el-popconfirm
+            icon="el-icon-info"
+            icon-color="red"
+            title="确定要删除选中的分类吗？"
+            @confirm="handleDelete"
+          >
+            <el-button slot="reference" type="danger">批量删除</el-button>
+          </el-popconfirm></div>
         <AppPagination v-model="pagination" @update="fetchList" />
       </div>
     </el-card>
@@ -34,7 +44,7 @@
 </template>
 
 <script>
-import { fetchCategories, updateCategory, deleteCategories } from '@/api/category'
+import { fetchCategories, updateCategory, deleteCategories, addCategory } from '@/api/category'
 
 export default {
   name: 'CategoryManage',
@@ -61,7 +71,7 @@ export default {
           default: ({ row, rowIndex }) => {
             return [
               <div>
-                <el-button type='primary' size='mini' onClick={ this.handleEdit.bind(this, 'edit', row) }>编辑</el-button>
+                <el-button type='primary' size='mini' onClick={ this.handleEdit.bind(this, 'edit', row) } style='margin-right: 5px'>编辑</el-button>
                 <el-popconfirm
                   icon='el-icon-info'
                   icon-color='red'
@@ -119,13 +129,16 @@ export default {
      * @param { Object } row
      * @param { Number } rowIndex
      */
-    async handleDelete (row, rowIndex) {
+    async handleDelete (row) {
       this.deleteLoading = true
+      const ids = row ? [row.id] : this.$refs.table.getCheckboxRecords().map(v => v.id)
+      if (ids.length === 0) {
+        return this.$message.info('请选择要删除的分类！')
+      }
       try {
-        const ids = [row.id]
         await deleteCategories(ids)
         this.$message.success('删除成功！')
-        this.data = this.data.filter(v => !ids.includes(v.id))
+        this.fetchList()
       } catch (err) {
         console.error(err)
       }
@@ -136,10 +149,10 @@ export default {
 
       this.updateLoading = true
       try {
-        await updateCategory({ ...this.currentRow, name: this.name })
+        !this.currentRow ? await addCategory({ name: this.name }) : await updateCategory({ ...this.currentRow, name: this.name })
         this.showDialog = false
-        this.$set(this.currentRow, 'name', this.name)
-        this.$message.success('更新成功！')
+        this.$message.success('操作成功')
+        this.fetchList()
       } catch (err) {
         console.error(err)
       }
