@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth'
-import router from '@/router'
+// import router from '@/router'
 
 // create an axios instance
 const service = axios.create({
@@ -34,16 +34,9 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    const code = Number(res.code)
+    // const code = Number(res.code)
     // 状态码0为成功，1为失败, -99为token过期或未登录
-    if (code === -99) {
-      Message({
-        type: 'error',
-        message: '登录过期，请重新登录'
-      })
-      router.replace('/login')
-      return
-    } else if (code === 0 || res.success) {
+    if (res.success) {
       return res.response || res.data
     } else {
       Message({
@@ -51,6 +44,12 @@ service.interceptors.response.use(
         message: res.msg || 'Error'
       })
       return Promise.reject(new Error(res.msg || 'Error'))
+
+      // Message({
+      //   type: 'error',
+      //   message: '登录过期，请重新登录'
+      // })
+      // router.replace('/login')
     }
   },
   error => {

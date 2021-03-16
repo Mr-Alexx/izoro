@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 import { Category } from "./category.entity";
@@ -27,6 +27,29 @@ export class CategoryService {
   }
 
   /**
+   * @desc 创建分类
+   */
+  async create (category): Promise<null> {
+    let { name, pid } = category
+    pid = pid || 0
+    let existCategory
+    existCategory = await this.categoryReposity.find({ where: { name, pid } })
+
+    if (existCategory.length > 0) {
+      throw new HttpException('该分类已存在！', HttpStatus.BAD_REQUEST)
+    }
+    if (pid) {
+      const existParentCategory = await this.categoryReposity.findOne(pid)
+      if (!existParentCategory) {
+        throw new HttpException('非法操作，父类不存在', HttpStatus.NOT_FOUND)
+      }
+    }
+    const newCategory = await this.categoryReposity.create(category)
+    await this.categoryReposity.save(newCategory)
+    return Promise.resolve(null)
+  }
+
+  /**
    * @desc 更新分类信息
    */
   async updateById (category): Promise<null> {
@@ -42,9 +65,6 @@ export class CategoryService {
    * https://typeorm.biunav.com/zh/find-options.html#%E8%BF%9B%E9%98%B6%E9%80%89%E9%A1%B9
    */
   async delete (ids: number[]): Promise<null> {
-    const categories = await this.categoryReposity.find({ where: {
-      id: In(ids)
-    }})
     await this
       .categoryReposity
       .createQueryBuilder()

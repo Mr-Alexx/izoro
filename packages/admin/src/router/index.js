@@ -139,6 +139,19 @@ export const asyncRoutes = [
         component: () => import('@/views/category')
       }
     ]
+  },
+  {
+    path: '/tag',
+    component: Layout,
+    redirect: '/tag/index',
+    children: [
+      {
+        path: 'tag',
+        name: 'TagManage',
+        meta: { title: '标签管理', icon: '' },
+        component: () => import('@/views/tag')
+      }
+    ]
   }
 ]
 
