@@ -8,10 +8,13 @@
         <el-button type="primary">Test</el-button>
       </el-col>
     </el-row> -->
-    <el-form :model="form" :rules="rules" label-width="100px">
-      <el-row :gutter="20">
-        <el-col :xs="24" :sm="12" class="base-box--bottom">
-          <el-card>
+    <el-card>
+      <div slot="header">
+        <el-button type="primary" @click="saveDraft">保存</el-button>
+      </div>
+      <el-form :model="form" :rules="rules" label-width="100px">
+        <el-row :gutter="20">
+          <el-col :xs="24" :sm="12" class="base-box--bottom">
             <el-form-item prop="title" label="标题">
               <el-input v-model="form.title" />
             </el-form-item>
@@ -21,11 +24,9 @@
             <el-form-item prop="summary" label="小结">
               <el-input v-model="form.summary" type="textarea" />
             </el-form-item>
-          </el-card>
-        </el-col>
+          </el-col>
 
-        <el-col :xs="24" :sm="12" class="base-box--bottom">
-          <el-card>
+          <el-col :xs="24" :sm="12" class="base-box--bottom">
             <el-form-item label="SEO标题">
               <el-input v-model="form.seo_title" />
             </el-form-item>
@@ -35,13 +36,10 @@
             <el-form-item label="SEO描述">
               <el-input v-model="form.seo_description" type="textarea" />
             </el-form-item>
-          </el-card>
-        </el-col>
-      </el-row>
-      <div>
-        <el-button type="primary" @click="saveDraft">保存</el-button>
-      </div>
-    </el-form>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
     <Editor
       ref="editor"
       :value="value"
@@ -89,6 +87,7 @@ function themeSelectPlugin () {
               handler: {
                 type: 'action',
                 click (codemirrorInstance) {
+                  console.log(codemirrorInstance)
                   setStyleConfig(codemirrorInstance, { name: 'theme', value: theme })
                   // 设置主题css
                   const themeEl = document.head.querySelector('#theme')
@@ -193,7 +192,6 @@ export default {
     handleChange (v) {
       this.value = v
       this.handleChangeStyle()
-      console.log(this.$refs.editor.viewer)
     },
     handleChangeStyle: debounce(function () {
       this.changeStyle()
@@ -226,7 +224,6 @@ export default {
      * @desc 存草稿
      */
     saveDraft () {
-      console.log(222)
       const { contents, frontmatter } = getProcessor({ value: this.value, plugins: this.plugins }).processSync(this.value)
       console.log('html', contents)
       console.log('theme', frontmatter.theme, frontmatter.highlight)
