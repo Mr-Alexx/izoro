@@ -1,14 +1,49 @@
 <template>
-  <div class="editor">
-    <el-row :gutter="20" class="editor-header">
+  <div class="editor base-box">
+    <!-- <el-row :gutter="20" class="editor-header">
       <el-col :xs="24" :sm="12">
         <el-input placeholder="请输入标题" />
       </el-col>
       <el-col :xs="24" :sm="12">
         <el-button type="primary">Test</el-button>
       </el-col>
-    </el-row>
+    </el-row> -->
+    <el-form :model="form" :rules="rules" label-width="100px">
+      <el-row :gutter="20">
+        <el-col :xs="24" :sm="12" class="base-box--bottom">
+          <el-card>
+            <el-form-item prop="title" label="标题">
+              <el-input v-model="form.title" />
+            </el-form-item>
+            <el-form-item prop="cover" label="封面图">
+              <el-input v-model="form.cover" />
+            </el-form-item>
+            <el-form-item prop="summary" label="小结">
+              <el-input v-model="form.summary" type="textarea" />
+            </el-form-item>
+          </el-card>
+        </el-col>
+
+        <el-col :xs="24" :sm="12" class="base-box--bottom">
+          <el-card>
+            <el-form-item label="SEO标题">
+              <el-input v-model="form.seo_title" />
+            </el-form-item>
+            <el-form-item label="SEO关键字">
+              <el-input v-model="form.seo_keyword" />
+            </el-form-item>
+            <el-form-item label="SEO描述">
+              <el-input v-model="form.seo_description" type="textarea" />
+            </el-form-item>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div>
+        <el-button type="primary" @click="saveDraft">保存</el-button>
+      </div>
+    </el-form>
     <Editor
+      ref="editor"
       :value="value"
       :plugins="plugins"
       :toolbar-items="[]"
@@ -25,6 +60,7 @@
 import 'bytemd/dist/index.min.css'
 // import zhHans from 'bytemd/lib/locales/zh_Hans.json' // 基础语言包（看源码找到的...）
 import zh from './zh' // 整合的语言包
+import { getProcessor } from 'bytemd'
 import { Editor } from '@bytemd/vue'
 import highlight from '@bytemd/plugin-highlight'
 import math from '@bytemd/plugin-math'
@@ -135,6 +171,16 @@ export default {
       locale: zh.default,
       uploadImages () {
         console.log('upload')
+      },
+      form: {
+        title: '',
+        cover: '',
+        summary: ''
+      },
+      rules: {
+        title: [{ required: true, message: '请填写标题', trigger: 'blur' }],
+        cover: [{ required: true, message: '请选择封面图', trigger: 'blur' }],
+        summary: [{ required: true, message: '请填写文章小结', trigger: 'blur' }]
       }
     }
   },
@@ -147,6 +193,7 @@ export default {
     handleChange (v) {
       this.value = v
       this.handleChangeStyle()
+      console.log(this.$refs.editor.viewer)
     },
     handleChangeStyle: debounce(function () {
       this.changeStyle()
@@ -180,6 +227,9 @@ export default {
      */
     saveDraft () {
       console.log(222)
+      const { contents, frontmatter } = getProcessor({ value: this.value, plugins: this.plugins }).processSync(this.value)
+      console.log('html', contents)
+      console.log('theme', frontmatter.theme, frontmatter.highlight)
     }
   }
 }
@@ -208,6 +258,9 @@ $header-height: 50px;
 >>>.bytemd {
   // height: 90vh !important;
   height: calc(100vh - #{$header-height})// 100% !important;
+}
+>>>.bytemd-fullscreen.bytemd {
+  z-index: 99999;
 }
 </style>
 

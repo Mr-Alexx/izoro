@@ -15,7 +15,12 @@
           :empty-render="{ name: 'Empty' }"
         />
       </div>
-      <AppPagination v-model="pagination" @update="fetchList" />
+      <div class="table-footer">
+        <div>
+          <el-button type="primary" @click="$router.push('/article/editor')">写文章</el-button>
+        </div>
+        <AppPagination v-model="pagination" @update="fetchList" />
+      </div>
     </el-card>
 
     <el-dialog :visible.sync="showDialog" :title="currentTitle">
