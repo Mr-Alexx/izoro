@@ -7,7 +7,7 @@
 import { IsIn, IsNotEmpty, IsString, Length } from "class-validator";
 import { PublicStatus, PublishStatus } from '@/interfaces/status.interface';
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { Tag } from "../tag/tag.entity";
 import { Category } from "../category/category.entity";
 
@@ -15,12 +15,14 @@ import { Category } from "../category/category.entity";
 @Entity()
 export class Article {
   // id
-  @PrimaryGeneratedColumn('uuid')
-  id: String;
+  // @PrimaryGeneratedColumn('uuid')
+  // id: String;
+  @PrimaryColumn({ comment: 'id（snowflake）', type: 'bigint' })
+  id: string; // js不支持bigint，还是存string吧
 
   // 封面图
   @Column({ default: null, comment: '文章封面图' })
-  cover: String;
+  cover: string;
 
   // 标题
   @ApiProperty({ description: '文章标题', example: '谷歌浏览器如何调试？' })
@@ -28,28 +30,30 @@ export class Article {
   @IsString({ message: '文章标题类型必须为字符串！' })
   @Length(1, 200)
   @Column({ comment: '文章标题' })
-  title: String;
-
-  // 副标题
-  @ApiProperty({ description: '文章副标题', example: '副标题' })
-  @Length(0, 200)
-  @Column({ comment: '文章副标题', default: null })
-  subtitle: String;
+  title: string;
 
   // 摘要
   @ApiProperty({ description: '文章摘要', example: '利用network调试。。。' })
   @Column({ type: 'text', default: null, comment: '文章摘要' })
-  summary: String;
+  summary: string;
 
   // 原始markdown内容
   @ApiProperty({ description: '文章原始内容', example: '# 标题1 xxx' })
   @Column({ type: 'mediumtext', default: null, charset: 'utf8mb4', comment: '文章markdown' })
-  content: String;
+  content: string;
 
   // 转化为html的内容，依据content自动生成
   @ApiProperty({ description: '文章转化为html内容', example: '<div>标题1</div>' })
   @Column({ type: 'mediumtext', default: null, charset: 'utf8mb4', comment: '基于markdown生成的html' })
-  html: String;
+  html: string;
+
+  @ApiProperty({ description: 'markdown主题', example: 'juejin' })
+  @Column({ length: 100, comment: 'markdown主题', default: 'juejin' })
+  theme: string;
+
+  @ApiProperty({ description: '代码高亮主题', example: 'vs2015' })
+  @Column({ length: 100, comment: '代码高亮主题', default: '' })
+  highlight: string;
 
   // 发布状态
   // @IsIn()
@@ -64,7 +68,7 @@ export class Article {
 
   // 查看人数
   @ApiProperty({ description: '查看人数', example: 100 })
-  @Column()
+  @Column({ comment: '查看人数', default: 0 })
   views: Number;
 
   // 公开状态
@@ -79,15 +83,13 @@ export class Article {
 
   // seo关键字
   @ApiProperty({ description: 'SEO关键字', example: 'google google调试' })
-  @Length(0, 500)
   @Column({ comment: 'seo关键字', default: null })
-  seo_keywords: String;
+  seo_keywords: string;
 
   // seo描述
   @ApiProperty({ description: 'SEO描述', example: 'google调试是这样的。。。' })
-  @Length(0, 1000)
   @Column({ comment: 'seo描述', default: null })
-  seo_description: String;
+  seo_description: string;
 
   // 创建时间
   @ApiProperty({ description: '创建时间', example: '2021-03-03 09:16:25' })

@@ -272,3 +272,12 @@ async function bootstrap() {
   )
 }
 ```
+
+## Mac 安装Redis
+> [redis安装教程](https://blog.csdn.net/realize_dream/article/details/106227622)  
+
+> [redis管理工具](https://gitee.com/qishibo/AnotherRedisDesktopManager/releases).  
+
+## 关于long id
+[知乎：雪花算法生成的id是全球唯一吗？](https://www.zhihu.com/question/447384625)
+[node snowflake](https://github.com/utkarsh-pro/nodejs-snowflake#readme)

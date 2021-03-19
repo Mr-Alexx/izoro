@@ -41,6 +41,7 @@
     "log4js": "^6.3.0",
     "mysql": "^2.18.1",
     "nestjs-redis": "^1.2.8",
+    "nodejs-snowflake": "^1.5.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

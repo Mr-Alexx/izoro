@@ -3,13 +3,17 @@ import { ArticleController } from './article.controller';
 import { ArticleService } from './article.service';
 import { RedisModule } from 'nestjs-redis'
 import redisConfig from '@/config/redis.config';
+import { CacheService } from './cache.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Article } from './article.entity';
 
 @Module({
   imports: [
-    RedisModule.register(redisConfig)
+    RedisModule.register(redisConfig),
+    TypeOrmModule.forFeature([Article])
   ],
   controllers: [ArticleController],
-  providers: [ArticleService],
+  providers: [ArticleService, CacheService],
   exports: [ArticleService]
 })
 export class ArticleModule {}

@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import UniqueID from 'nodejs-snowflake';
+import { Repository } from 'typeorm';
+import { Article } from './article.entity';
 
 @Injectable()
 export class ArticleService {
-  // constructor(
-  //   @InjectModel('Article') private readonly artcleModel: ModelType<Article>
-  // ) {}
-  // constructor(@InjectModel(ArticleSchema) private readonly articleModel: ModelType<ArticleSchema>) {
-  // }
+  public snowflake = new UniqueID({ machineID: 1024 })
+  constructor(
+    @InjectRepository(Article)
+    private readonly articleRepository: Repository<Article>
+  ) {}
 
   /**
    * @desc 获取文章列表
@@ -27,5 +31,25 @@ export class ArticleService {
         { id: 2, title: '测试title', sub_title: 'test', tags: ['测试', 'test'], create_at: new Date().getTime(), updated_at: new Date().getTime(), display: true, published: false, content: '<div>test</div>' }
       ]
     })
+  }
+
+  async create (article: Article): Promise<any> {
+    const id = this.snowflake.getUniqueID()
+
+    try {
+      const newArticle = await this.articleRepository.create({
+        id,
+        ...article
+      })
+      return await this.articleRepository.save(newArticle)
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+  }
+
+  async update(article: Article): Promise<any> {
+    const oldArticle = await this.articleRepository.findOne({ where: { id: article.id } })
+    const newArticle = await this.articleRepository.merge(oldArticle, article)
+    return await this.articleRepository.save(newArticle)
   }
 }
