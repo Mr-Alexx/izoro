@@ -14,11 +14,8 @@ import { Category } from "../category/category.entity";
 // 给添加的数据加入时间戳
 @Entity()
 export class Article {
-  // id
-  // @PrimaryGeneratedColumn('uuid')
-  // id: String;
   @PrimaryColumn({ comment: 'id（snowflake）', type: 'bigint' })
-  id: string; // js不支持bigint，还是存string吧
+  id: string; // bigint保存 https://stackoverflow.com/questions/59927625/how-to-store-big-int-in-nest-js-using-typeorm
 
   // 封面图
   @Column({ default: null, comment: '文章封面图' })
