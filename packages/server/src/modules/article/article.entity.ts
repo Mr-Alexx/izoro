@@ -99,10 +99,11 @@ export class Article {
 
   // 发布时间
   @ApiProperty({ description: '发布时间', example: '2021-03-03 09:16:25' })
-  @UpdateDateColumn({
+  @Column({
     type: 'datetime',
     comment: '发布时间',
-    name: 'publish_at'
+    name: 'publish_at',
+    default: null
   })
   publish_at: Date;
 

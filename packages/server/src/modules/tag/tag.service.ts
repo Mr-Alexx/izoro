@@ -66,4 +66,8 @@ export class TagService {
       .execute()
     return Promise.resolve(null)
   }
+
+  async findByIds(ids): Promise<Array<Tag>> {
+    return this.tagReposity.findByIds(ids)
+  }
 }

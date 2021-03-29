@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ArticleService } from './article.service'
 // import { Article } from './article.model';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -34,10 +34,7 @@ export class ArticleController {
   @ApiQuery({ name: 'limit', description: '每页条数', required: true, type: Number, example: 20 })
   @ApiQuery({ name: 'page', description: '页码', required: true, type: Number, example: 1 })
   async findAll(@Query() query): Promise<any> {
-    // return this.articleService.findAll(query)
-    // const id = this.snowflake.getUniqueID()
-    // console.log(id)
-    return Promise.resolve('1')
+    return this.articleService.findAll(query)
   }
 
   /**
@@ -46,7 +43,7 @@ export class ArticleController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard)
-  async create(@Body() article: Article) {
+  async create(@Body() article: Partial<Article>) {
     return await this.articleService.create(article)
   }
 
@@ -63,10 +60,30 @@ export class ArticleController {
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  async update(@Body() article: Article) {
-    if (!article.id) {
-      throw new HttpException('无法保存该文章，文章id不存在！', HttpStatus.NOT_ACCEPTABLE)
+  async update(@Param('id') id: string, @Body() article: Article) {
+    return await this.articleService.update(id, article)
+  }
+
+  /**
+   * @description 文章删除-软删
+   */
+  @Patch('delete')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async recycleAll(@Body('ids') ids: string[]) {
+    if (!Array.isArray(ids) || ids.length === 0) {
+      throw new HttpException('非法操作！ids数组不能为空！', HttpStatus.BAD_REQUEST)
     }
-    return await this.articleService.update(article)
+    return this.articleService.recycleAll(ids)
+  }
+
+  @Delete()
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async deleteAll(@Body('ids') ids: string[]) {
+    if (!Array.isArray(ids) || ids.length === 0) {
+      throw new HttpException('非法操作！ids数组不能为空！', HttpStatus.BAD_REQUEST)
+    }
+    return await this.articleService.deleteAll(ids)
   }
 }
