@@ -62,7 +62,7 @@ export class ArticleService {
 
   async create (article: Partial<Article>): Promise<any> {
     const id = this.snowflake.getUniqueID()
-    const { status, category, tags } = article
+    let { status, category, tags } = article
     if (status === PublishStatus.published) {
       // 此处不用 = 赋值的原因是ts会进行类型检测，不能将string类型赋值给Date类型
       Object.assign(article, {
@@ -70,12 +70,13 @@ export class ArticleService {
       })
     }
     try {
-      // const newArticle = await this.articleRepository.create({
-      //   id,
-      //   ...article
-      // })
       tags = await this.tagService.findByIds(tags)
-      category = await this.categoryService.findById(category) 
+      category = await this.categoryService.findById(category)
+      const newArticle = await this.articleRepository.create({
+        ...article,
+        tags,
+        category
+      })
       return await this.articleRepository.save(newArticle)
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)

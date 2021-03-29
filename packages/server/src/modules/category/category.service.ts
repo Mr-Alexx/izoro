@@ -60,6 +60,10 @@ export class CategoryService {
     return Promise.resolve(null)
   }
 
+  async findById(id): Promise<Category> {
+    return await this.categoryReposity.findOne(id)
+  } 
+
   /**
    * @desc 删除分类
    * https://typeorm.biunav.com/zh/find-options.html#%E8%BF%9B%E9%98%B6%E9%80%89%E9%A1%B9
