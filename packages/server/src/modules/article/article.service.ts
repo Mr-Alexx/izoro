@@ -71,11 +71,11 @@ export class ArticleService {
     }
     try {
       tags = await this.tagService.findByIds(tags)
-      category = await this.categoryService.findById(category)
+      const existCate = await this.categoryService.findById(category)
       const newArticle = await this.articleRepository.create({
         ...article,
         tags,
-        category
+        category: existCate
       })
       return await this.articleRepository.save(newArticle)
     } catch (err) {
