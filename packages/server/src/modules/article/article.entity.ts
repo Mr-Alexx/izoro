@@ -58,7 +58,7 @@ export class Article {
   @Column({
     type: 'enum',
     enum: PublishStatus,
-    default: PublishStatus.published,
+    default: PublishStatus.draft,
     comment: '发布状态：-1 回收，0 草稿，1 已发布'
   })
   status: PublishStatus;
@@ -117,7 +117,7 @@ export class Article {
   update_at: Date;
 
   // 标签--关联标签表
-  @ApiProperty({ description: '关联的标签', example: ['tag1', 'tag2'] })
+  // @ApiProperty({ description: '关联的标签', example: ['tag1', 'tag2'] })
   @ManyToMany(
     () => Tag,
     tag => tag.articles,
@@ -126,8 +126,8 @@ export class Article {
   @JoinTable()
   tags: Array<Tag>
 
-  // 分类--关联分类表
-  @ApiProperty({ description: '关联的分类', example: '一级分类' })
+  // 分类--关联分类表 使用ApiProperty注释会引起循环引用的问题
+  // @ApiProperty({ description: '关联的分类', example: '一级分类' })
   @ManyToOne(
     () => Category,
     category => category.articles,

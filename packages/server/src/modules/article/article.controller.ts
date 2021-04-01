@@ -54,7 +54,12 @@ export class ArticleController {
     if (!article.id) {
       throw new HttpException('无法缓存该文章，文章id不存在！', HttpStatus.NOT_ACCEPTABLE)
     }
-    return await this.cacheService.set(article.id, article)
+    try {
+      await this.cacheService.set(`article:id:${article.id}`, article)
+      return Promise.resolve('缓存成功')
+    } catch (err) {
+      throw new HttpException('缓存失败', HttpStatus.BAD_REQUEST)
+    }
   }
 
   @Put(':id')

@@ -1,12 +1,13 @@
 import { PublishStatus } from '@/interfaces/status.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import dayjs from 'dayjs';
+// import * as dayjs from 'dayjs';
 import UniqueID from 'nodejs-snowflake';
 import { In, Like, MoreThan, Repository } from 'typeorm';
 import { CategoryService } from '../category/category.service';
 import { TagService } from '../tag/tag.service';
 import { Article } from './article.entity';
+import { CacheService } from './cache.service';
 
 @Injectable()
 export class ArticleService {
@@ -15,7 +16,8 @@ export class ArticleService {
     @InjectRepository(Article)
     private readonly articleRepository: Repository<Article>,
     private readonly tagService: TagService,
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
+    private readonly cacheService: CacheService
   ) {}
 
   /**
@@ -36,8 +38,18 @@ export class ArticleService {
     } = queryObj
 
     page = +queryObj.page || 1
-    limit = +queryObj.limit || 20
+    limit = +queryObj.limit || 10
+    if (limit > 50) {
+      throw new HttpException('非法操作，limit不能超过50条！', HttpStatus.BAD_REQUEST)
+    }
     sort = (sort || 'create_at') + ''
+
+    // 取缓存
+    const cache = await this.cacheService.get(`article:list:${JSON.stringify(queryObj)}`)
+    if (cache) {
+      return cache
+    }
+
     try {
       const query = this.articleRepository
         .createQueryBuilder('article')
@@ -54,6 +66,8 @@ export class ArticleService {
       // create_at && (where['status'] = {  })
       // tags && (where['tags'] = Like(`%${keyword}%`))
       const [list, total] = await query.getManyAndCount()
+      // 设置缓存
+      this.cacheService.set(`article:list:${JSON.stringify(queryObj)}`, { list, total })
       return { list, total }
     } catch (err) {
       console.error(err)
@@ -62,22 +76,29 @@ export class ArticleService {
 
   async create (article: Partial<Article>): Promise<any> {
     const id = this.snowflake.getUniqueID()
-    let { status, category, tags } = article
-    if (status === PublishStatus.published) {
-      // 此处不用 = 赋值的原因是ts会进行类型检测，不能将string类型赋值给Date类型
-      Object.assign(article, {
-        publish_at: dayjs().format('YYYY-MM-DD HH:mm:ss')
-      })
-    }
     try {
-      tags = await this.tagService.findByIds(tags)
+      let { status, category, tags } = article
+      Object.assign(article, { id })
+
+      if (status === PublishStatus.published) {
+        // 此处不用 = 赋值的原因是ts会进行类型检测，不能将string类型赋值给Date类型
+        Object.assign(article, {
+          publish_at: new Date()
+        })
+      }
+
+      if (Array.isArray(tags) && tags.length > 0) {
+        tags = await this.tagService.findByIds(tags)
+      }
+
       const existCate = await this.categoryService.findById(category)
       const newArticle = await this.articleRepository.create({
         ...article,
         tags,
         category: existCate
       })
-      return await this.articleRepository.save(newArticle)
+      await this.articleRepository.save(newArticle)
+      return Promise.resolve(id)
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)
     }
