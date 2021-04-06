@@ -14,7 +14,7 @@ export class TagService {
    * @desc 查找标签列表
    * @return { array }
    */
-  async findAll(query) {
+  async findAll(query: Record<string, any>): Promise<any> {
     let { page, limit } = query
     page = page || 1
     limit = limit || 20
@@ -29,10 +29,9 @@ export class TagService {
   /**
    * @desc 创建标签
    */
-  async create(tag): Promise<null> {
-    let { name } = tag
-    let existTag
-    existTag = await this.tagReposity.find({ where: { name } })
+  async create(tag: Record<'name', string>): Promise<null> {
+    const { name } = tag
+    const existTag = await this.tagReposity.find({ where: { name } })
 
     if (existTag.length > 0) {
       throw new HttpException('该标签已存在！', HttpStatus.BAD_REQUEST)
@@ -45,7 +44,7 @@ export class TagService {
   /**
    * @desc 更新标签信息
    */
-  async updateById(tag): Promise<null> {
+  async updateById(tag: Record<string, any>): Promise<null> {
     const { id } = tag
     const oldTag = await this.tagReposity.findOne({ where: { id } })
     const updateTag = await this.tagReposity.merge(oldTag, tag)
@@ -66,7 +65,7 @@ export class TagService {
     return Promise.resolve(null)
   }
 
-  async findByIds(ids): Promise<Array<Tag>> {
+  async findByIds(ids: number[]): Promise<Array<Tag>> {
     return this.tagReposity.findByIds(ids)
   }
 }

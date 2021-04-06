@@ -73,14 +73,22 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 Nest is [MIT licensed](LICENSE).
 
 ## 日志
+
 全链路关联日志：requestId `async_hooks`
+
 1. 使用 requestId 标记每次请求全链路日志
 2. 通过把 `X-Request-Id` 标记在请求头中，在整个链路进行传递
-+ 接口请求日志
+
+- 接口请求日志
+
 ```js
 // example
-
 ```
-+ 接口响应日志
 
-+ 错误日志
+- 接口响应日志
+
+- 错误日志
+
+## 自动格式化
+
+[自动格式化](https://blog.csdn.net/weixin_42357837/article/details/111909496)

@@ -7,7 +7,7 @@ export class CacheService {
   constructor(private redisService: RedisService) {
     this.getClient()
   }
-  async getClient() {
+  async getClient(): Promise<void> {
     if (this.client) {
       return
     }
@@ -19,7 +19,7 @@ export class CacheService {
    * @param { any } value 值
    * @param { number } seconds 可选过期时间，单位：秒
    */
-  async set(key: string, value: any, seconds?: number) {
+  async set(key: string, value: any, seconds?: number): Promise<void> {
     await this.getClient()
 
     value = JSON.stringify(value)
@@ -47,7 +47,7 @@ export class CacheService {
    * @description 删除缓存
    * @param { string } key
    */
-  async del(key: string) {
+  async del(key: string): Promise<void> {
     await this.getClient()
     const isExist = await this.client.get(key)
     if (!isExist) {

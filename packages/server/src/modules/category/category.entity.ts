@@ -6,15 +6,15 @@ import { Article } from '../article/article.entity'
 @Entity()
 export class Category {
   @PrimaryGeneratedColumn()
-  id: Number
+  id: number
 
   @ApiProperty({ description: '父类id', example: 0 })
   @Column({ default: 0 })
-  pid: Number
+  pid: number
 
   @ApiProperty({ description: '分类名称', example: '测试分类' })
   @Column()
-  name: String
+  name: string
 
   @ApiProperty({ description: '分类层级', example: 1 })
   @Column({ default: 1 })

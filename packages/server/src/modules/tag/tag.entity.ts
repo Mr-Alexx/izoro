@@ -11,11 +11,11 @@ import { Article } from '../article/article.entity'
 @Entity()
 export class Tag {
   @PrimaryGeneratedColumn({ comment: '标签id，自增主键' })
-  id: Number
+  id: number
 
   @ApiProperty({ description: '标签名称', example: 'js' })
   @Column()
-  name: String
+  name: string
 
   @ApiProperty({ description: '关联文章id', example: 123 })
   @ManyToMany(() => Article, (article) => article.tags)

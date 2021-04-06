@@ -4,10 +4,10 @@
  * @author 潜
  */
 
-import { IsIn, IsNotEmpty, IsString, Length } from 'class-validator'
+import { IsNotEmpty, IsString, Length } from 'class-validator'
 import { PublicStatus, PublishStatus } from '@/interfaces/status.interface'
 import { ApiProperty } from '@nestjs/swagger'
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne, PrimaryColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, UpdateDateColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 import { Tag } from '../tag/tag.entity'
 import { Category } from '../category/category.entity'
 

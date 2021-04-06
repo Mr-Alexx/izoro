@@ -1,0 +1,8 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "printWidth": 500,
+  "endOfLine": "auto",
+  "spaceBeforeFunctionParen": [2, "always"]
+}

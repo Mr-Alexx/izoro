@@ -15,7 +15,7 @@ export class UserService {
    * @desc 创建用户
    * @param { Object } user
    */
-  async create(user: { [propsName: string]: any }): Promise<Number> {
+  async create(user: { [propsName: string]: any }): Promise<number> {
     // 判断用户是否存在
     const { account } = user
     const isExist = await this.userRepository.findOne({ where: { account } })
@@ -65,7 +65,7 @@ export class UserService {
    * @param { Object } query
    * 复杂查询：https://www.jianshu.com/p/0fcf45030dd4
    */
-  async findAll(query): Promise<any> {
+  async findAll(query: Record<string, any>): Promise<any> {
     let { page, limit, status, create_at } = query
     page = page || 1
     limit = limit || 20
@@ -92,7 +92,7 @@ export class UserService {
     return this.userRepository.findOne(id)
   }
 
-  async updateById(id: number, user: Partial<User>) {
+  async updateById(id: number, user: Partial<User>): Promise<User> {
     try {
       const oldUser = await this.findById(id)
       const updatedUser = await this.userRepository.merge(oldUser, user)

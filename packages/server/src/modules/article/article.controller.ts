@@ -30,7 +30,7 @@ export class ArticleController {
   @ApiQuery({ name: 'title', description: '标题', required: false, type: String, example: 'js' })
   @ApiQuery({ name: 'limit', description: '每页条数', required: true, type: Number, example: 20 })
   @ApiQuery({ name: 'page', description: '页码', required: true, type: Number, example: 1 })
-  async findAll(@Query() query): Promise<any> {
+  async findAll(@Query() query: Record<string, any>): Promise<any> {
     return this.articleService.findAll(query)
   }
 
@@ -40,14 +40,14 @@ export class ArticleController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard)
-  async create(@Body() article: Partial<Article>) {
+  async create(@Body() article: Partial<Article>): Promise<any> {
     return await this.articleService.create(article)
   }
 
   @Put('cache')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  async cache(@Body() article: Article) {
+  async cache(@Body() article: Article): Promise<any> {
     if (!article.id) {
       throw new HttpException('无法缓存该文章，文章id不存在！', HttpStatus.NOT_ACCEPTABLE)
     }
@@ -62,7 +62,7 @@ export class ArticleController {
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  async update(@Param('id') id: string, @Body() article: Article) {
+  async update(@Param('id') id: string, @Body() article: Article): Promise<any> {
     return await this.articleService.update(id, article)
   }
 
@@ -72,7 +72,7 @@ export class ArticleController {
   @Patch('delete')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  async recycleAll(@Body('ids') ids: string[]) {
+  async recycleAll(@Body('ids') ids: string[]): Promise<any> {
     if (!Array.isArray(ids) || ids.length === 0) {
       throw new HttpException('非法操作！ids数组不能为空！', HttpStatus.BAD_REQUEST)
     }
@@ -82,7 +82,7 @@ export class ArticleController {
   @Delete()
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  async deleteAll(@Body('ids') ids: string[]) {
+  async deleteAll(@Body('ids') ids: string[]): Promise<any> {
     if (!Array.isArray(ids) || ids.length === 0) {
       throw new HttpException('非法操作！ids数组不能为空！', HttpStatus.BAD_REQUEST)
     }

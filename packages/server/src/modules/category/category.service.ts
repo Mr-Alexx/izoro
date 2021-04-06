@@ -14,7 +14,7 @@ export class CategoryService {
    * @desc 查找分类列表
    * @return { array } 树形结构
    */
-  async findAll(query) {
+  async findAll(query: { page: number; limit: number }): Promise<any> {
     let { page, limit } = query
     page = page || 1
     limit = limit || 20
@@ -29,11 +29,10 @@ export class CategoryService {
   /**
    * @desc 创建分类
    */
-  async create(category): Promise<null> {
-    let { name, pid } = category
+  async create(category: Partial<Category>): Promise<any> {
+    let { pid } = category
     pid = pid || 0
-    let existCategory
-    existCategory = await this.categoryReposity.find({ where: { name, pid } })
+    const existCategory = await this.categoryReposity.find({ where: { name, pid } })
 
     if (existCategory.length > 0) {
       throw new HttpException('该分类已存在！', HttpStatus.BAD_REQUEST)
@@ -52,7 +51,7 @@ export class CategoryService {
   /**
    * @desc 更新分类信息
    */
-  async updateById(category): Promise<null> {
+  async updateById(category: Partial<Category>): Promise<any> {
     const { id } = category
     const oldCategory = await this.categoryReposity.findOne({ where: { id } })
     const updateCategory = await this.categoryReposity.merge(oldCategory, category)
@@ -60,7 +59,7 @@ export class CategoryService {
     return Promise.resolve(null)
   }
 
-  async findById(id): Promise<Category> {
+  async findById(id: number): Promise<Category> {
     return await this.categoryReposity.findOne(id)
   }
 

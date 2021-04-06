@@ -3,13 +3,13 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
-    'prettier/@typescript-eslint',
+    'prettier',
   ],//定义文件继承的子规范
   plugins: ['@typescript-eslint'],//定义了该eslint文件所依赖的插件
   env:{                          //指定代码的运行环境
-      browser: true,
-      node: true,
-      es6: true,
+    browser: true,
+    node: true,
+    es6: true,
   },
   rules: {
     // '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }], 
@@ -101,5 +101,7 @@ module.exports = {
     'indent': [2, 2, {
       'SwitchCase': 1
     }],
+    // 强制在函数名与(间有空格
+    // 'space-before-function-paren': [2, 'always'],
   }                               
 }

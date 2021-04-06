@@ -91,7 +91,7 @@ export class User {
 
   // 插入密码前，进行加密
   @BeforeInsert()
-  encrypt() {
+  encrypt(): void {
     this.password = bcrypt.hashSync(this.password, SALT_OR_ROUNDS)
   }
 }
