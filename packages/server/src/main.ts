@@ -1,38 +1,40 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { NestFactory, Reflector } from '@nestjs/core'
+import { AppModule } from './app.module'
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify'
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'; // api文档插件
-import { ResponseInterceptor } from './interceptors/response.interceptor';
-import { HttpExceptionFilter } from './filters/http-exception.filter';
-import { ValidationPipe } from './pipes/validation.pipe';
-import fastifyCsrf from 'fastify-csrf';
-import fastifyHelmet from 'fastify-helmet';
-import fastifyRateLimit from 'fastify-rate-limit';
-import fastifyCompress from 'fastify-compress';
-import fastifyCookie from 'fastify-cookie';
-import { errorLogger } from './logger/log4.logger';
-import fastifySwagger from 'fastify-swagger';
-import { ClassSerializerInterceptor } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger' // api文档插件
+import { ResponseInterceptor } from './interceptors/response.interceptor'
+import { HttpExceptionFilter } from './filters/http-exception.filter'
+import { ValidationPipe } from './pipes/validation.pipe'
+import fastifyCsrf from 'fastify-csrf'
+import fastifyHelmet from 'fastify-helmet'
+import fastifyRateLimit from 'fastify-rate-limit'
+import fastifyCompress from 'fastify-compress'
+import fastifyCookie from 'fastify-cookie'
+import { errorLogger } from './logger/log4.logger'
+import fastifySwagger from 'fastify-swagger'
+import { ClassSerializerInterceptor } from '@nestjs/common'
 
 async function bootstrap() {
   const adapter = new FastifyAdapter()
-  adapter.register(fastifyRateLimit, { // 限制单ip单位时间访问频率
+  adapter.register(fastifyRateLimit, {
+    // 限制单ip单位时间访问频率
     timeWindow: 1000 * 60, // 单位时间ms
     max: 500, // 单位时间内最多访问次数
-    errorResponseBuilder (req, ctx) {
+    errorResponseBuilder(req, ctx) {
       const error = {
         code: 429,
         success: false,
         msg: `访问受限，请${ctx.after}后再试！`,
-        _t: new Date().getTime()
+        _t: new Date().getTime(),
       }
       errorLogger.error(req.url, error)
       return error
-    }
+    },
   })
   adapter.register(fastifyCookie) // 使用fastifyCsrf必须引入此插件
   adapter.register(fastifyCsrf) // 防跨站点请求伪造
-  adapter.register(fastifyHelmet, { // https://docs.nestjs.cn/7/security?id=helmet
+  adapter.register(fastifyHelmet, {
+    // https://docs.nestjs.cn/7/security?id=helmet
     // contentSecurityPolicy: {
     //   directives: {
     //     defaultSrc: [`'self'`],
@@ -42,7 +44,7 @@ async function bootstrap() {
     //     scriptSrc: [`'self'`, `https: 'unsafe-inline'`, `cdn.jsdelivr.net`],
     //   },
     // }
-    contentSecurityPolicy: false
+    contentSecurityPolicy: false,
   }) // 通过适当地设置 HTTP 头，Helmet 可以帮助保护您的应用免受一些众所周知的 Web 漏洞的影响
   adapter.register(fastifyCompress) // 压缩请求
   adapter.register(fastifySwagger)
@@ -56,7 +58,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe()) // 数据验证器
   app.useGlobalInterceptors(
     new ResponseInterceptor(), // 自定义接口响应，输出日志
-    new ClassSerializerInterceptor(app.get(Reflector)) // 要使entity内的@Exclude生效，需加这个
+    new ClassSerializerInterceptor(app.get(Reflector)), // 要使entity内的@Exclude生效，需加这个
   )
 
   const options = new DocumentBuilder()
@@ -65,11 +67,11 @@ async function bootstrap() {
     .setVersion('1.0.0')
     // .addTag('文章模块')
     // .setBasePath('http://localhost:5000')
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('/api-doc', app, document);
+    .build()
+  const document = SwaggerModule.createDocument(app, options)
+  SwaggerModule.setup('/api-doc', app, document)
 
-  await app.listen(3000);
+  await app.listen(3000)
   console.log(`App is listen on http://localhost:${3000}`)
 }
-bootstrap();
+bootstrap()

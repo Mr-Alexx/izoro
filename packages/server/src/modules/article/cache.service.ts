@@ -1,14 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { RedisService } from "nestjs-redis";
+import { Injectable } from '@nestjs/common'
+import { RedisService } from 'nestjs-redis'
 
 @Injectable()
 export class CacheService {
-  public client;
+  public client
   constructor(private redisService: RedisService) {
     this.getClient()
   }
   async getClient() {
-    if (this.client) { return }
+    if (this.client) {
+      return
+    }
     this.client = await this.redisService.getClient()
   }
   /**
@@ -35,7 +37,9 @@ export class CacheService {
     await this.getClient()
 
     const value = await this.client.get(key)
-    if (!value) { return }
+    if (!value) {
+      return
+    }
     return JSON.parse(value)
   }
 
@@ -46,7 +50,9 @@ export class CacheService {
   async del(key: string) {
     await this.getClient()
     const isExist = await this.client.get(key)
-    if (!isExist) { return }
+    if (!isExist) {
+      return
+    }
     await this.client.del(key)
   }
 }

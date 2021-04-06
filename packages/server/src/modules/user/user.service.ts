@@ -1,13 +1,13 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { User } from './user.entity'
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
   ) {}
 
   /**
@@ -15,7 +15,7 @@ export class UserService {
    * @desc 创建用户
    * @param { Object } user
    */
-  async create (user: { [propsName: string]: any }): Promise<Number> {
+  async create(user: { [propsName: string]: any }): Promise<Number> {
     // 判断用户是否存在
     const { account } = user
     const isExist = await this.userRepository.findOne({ where: { account } })
@@ -38,12 +38,12 @@ export class UserService {
    * @param { Partial<User> } user
    * @return { User }
    */
-  async login (user: Partial<User>) {
+  async login(user: Partial<User>) {
     const { account, password } = user
     const existUser = await this.userRepository.findOne({
       where: {
-        account
-      }
+        account,
+      },
     })
     if (!existUser) {
       throw new HttpException('帐号不存在！', HttpStatus.BAD_REQUEST)
@@ -65,7 +65,7 @@ export class UserService {
    * @param { Object } query
    * 复杂查询：https://www.jianshu.com/p/0fcf45030dd4
    */
-  async findAll (query): Promise<any> {
+  async findAll(query): Promise<any> {
     let { page, limit, status, create_at } = query
     page = page || 1
     limit = limit || 20
@@ -76,11 +76,11 @@ export class UserService {
     const [list, total] = await this.userRepository.findAndCount({
       where,
       order: {
-        id: 'ASC'
+        id: 'ASC',
       },
       skip: (page - 1) * limit,
       take: limit,
-      cache: false
+      cache: false,
     })
     return { list, total }
   }
@@ -88,11 +88,11 @@ export class UserService {
   /**
    * @desc 查找单个用户
    */
-  async findById (id: number): Promise<User> {
+  async findById(id: number): Promise<User> {
     return this.userRepository.findOne(id)
   }
 
-  async updateById (id: number, user: Partial<User>) {
+  async updateById(id: number, user: Partial<User>) {
     try {
       const oldUser = await this.findById(id)
       const updatedUser = await this.userRepository.merge(oldUser, user)

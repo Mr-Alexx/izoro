@@ -4,22 +4,22 @@
  * @module module/tag/model
  * @author 潜
  */
-import { ApiProperty } from "@nestjs/swagger";
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Article } from "../article/article.entity";
+import { ApiProperty } from '@nestjs/swagger'
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { Article } from '../article/article.entity'
 
 @Entity()
 export class Tag {
   @PrimaryGeneratedColumn({ comment: '标签id，自增主键' })
-  id: Number;
+  id: Number
 
   @ApiProperty({ description: '标签名称', example: 'js' })
   @Column()
-  name: String;
+  name: String
 
   @ApiProperty({ description: '关联文章id', example: 123 })
   @ManyToMany(() => Article, (article) => article.tags)
-  articles: Array<Article>;
+  articles: Array<Article>
 
   @ApiProperty({ description: '创建时间', example: '2021-03-34 21:18:00' })
   @CreateDateColumn({
@@ -27,7 +27,7 @@ export class Tag {
     comment: '创建时间',
     name: 'create_at',
   })
-  create_at: Date;
+  create_at: Date
 
   @ApiProperty({ description: '更新时间', example: '2021-03-34 21:18:00' })
   @UpdateDateColumn({
@@ -35,5 +35,5 @@ export class Tag {
     comment: '更新时间',
     name: 'update_at',
   })
-  update_at: Date;
+  update_at: Date
 }

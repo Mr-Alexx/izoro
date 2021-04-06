@@ -1,6 +1,6 @@
 export default {
   secret: 'token',
   signOptions: {
-    expiresIn: '4h'
-  }
+    expiresIn: '4h',
+  },
 }

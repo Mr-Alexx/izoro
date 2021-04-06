@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common'
 import { ArticleService } from './article.service'
 // import { Article } from './article.model';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { PublicStatus, PublishStatus } from '@/interfaces/status.interface';
-import { CacheService } from './cache.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Article } from './article.entity';
+import { ApiQuery, ApiTags } from '@nestjs/swagger'
+import { PublicStatus, PublishStatus } from '@/interfaces/status.interface'
+import { CacheService } from './cache.service'
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
+import { Article } from './article.entity'
 
 // @Crud({
 //   model: Article // Article采用增删改查接口模式
@@ -14,10 +14,7 @@ import { Article } from './article.entity';
 @ApiTags('Article')
 export class ArticleController {
   // 注入service，this调用
-  constructor (
-    private readonly articleService: ArticleService,
-    private readonly cacheService: CacheService
-  ) {}
+  constructor(private readonly articleService: ArticleService, private readonly cacheService: CacheService) {}
 
   /**
    * @create 2021/03/04 21:48

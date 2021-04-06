@@ -15,30 +15,30 @@ const commonCinfig = {
   type: 'dateFile',
   pattern: '-yyyy-MM-dd.log',
   alwaysIncludePattern: true,
-};
+}
 
 log4js.configure({
   appenders: {
     request: {
       ...commonCinfig,
       filename: resolvePath('request', 'request'),
-      category: 'request'
+      category: 'request',
     },
     response: {
       ...commonCinfig,
       filename: resolvePath('response', 'response'),
-      category: 'response'
+      category: 'response',
     },
     error: {
       ...commonCinfig,
       filename: resolvePath('error', 'error'),
-      category: 'error'
-    }
+      category: 'error',
+    },
   },
   categories: {
     default: { appenders: ['request'], level: 'info' },
     response: { appenders: ['response'], level: 'info' },
-    error: { appenders: ['error'], level: 'info' }
+    error: { appenders: ['error'], level: 'info' },
   },
 } as any)
 

@@ -7,8 +7,8 @@
  * 难点：
  * 关于jwt续期和失效问题：https://segmentfault.com/q/1010000010043871
  */
-import { ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
+import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {

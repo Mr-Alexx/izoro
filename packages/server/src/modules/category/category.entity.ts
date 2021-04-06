@@ -1,32 +1,32 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { Article } from "../article/article.entity";
+import { ApiProperty } from '@nestjs/swagger'
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm'
+import { Article } from '../article/article.entity'
 // 分类表设计
 
 @Entity()
 export class Category {
   @PrimaryGeneratedColumn()
-  id: Number;
+  id: Number
 
   @ApiProperty({ description: '父类id', example: 0 })
   @Column({ default: 0 })
-  pid: Number;
+  pid: Number
 
   @ApiProperty({ description: '分类名称', example: '测试分类' })
   @Column()
-  name: String;
+  name: String
 
   @ApiProperty({ description: '分类层级', example: 1 })
   @Column({ default: 1 })
-  level: number;
-  
+  level: number
+
   @ApiProperty({ description: '创建时间', example: '2021-03-34 21:18:00' })
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
     name: 'create_at',
   })
-  create_at: Date;
+  create_at: Date
 
   @ApiProperty({ description: '更新时间', example: '2021-03-34 21:18:00' })
   @UpdateDateColumn({
@@ -34,12 +34,9 @@ export class Category {
     comment: '更新时间',
     name: 'update_at',
   })
-  update_at: Date;
+  update_at: Date
 
   @ApiProperty({ description: '关联的文章', example: [123, 134] })
-  @OneToMany(
-    () => Article,
-    (article) => article.category
-  )
+  @OneToMany(() => Article, (article) => article.category)
   articles: Array<Article>
 }

@@ -1,5 +1,5 @@
-import { errorLogger } from "@/logger/log4.logger";
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common";
+import { errorLogger } from '@/logger/log4.logger'
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 
 /**
  * @desc 自定义HTTP错误处理
@@ -9,7 +9,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from
  */
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch (exception: HttpException, host: ArgumentsHost) {
+  catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp()
     const url = ctx.getRequest().url // 请求路由地址
     // 获取错误码，默认服务器错误码（500）
@@ -21,14 +21,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
       code,
       msg: exception.message,
       success: false,
-      _t: new Date().getTime()
+      _t: new Date().getTime(),
     }
 
     // 返回错误响应
     const response = ctx.getResponse()
-    response
-      .code(code)
-      .send(err)
+    response.code(code).send(err)
 
     errorLogger.error(url, err)
   }

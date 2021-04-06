@@ -1,16 +1,16 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 import dbConfig from '@/config/db.config'
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm'
 
 // 全局模块（公用）
 // import { DbModule } from '@/common/db/db.module'
 
 // 业务模块
 import { ArticleModule } from './modules/article/article.module' // 文章模块
-import { TagModule } from './modules/tag/tag.module';
-import { UserModule } from './modules/user/user.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { CategoryModule } from './modules/category/category.module';
+import { TagModule } from './modules/tag/tag.module'
+import { UserModule } from './modules/user/user.module'
+import { AuthModule } from './modules/auth/auth.module'
+import { CategoryModule } from './modules/category/category.module'
 
 @Module({
   imports: [
@@ -18,14 +18,14 @@ import { CategoryModule } from './modules/category/category.module';
       useFactory: async () => ({
         type: 'mysql',
         entities: [`${__dirname}/modules/**/*.entity{.ts,.js}`],
-        ...dbConfig
-      })
+        ...dbConfig,
+      }),
     }),
     ArticleModule,
     TagModule,
     UserModule,
     AuthModule,
-    CategoryModule
+    CategoryModule,
   ],
   providers: [],
 })

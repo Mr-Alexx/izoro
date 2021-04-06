@@ -17,6 +17,5 @@ export default {
   password: 'imgroot',
   charset: 'utf8mb4',
   timezone: '+08:00',
-  synchronize: false// true // 设置synchronize可确保每次运行应用程序时实体都将与数据库同步，即可生成表结构
+  synchronize: true, // 设置synchronize可确保每次运行应用程序时实体都将与数据库同步，即可生成表结构
 }
-

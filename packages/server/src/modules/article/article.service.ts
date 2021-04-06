@@ -1,13 +1,13 @@
-import { PublishStatus } from '@/interfaces/status.interface';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { PublishStatus } from '@/interfaces/status.interface'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
 // import * as dayjs from 'dayjs';
-import UniqueID from 'nodejs-snowflake';
-import { In, Like, MoreThan, Repository } from 'typeorm';
-import { CategoryService } from '../category/category.service';
-import { TagService } from '../tag/tag.service';
-import { Article } from './article.entity';
-import { CacheService } from './cache.service';
+import UniqueID from 'nodejs-snowflake'
+import { In, Like, MoreThan, Repository } from 'typeorm'
+import { CategoryService } from '../category/category.service'
+import { TagService } from '../tag/tag.service'
+import { Article } from './article.entity'
+import { CacheService } from './cache.service'
 
 @Injectable()
 export class ArticleService {
@@ -17,7 +17,7 @@ export class ArticleService {
     private readonly articleRepository: Repository<Article>,
     private readonly tagService: TagService,
     private readonly categoryService: CategoryService,
-    private readonly cacheService: CacheService
+    private readonly cacheService: CacheService,
   ) {}
 
   /**
@@ -25,17 +25,7 @@ export class ArticleService {
    * @param { any } query 查询参数
    */
   async findAll(queryObj: any = {}): Promise<object> {
-    let {
-      page,
-      limit,
-      keyword,
-      cid,
-      status,
-      tags,
-      create_at,
-      publish_at,
-      sort
-    } = queryObj
+    let { page, limit, keyword, cid, status, tags, create_at, publish_at, sort } = queryObj
 
     page = +queryObj.page || 1
     limit = +queryObj.limit || 10
@@ -45,36 +35,44 @@ export class ArticleService {
     sort = (sort || 'create_at') + ''
 
     // 取缓存
-    const cache = await this.cacheService.get(`article:list:${JSON.stringify(queryObj)}`)
-    if (cache) {
-      return cache
-    }
+    const cacheKey = JSON.stringify(queryObj)
+    const cache = await this.cacheService.get(`article:list:${cacheKey}`)
+    // if (cache) {
+    //   return cache
+    // }
 
     try {
       const query = this.articleRepository
         .createQueryBuilder('article')
-        .leftJoinAndSelect('article.category', 'category')
-        .leftJoinAndSelect('article.tags', 'tag')
+        .select(['article.id', 'article.title', 'article.cover', 'article.create_at', 'article.publish_at', 'article.update_at', 'article.status', 'article.password', 'article.views'])
+        .leftJoin('article.tags', 'tag')
+        .addSelect(['tag.name'])
+        .leftJoin('article.category', 'category')
+        .addSelect('category.name')
+        // .leftJoinAndSelect('article.category', 'name')
+        // .leftJoinAndSelect('article.category', 'category.name')
+        // .leftJoinAndSelect('article.tags', 'tag.name')
         .skip((page - 1) * limit)
         .take(limit)
         .orderBy(`article.${sort}`, sort.indexOf('-') > -1 ? 'DESC' : 'ASC')
 
-      keyword && (query.andWhere('article.title like :keyword', { keyword }))
-      cid && (query.andWhere('article.categoryId = :cid', { cid }))
-      status && (query.andWhere('article.status = :status', { status }))
-      // Array.isArray(tags) && (query.andWhere('article.tags in :tags', { tags }))
+      keyword && query.andWhere('article.title like :keyword', { keyword })
+      cid && query.andWhere('article.categoryId = :cid', { cid })
+      status && query.andWhere('article.status = :status', { status })
+      Array.isArray(tags) && query.andWhere('article.tags in :tags', { tags })
       // create_at && (where['status'] = {  })
       // tags && (where['tags'] = Like(`%${keyword}%`))
+      // ['user.id', 'title', 'summary', 'cover', 'create_at', 'publish_at', 'update_at', 'views', 'status']
       const [list, total] = await query.getManyAndCount()
       // 设置缓存
-      this.cacheService.set(`article:list:${JSON.stringify(queryObj)}`, { list, total })
+      this.cacheService.set(`article:list:${cacheKey}`, { list, total })
       return { list, total }
     } catch (err) {
       console.error(err)
     }
   }
 
-  async create (article: Partial<Article>): Promise<any> {
+  async create(article: Partial<Article>): Promise<any> {
     const id = this.snowflake.getUniqueID()
     try {
       let { status, category, tags } = article
@@ -83,7 +81,7 @@ export class ArticleService {
       if (status === PublishStatus.published) {
         // 此处不用 = 赋值的原因是ts会进行类型检测，不能将string类型赋值给Date类型
         Object.assign(article, {
-          publish_at: new Date()
+          publish_at: new Date(),
         })
       }
 
@@ -95,7 +93,7 @@ export class ArticleService {
       const newArticle = await this.articleRepository.create({
         ...article,
         tags,
-        category: existCate
+        category: existCate,
       })
       await this.articleRepository.save(newArticle)
       return Promise.resolve(id)
@@ -112,7 +110,7 @@ export class ArticleService {
     const newArticle = await this.articleRepository.merge(oldArticle, article)
     return await this.articleRepository.save(newArticle)
   }
-  
+
   // 软删-多个
   async recycleAll(ids: string[]): Promise<string> {
     try {

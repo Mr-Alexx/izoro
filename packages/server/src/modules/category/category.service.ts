@@ -1,20 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { In, Repository } from "typeorm";
-import { Category } from "./category.entity";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { In, Repository } from 'typeorm'
+import { Category } from './category.entity'
 
 @Injectable()
 export class CategoryService {
-  constructor (
+  constructor(
     @InjectRepository(Category)
-    private readonly categoryReposity: Repository<Category>
+    private readonly categoryReposity: Repository<Category>,
   ) {}
 
   /**
    * @desc 查找分类列表
    * @return { array } 树形结构
    */
-  async findAll (query) {
+  async findAll(query) {
     let { page, limit } = query
     page = page || 1
     limit = limit || 20
@@ -22,14 +22,14 @@ export class CategoryService {
     const [list, total] = await this.categoryReposity.findAndCount()
     return {
       list,
-      total
+      total,
     }
   }
 
   /**
    * @desc 创建分类
    */
-  async create (category): Promise<null> {
+  async create(category): Promise<null> {
     let { name, pid } = category
     pid = pid || 0
     let existCategory
@@ -52,9 +52,9 @@ export class CategoryService {
   /**
    * @desc 更新分类信息
    */
-  async updateById (category): Promise<null> {
+  async updateById(category): Promise<null> {
     const { id } = category
-    const oldCategory = await this.categoryReposity.findOne({ where: { id  } })
+    const oldCategory = await this.categoryReposity.findOne({ where: { id } })
     const updateCategory = await this.categoryReposity.merge(oldCategory, category)
     await this.categoryReposity.save(updateCategory)
     return Promise.resolve(null)
@@ -62,15 +62,14 @@ export class CategoryService {
 
   async findById(id): Promise<Category> {
     return await this.categoryReposity.findOne(id)
-  } 
+  }
 
   /**
    * @desc 删除分类
    * https://typeorm.biunav.com/zh/find-options.html#%E8%BF%9B%E9%98%B6%E9%80%89%E9%A1%B9
    */
-  async delete (ids: number[]): Promise<null> {
-    await this
-      .categoryReposity
+  async delete(ids: number[]): Promise<null> {
+    await this.categoryReposity
       .createQueryBuilder()
       .delete()
       .where({ id: In(ids) })

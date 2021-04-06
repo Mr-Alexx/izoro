@@ -24,6 +24,19 @@
             <el-form-item prop="summary" label="小结">
               <el-input v-model="form.summary" type="textarea" />
             </el-form-item>
+
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="12">
+                <el-form-item label="密码">
+                  <el-input v-model="form.password" />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="12">
+                <el-form-item label="是否发布">
+                  <el-switch v-model="form.status" :active-value="1" :inactive-value="0" />
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-col>
 
           <el-col :xs="24" :sm="12" class="base-box--bottom">
@@ -31,7 +44,7 @@
               <el-input v-model="form.seo_title" />
             </el-form-item>
             <el-form-item label="SEO关键字">
-              <el-input v-model="form.seo_keyword" />
+              <el-input v-model="form.seo_keyword" type="textarea" />
             </el-form-item>
             <el-form-item label="SEO描述">
               <el-input v-model="form.seo_description" type="textarea" />

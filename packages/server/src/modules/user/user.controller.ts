@@ -1,26 +1,24 @@
-import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Put, Query, UseGuards, Request } from '@nestjs/common';
-import { ApiBody, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { User } from './user.entity';
-import { UserService } from './user.service';
+import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Put, Query, UseGuards, Request } from '@nestjs/common'
+import { ApiBody, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
+import { User } from './user.entity'
+import { UserService } from './user.service'
 
 interface Test {
-  account: User['account'],
-  password: User['password'],
+  account: User['account']
+  password: User['password']
   role: User['role']
 }
 
 @Controller('user')
 @ApiTags('User')
 export class UserController {
-  constructor (
-    private readonly userService: UserService
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: '用户注册' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async register (@Body() user: Partial<User>): Promise<Object> {
+  async register(@Body() user: Partial<User>): Promise<Object> {
     return this.userService.create(user)
   }
 
@@ -32,7 +30,7 @@ export class UserController {
   @ApiQuery({ name: 'page', description: '页码' })
   @ApiQuery({ name: 'limit', description: '每页条数' })
   @UseGuards(JwtAuthGuard)
-  async findAll (@Query() query): Promise<any> {
+  async findAll(@Query() query): Promise<any> {
     return await this.userService.findAll(query)
   }
 
@@ -43,7 +41,7 @@ export class UserController {
   @Get('info')
   @ApiHeader({ name: 'Authorization', description: 'bearer token' })
   @UseGuards(JwtAuthGuard)
-  GetInfo (@Request() req): Promise<any> {
+  GetInfo(@Request() req): Promise<any> {
     return this.userService.findById(req.user.id)
   }
 
@@ -51,7 +49,7 @@ export class UserController {
   @ApiParam({ name: 'id', description: '用户id' })
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async updateUser (@Param('id') id: number, @Body() user: Partial<User>): Promise<any> {
+  async updateUser(@Param('id') id: number, @Body() user: Partial<User>): Promise<any> {
     if (Object.keys(user).length === 0) {
       throw new HttpException('请填写要修改的用户信息！', HttpStatus.BAD_REQUEST)
     }
