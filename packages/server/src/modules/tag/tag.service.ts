@@ -29,7 +29,7 @@ export class TagService {
   /**
    * @desc 创建标签
    */
-  async create(tag: Record<'name', string>): Promise<null> {
+  async create(tag: Partial<Tag>): Promise<null> {
     const { name } = tag
     const existTag = await this.tagReposity.find({ where: { name } })
 
@@ -65,7 +65,7 @@ export class TagService {
     return Promise.resolve(null)
   }
 
-  async findByIds(ids: number[]): Promise<Array<Tag>> {
+  async findByIds(ids: any[]): Promise<Array<Tag>> {
     return this.tagReposity.findByIds(ids)
   }
 }

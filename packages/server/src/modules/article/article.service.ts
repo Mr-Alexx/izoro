@@ -1,9 +1,9 @@
 import { PublishStatus } from '@/interfaces/status.interface'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-// import * as dayjs from 'dayjs';
 import UniqueID from 'nodejs-snowflake'
-import { In, Like, MoreThan, Repository } from 'typeorm'
+import { SnowflakeID } from '@/utils/snowflake'
+import { In, Repository } from 'typeorm'
 import { CategoryService } from '../category/category.service'
 import { TagService } from '../tag/tag.service'
 import { Article } from './article.entity'
@@ -24,8 +24,10 @@ export class ArticleService {
    * @desc 获取文章列表
    * @param { any } query 查询参数
    */
-  async findAll(queryObj: any = {}): Promise<object> {
-    let { page, limit, keyword, cid, status, tags, create_at, publish_at, sort } = queryObj
+  async findAll(queryObj: any = {}): Promise<{ list: any[]; total: number }> {
+    console.log(new SnowflakeID().generate(), new SnowflakeID({ mid: +new Date() }).generate())
+    const { keyword, cid, status, tags } = queryObj
+    let { page, limit, sort } = queryObj
 
     page = +queryObj.page || 1
     limit = +queryObj.limit || 10
@@ -36,7 +38,7 @@ export class ArticleService {
 
     // 取缓存
     const cacheKey = JSON.stringify(queryObj)
-    const cache = await this.cacheService.get(`article:list:${cacheKey}`)
+    // const cache = await this.cacheService.get(`article:list:${cacheKey}`)
     // if (cache) {
     //   return cache
     // }
@@ -45,16 +47,18 @@ export class ArticleService {
       const query = this.articleRepository
         .createQueryBuilder('article')
         .select(['article.id', 'article.title', 'article.cover', 'article.create_at', 'article.publish_at', 'article.update_at', 'article.status', 'article.password', 'article.views'])
-        .leftJoin('article.tags', 'tag')
-        .addSelect(['tag.name'])
-        .leftJoin('article.category', 'category')
+        .innerJoin('article.category', 'category')
         .addSelect('category.name')
+        .leftJoin('article.tags', 'tag')
+        .addSelect('tag.name')
         // .leftJoinAndSelect('article.category', 'name')
         // .leftJoinAndSelect('article.category', 'category.name')
         // .leftJoinAndSelect('article.tags', 'tag.name')
         .skip((page - 1) * limit)
         .take(limit)
-        .orderBy(`article.${sort}`, sort.indexOf('-') > -1 ? 'DESC' : 'ASC')
+        .orderBy(`article.${sort}`, sort.indexOf('-') > -1 ? 'ASC' : 'DESC')
+
+      console.log(query.getSql())
 
       keyword && query.andWhere('article.title like :keyword', { keyword })
       cid && query.andWhere('article.categoryId = :cid', { cid })
@@ -75,7 +79,8 @@ export class ArticleService {
   async create(article: Partial<Article>): Promise<any> {
     const id = this.snowflake.getUniqueID()
     try {
-      let { status, category, tags } = article
+      const { status, category } = article
+      let { tags } = article
       Object.assign(article, { id })
 
       if (status === PublishStatus.published) {
@@ -89,7 +94,7 @@ export class ArticleService {
         tags = await this.tagService.findByIds(tags)
       }
 
-      const existCate = await this.categoryService.findById(category)
+      const existCate = await this.categoryService.findById(Number(category))
       const newArticle = await this.articleRepository.create({
         ...article,
         tags,

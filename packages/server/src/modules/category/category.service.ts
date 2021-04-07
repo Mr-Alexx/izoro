@@ -32,7 +32,9 @@ export class CategoryService {
   async create(category: Partial<Category>): Promise<any> {
     let { pid } = category
     pid = pid || 0
-    const existCategory = await this.categoryReposity.find({ where: { name, pid } })
+    const existCategory = await this.categoryReposity.find({
+      where: { name, pid },
+    })
 
     if (existCategory.length > 0) {
       throw new HttpException('该分类已存在！', HttpStatus.BAD_REQUEST)
