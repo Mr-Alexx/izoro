@@ -7,7 +7,7 @@
  * @description js Number最大长度不超过17位,否则会出现精度丢失的问题
  * 原文链接：https://blog.csdn.net/qq_33270001/article/details/108800547
  */
-export class SnowflakeID {
+export default class SnowflakeID {
   constructor(options?: Record<any, any>, private seq?: number, private mid?: number, private offset?: number, private lastTime?: number) {
     options = options || {}
     this.seq = 0

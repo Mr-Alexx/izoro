@@ -23,15 +23,26 @@ export class ArticleController {
    */
   @Get()
   @HttpCode(HttpStatus.OK)
-  @ApiQuery({ name: 'pulish_at', description: '发布时间', required: false, type: Date, example: '2021-03-04 22:53:00' })
-  @ApiQuery({ name: 'create_at', description: '创建时间', required: false, type: Date, example: '2021-03-04 22:53:00' })
-  @ApiQuery({ name: 'public_status', description: '公开状态', required: false, enum: PublicStatus, example: PublicStatus.public })
+  @ApiQuery({ name: 'pulish_at_start', description: '发布开始时间', required: false, type: Date, example: '2021-03-04 22:53:00' })
+  @ApiQuery({ name: 'pulish_at_end', description: '发布结束时间', required: false, type: Date, example: '2021-03-04 22:53:00' })
+  @ApiQuery({ name: 'create_at_start', description: '创建开始时间', required: false, type: Date, example: '2021-03-04 22:53:00' })
+  @ApiQuery({ name: 'create_at_end', description: '创建结束时间', required: false, type: Date, example: '2021-03-04 22:53:00' })
+  @ApiQuery({ name: 'tags', description: '标签id，多个用英文逗号分开', required: false, type: String, example: '1, 2' })
+  @ApiQuery({ name: 'cid', description: '分类id', required: false, type: String, example: 1 })
   @ApiQuery({ name: 'publish_status', description: '发布状态', required: false, enum: PublishStatus, example: PublishStatus.published })
-  @ApiQuery({ name: 'title', description: '标题', required: false, type: String, example: 'js' })
+  @ApiQuery({ name: 'keyword', description: '搜索关键词', required: false, type: String, example: '测试' })
   @ApiQuery({ name: 'limit', description: '每页条数', required: true, type: Number, example: 20 })
   @ApiQuery({ name: 'page', description: '页码', required: true, type: Number, example: 1 })
   async findAll(@Query() query: Record<string, any>): Promise<any> {
     return this.articleService.findAll(query)
+  }
+
+  /**
+   * @description id查找
+   */
+  @Get(':id')
+  findById(@Param('id') id: string): Promise<Article> {
+    return this.articleService.findById(id)
   }
 
   /**
