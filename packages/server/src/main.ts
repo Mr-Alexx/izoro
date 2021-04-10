@@ -62,14 +62,14 @@ async function bootstrap() {
   )
 
   const options = new DocumentBuilder()
-    .setTitle('nestjs swagger测试文档')
+    .setTitle('nestjs bl')
     .setDescription('nestjs实现的restful接口')
     .setVersion('1.0.0')
     // .addTag('文章模块')
     // .setBasePath('http://localhost:5000')
     .build()
   const document = SwaggerModule.createDocument(app, options)
-  SwaggerModule.setup('/api-doc', app, document)
+  SwaggerModule.setup('/doc', app, document)
 
   await app.listen(3000)
   console.log(`App is listen on http://localhost:${3000}`)

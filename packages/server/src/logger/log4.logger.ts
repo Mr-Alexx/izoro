@@ -13,8 +13,9 @@ const resolvePath = (dir, filename) => join(__dirname, LOG_PATH, dir, filename)
 
 const commonCinfig = {
   type: 'dateFile',
-  pattern: '-yyyy-MM-dd.log',
+  pattern: 'yyyy-MM-dd.log',
   alwaysIncludePattern: true,
+  daysToKeep: 30,
 }
 
 log4js.configure({

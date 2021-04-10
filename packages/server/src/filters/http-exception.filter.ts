@@ -9,7 +9,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from
  */
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp()
     const url = ctx.getRequest().url // 请求路由地址
     // 获取错误码，默认服务器错误码（500）
