@@ -103,6 +103,7 @@ module.exports = {
     'indent': [2, 2, {
       'SwitchCase': 1
     }],
+    "object-curly-spacing": ["error","always"]
     // 强制在函数名与(间有空格
     // 'space-before-function-paren': [2, 'always'],
   }                               

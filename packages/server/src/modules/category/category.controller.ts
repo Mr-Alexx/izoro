@@ -1,3 +1,10 @@
+/**
+ * @format
+ * @description 分类控制器
+ * @module module/category/controller
+ * @author 潜
+ */
+
 import { Body, Controller, Delete, Get, Post, Put, Query, UseGuards } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'

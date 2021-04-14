@@ -92,3 +92,6 @@ Nest is [MIT licensed](LICENSE).
 ## 自动格式化
 
 [自动格式化](https://blog.csdn.net/weixin_42357837/article/details/111909496)
+
+# .prettierrc参考配置
+[参考配置](https://www.jianshu.com/p/a3b13dda486a)

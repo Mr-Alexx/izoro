@@ -1,40 +1,42 @@
-/**
- * @description 服务端异常过滤器
- * @filters filters/server-exception.filter.ts
- * @author 潜
- */
+/** @format */
 
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
+// /**
+//  * @description 服务端异常过滤器
+//  * @filters filters/server-exception.filter.ts
+//  * @author 潜
+//  */
 
-@Catch()
-export default class ServerExceptionFilter implements ExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost): void {
-    const ctx = host.switchToHttp()
-    const req = ctx.getRequest()
-    const res = ctx.getResponse()
+// import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 
-    const code = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
+// @Catch()
+// export default class ServerExceptionFilter implements ExceptionFilter {
+//   catch(exception: unknown, host: ArgumentsHost): void {
+//     const ctx = host.switchToHttp()
+//     const req = ctx.getRequest()
+//     const res = ctx.getResponse()
 
-    const logFormat = `<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    Request original url: ${req.originalUrl}
-    Method: ${req.method}
-    IP: ${req.ip}
-    Status code: ${code}
-    Response: ${exception}
-    \n  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    `
+//     const code = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
 
-    const err = {
-      code,
-      msg: exception.message,
-      success: false,
-      _t: new Date().getTime(),
-    }
+//     const logFormat = `<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//     Request original url: ${req.originalUrl}
+//     Method: ${req.method}
+//     IP: ${req.ip}
+//     Status code: ${code}
+//     Response: ${exception}
+//     \n  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//     `
 
-    // 返回错误响应
-    const response = ctx.getResponse()
-    response.code(code).send(err)
+//     const err = {
+//       code,
+//       msg: exception.message,
+//       success: false,
+//       _t: new Date().getTime(),
+//     }
 
-    errorLogger.error(url, err)
-  }
-}
+//     // 返回错误响应
+//     const response = ctx.getResponse()
+//     response.code(code).send(err)
+
+//     errorLogger.error(url, err)
+//   }
+// }

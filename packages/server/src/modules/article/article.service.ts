@@ -1,11 +1,13 @@
-import { PublishStatus } from '@/interfaces/status.interface'
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
-import { In, Repository } from 'typeorm'
-import { CategoryService } from '../category/category.service'
-import { TagService } from '../tag/tag.service'
-import { Article } from './article.entity'
-import { CacheService } from './cache.service'
+/** @format */
+
+import {PublishStatus} from '@/interfaces/status.interface'
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common'
+import {InjectRepository} from '@nestjs/typeorm'
+import {In, Repository} from 'typeorm'
+import {CategoryService} from '../category/category.service'
+import {TagService} from '../tag/tag.service'
+import {Article} from './article.entity'
+import {CacheService} from './cache.service'
 import * as FlakeId from 'flakeid' // module.export 模块，需要使用该引用模式
 import _ from '@/utils'
 
@@ -24,9 +26,9 @@ export class ArticleService {
    * @desc 获取文章列表
    * @param { any } query 查询参数
    */
-  async findAll(queryObj: any = {}): Promise<{ list: any[]; total: number }> {
-    const { keyword, cid, status, tags, create_at_start, create_at_end, publish_at_start, publish_at_end } = queryObj
-    let { page, limit, sort } = queryObj
+  async findAll(queryObj: any = {}): Promise<{list: any[]; total: number}> {
+    const {keyword, cid, status, tags, create_at_start, create_at_end, publish_at_start, publish_at_end} = queryObj
+    let {page, limit, sort} = queryObj
 
     page = +queryObj.page || 1
     limit = +queryObj.limit || 10
@@ -45,7 +47,16 @@ export class ArticleService {
     try {
       const query = this.articleRepository
         .createQueryBuilder('article')
-        .select(['article.id', 'article.title', 'article.cover', 'article.create_at', 'article.publish_at', 'article.update_at', 'article.status', 'article.views'])
+        .select([
+          'article.id',
+          'article.title',
+          'article.cover',
+          'article.create_at',
+          'article.publish_at',
+          'article.update_at',
+          'article.status',
+          'article.views',
+        ])
         .innerJoin('article.category', 'category')
         .addSelect(['category.name', 'category.id'])
         .leftJoin('article.tags', 'tag')
@@ -54,26 +65,26 @@ export class ArticleService {
         .take(limit)
         .orderBy(`article.${sort}`, sort.indexOf('-') > -1 ? 'ASC' : 'DESC')
 
-      keyword && query.andWhere('article.title like :keyword', { keyword })
+      keyword && query.andWhere('article.title like :keyword', {keyword})
 
-      cid && query.andWhere('article.categoryId = :cid', { cid })
+      cid && query.andWhere('article.categoryId = :cid', {cid})
 
-      status && query.andWhere('article.status = :status', { status })
+      status && query.andWhere('article.status = :status', {status})
 
-      _.isString(tags) && query.andWhere(`tag.id IN (:tt)`, { tt: tags })
+      _.isString(tags) && query.andWhere(`tag.id IN (:tt)`, {tt: tags})
 
       if (_.isString(create_at_start) && _.isString(create_at_end)) {
-        query.andWhere('article.create_at BETWEEN :start AND :end', { start: create_at_start, end: create_at_end })
+        query.andWhere('article.create_at BETWEEN :start AND :end', {start: create_at_start, end: create_at_end})
       }
 
       if (_.isString(publish_at_start) && _.isString(publish_at_start)) {
-        query.andWhere('article.publish_at BETWEEN :start AND :end', { start: publish_at_start, end: publish_at_end })
+        query.andWhere('article.publish_at BETWEEN :start AND :end', {start: publish_at_start, end: publish_at_end})
       }
 
       const [list, total] = await query.getManyAndCount()
       // 设置缓存
-      this.cacheService.set(`article:list:${cacheKey}`, { list, total })
-      return { list, total }
+      this.cacheService.set(`article:list:${cacheKey}`, {list, total})
+      return {list, total}
     } catch (err) {
       throw new HttpException(err, HttpStatus.BAD_REQUEST)
     }
@@ -95,7 +106,7 @@ export class ArticleService {
       .addSelect(['category.id', 'category.name'])
       .leftJoin('article.tags', 'tag')
       .addSelect(['tag.id', 'tag.name'])
-      .where('article.id = :id', { id })
+      .where('article.id = :id', {id})
       .getOne()
 
     if (!article) {
@@ -113,9 +124,9 @@ export class ArticleService {
   async create(article: Partial<Article>): Promise<any> {
     const id = this.snowflake.gen()
     try {
-      const { status, category } = article
-      let { tags } = article
-      Object.assign(article, { id })
+      const {status, category} = article
+      let {tags} = article
+      Object.assign(article, {id})
 
       if (status === PublishStatus.published) {
         // 此处不用 = 赋值的原因是ts会进行类型检测，不能将string类型赋值给Date类型
@@ -156,8 +167,8 @@ export class ArticleService {
       await this.articleRepository
         .createQueryBuilder()
         .update(Article)
-        .set({ status: -1 })
-        .where({ id: In(ids) })
+        .set({status: -1})
+        .where({id: In(ids)})
         .execute()
       return Promise.resolve('删除成功！')
     } catch (err) {
@@ -171,7 +182,7 @@ export class ArticleService {
       await this.articleRepository
         .createQueryBuilder()
         .delete()
-        .where({ id: In(ids) })
+        .where({id: In(ids)})
         .execute()
       return Promise.resolve('删除成功！')
     } catch (err) {
