@@ -8,5 +8,6 @@ export interface MultipartFile {
   filename: string
   encoding: string
   mimetype: string
+  name?: string
   fields: import('fastify-multipart').MultipartFields
 }

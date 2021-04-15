@@ -281,3 +281,6 @@ async function bootstrap() {
 ## 关于long id
 [知乎：雪花算法生成的id是全球唯一吗？](https://www.zhihu.com/question/447384625)
 [node snowflake](https://github.com/utkarsh-pro/nodejs-snowflake#readme)
+
+## Redis 安装
+[windows](https://www.cnblogs.com/liuqingzheng/p/9831331.html)

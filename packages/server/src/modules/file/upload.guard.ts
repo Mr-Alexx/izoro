@@ -12,6 +12,7 @@ import { promisify } from 'util'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as dayjs from 'dayjs'
+import getEtag from '@/utils/qetag'
 
 @Injectable()
 export class UploadGuard implements CanActivate {
@@ -35,9 +36,9 @@ export class UploadGuard implements CanActivate {
 
     try {
       const pump = promisify(pipeline)
-
-      await pump(file.file, fs.createWriteStream(`${folder}/${new Date().getTime()}.${file.filename}`))
-      console.log(file)
+      const newFileName = await getEtag(file.toBuffer())
+      await pump(file.file, fs.createWriteStream(`${folder}/${new Date().getTime()}.${newFileName}`))
+      file['name'] = newFileName
     } catch (err) {
       console.error(err)
     }
