@@ -1,3 +1,9 @@
+/**
+ * @format
+ * @description 应用模块集合
+ * @author 潜
+ */
+
 import { Module } from '@nestjs/common'
 import dbConfig from '@/config/db.config'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -11,6 +17,7 @@ import { TagModule } from './modules/tag/tag.module'
 import { UserModule } from './modules/user/user.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CategoryModule } from './modules/category/category.module'
+import { FileModule } from './modules/file/file.module'
 
 @Module({
   imports: [
@@ -26,6 +33,7 @@ import { CategoryModule } from './modules/category/category.module'
     UserModule,
     AuthModule,
     CategoryModule,
+    FileModule,
   ],
   providers: [],
 })

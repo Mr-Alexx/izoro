@@ -1,3 +1,5 @@
+/** @format */
+
 import { NestFactory, Reflector } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify'
@@ -10,12 +12,15 @@ import fastifyHelmet from 'fastify-helmet'
 import fastifyRateLimit from 'fastify-rate-limit'
 import fastifyCompress from 'fastify-compress'
 import fastifyCookie from 'fastify-cookie'
+import fastifyMultipart from 'fastify-multipart'
 import { errorLogger } from './logger/log4.logger'
 import fastifySwagger from 'fastify-swagger'
 import { ClassSerializerInterceptor } from '@nestjs/common'
 
 async function bootstrap() {
-  const adapter = new FastifyAdapter()
+  const adapter = new FastifyAdapter({
+    // http2: true, // 设为true需要nginx配置
+  })
   adapter.register(fastifyRateLimit, {
     // 限制单ip单位时间访问频率
     timeWindow: 1000 * 60, // 单位时间ms
@@ -47,6 +52,12 @@ async function bootstrap() {
     contentSecurityPolicy: false,
   }) // 通过适当地设置 HTTP 头，Helmet 可以帮助保护您的应用免受一些众所周知的 Web 漏洞的影响
   adapter.register(fastifyCompress) // 压缩请求
+  adapter.register(fastifyMultipart, {
+    limits: {
+      files: 10,
+      fileSize: 2 * 1024 * 1000, // 2MB
+    },
+  }) // 文件上传解析file
   adapter.register(fastifySwagger)
 
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter)
@@ -65,7 +76,6 @@ async function bootstrap() {
     .setTitle('nestjs bl')
     .setDescription('nestjs实现的restful接口')
     .setVersion('1.0.0')
-    // .addTag('文章模块')
     // .setBasePath('http://localhost:5000')
     .build()
   const document = SwaggerModule.createDocument(app, options)

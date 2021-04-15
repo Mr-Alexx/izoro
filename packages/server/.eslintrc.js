@@ -27,7 +27,7 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/consistent-type-assertions': 'off',
     "@typescript-eslint/no-angle-bracket-type-assertion": 'off',
-    'no-empty-function': 'off',
+    '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-this-alias': 'off',
     /**
      * 变量名必须是 camelcase 风格的
