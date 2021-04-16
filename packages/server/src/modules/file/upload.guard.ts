@@ -7,12 +7,6 @@
 
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { FastifyRequest } from 'fastify'
-import { pipeline } from 'stream'
-import { promisify } from 'util'
-import * as fs from 'fs'
-import * as path from 'path'
-import * as dayjs from 'dayjs'
-import getEtag from '@/utils/qetag'
 
 @Injectable()
 export class UploadGuard implements CanActivate {
@@ -25,22 +19,6 @@ export class UploadGuard implements CanActivate {
     const file = await req.file()
     if (!file) {
       throw new HttpException('File expected!', HttpStatus.BAD_REQUEST)
-    }
-    const type = file.mimetype.split('/')[0]
-    const date = dayjs().format('YYYY-MM-DD')
-    const rootFolderName = type === 'image' ? 'images' : 'files'
-    const folder = path.join(process.cwd(), `/public/upload/${rootFolderName}/${date}`)
-    if (!fs.existsSync(folder)) {
-      fs.mkdirSync(folder)
-    }
-
-    try {
-      const pump = promisify(pipeline)
-      const newFileName = await getEtag(file.toBuffer())
-      await pump(file.file, fs.createWriteStream(`${folder}/${new Date().getTime()}.${newFileName}`))
-      file['name'] = newFileName
-    } catch (err) {
-      console.error(err)
     }
 
     req['incomingFile'] = file // 将上传的文件对象挂载到req内

@@ -6,12 +6,12 @@
  */
 
 import { MultipartFile } from '@/interfaces/global.interface'
-
-import { Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common'
+import { UploadFile } from '@/decorators/file.decorator'
+import { Controller, HttpCode, HttpStatus, Post, UseGuards, UseInterceptors } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { File } from './file.decorator'
 import { FileService } from './file.service'
-import { UploadGuard } from './upload.guard'
+import { FileInterceptor } from '@/interceptors/file.interceptor'
+import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 
 @Controller('file')
 @ApiTags('file')
@@ -20,8 +20,9 @@ export class FileController {
 
   @Post('upload')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(UploadGuard)
-  async upload(@File() file: MultipartFile): Promise<any> {
+  @UseInterceptors(FileInterceptor)
+  @UseGuards(JwtAuthGuard)
+  async upload(@UploadFile() file: MultipartFile): Promise<any> {
     return await this.fileService.upload(file)
   }
 }

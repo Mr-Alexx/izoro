@@ -9,7 +9,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeor
 
 @Entity()
 export class File {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string
 
   @Column({ comment: '原文件名' })
@@ -30,7 +30,7 @@ export class File {
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'create_at',
+    name: 'create_at'
   })
   create_at: Date
 }

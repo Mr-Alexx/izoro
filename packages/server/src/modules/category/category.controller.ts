@@ -7,7 +7,7 @@
 
 import { Body, Controller, Delete, Get, Post, Put, Query, UseGuards } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
+import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { Category } from './category.entity'
 import { CategoryService } from './category.service'
 

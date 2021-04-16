@@ -13,14 +13,14 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common'
 import { ArticleService } from './article.service'
 // import { Article } from './article.model';
 import { ApiQuery, ApiTags } from '@nestjs/swagger'
 import { PublishStatus } from '@/interfaces/status.interface'
 import { CacheService } from './cache.service'
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
+import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { Article } from './article.entity'
 
 // @Crud({
@@ -44,28 +44,28 @@ export class ArticleController {
     description: '发布开始时间',
     required: false,
     type: Date,
-    example: '2021-03-04 22:53:00',
+    example: '2021-03-04 22:53:00'
   })
   @ApiQuery({
     name: 'pulish_at_end',
     description: '发布结束时间',
     required: false,
     type: Date,
-    example: '2021-03-04 22:53:00',
+    example: '2021-03-04 22:53:00'
   })
   @ApiQuery({
     name: 'create_at_start',
     description: '创建开始时间',
     required: false,
     type: Date,
-    example: '2021-03-04 22:53:00',
+    example: '2021-03-04 22:53:00'
   })
   @ApiQuery({
     name: 'create_at_end',
     description: '创建结束时间',
     required: false,
     type: Date,
-    example: '2021-03-04 22:53:00',
+    example: '2021-03-04 22:53:00'
   })
   @ApiQuery({ name: 'tags', description: '标签id，多个用英文逗号分开', required: false, type: String, example: '1, 2' })
   @ApiQuery({ name: 'cid', description: '分类id', required: false, type: String, example: 1 })
@@ -74,7 +74,7 @@ export class ArticleController {
     description: '发布状态',
     required: false,
     enum: PublishStatus,
-    example: PublishStatus.published,
+    example: PublishStatus.published
   })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', required: false, type: String, example: '测试' })
   @ApiQuery({ name: 'limit', description: '每页条数', required: true, type: Number, example: 20 })

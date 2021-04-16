@@ -13,13 +13,28 @@ export class FileService {
     private readonly fileReposity: Repository<File>
   ) {}
 
-  upload(file: MultipartFile): Promise<{ id: string; url: string }> {
-    console.log(file)
-    // const fileObj = await this.fileReposity.create({
-    //   name: file['formatName'],
-    //   type: file.mimetype,
+  async upload(file: MultipartFile): Promise<{ id: string; url: string }> {
+    const existFile = await this.fileReposity.findOne({ url: file.url })
+    if (existFile) {
+      return {
+        id: existFile.id,
+        url: existFile.url
+      }
+    }
 
-    // })
-    return Promise.resolve({ id: 'x', url: 'x' })
+    const obj: Partial<File> = {
+      name: file.name,
+      mimetype: file.mimetype,
+      url: file.url,
+      size: file.size,
+      original_name: file.filename
+    }
+    const newFile = await this.fileReposity.create(obj)
+    await this.fileReposity.save(newFile)
+
+    return {
+      id: newFile.id,
+      url: newFile.url
+    }
   }
 }

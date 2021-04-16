@@ -14,7 +14,6 @@ import * as crypto from 'crypto'
 export default function getEtag(buffer: any): Promise<string> {
   // 判断传入的参数是buffer还是stream还是filepath
   let mode = 'buffer'
-
   if (typeof buffer === 'string') {
     buffer = fs.createReadStream(buffer)
     mode = 'stream'
@@ -47,7 +46,7 @@ export default function getEtag(buffer: any): Promise<string> {
       sha1Buffer = sha1(sha1Buffer)
     }
 
-    sha1Buffer = Buffer.concat([new Buffer([prefix]), sha1Buffer], sha1Buffer.length + 1)
+    sha1Buffer = Buffer.concat([Buffer.from([prefix]), sha1Buffer], sha1Buffer.length + 1)
 
     return sha1Buffer.toString('base64').replace(/\//g, '_').replace(/\+/g, '-')
   }
