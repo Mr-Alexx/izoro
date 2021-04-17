@@ -18,6 +18,7 @@ import { UserModule } from './modules/user/user.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CategoryModule } from './modules/category/category.module'
 import { FileModule } from './modules/file/file.module'
+import { MenuModule } from './modules/menu/menu.module'
 
 @Module({
   imports: [
@@ -25,8 +26,8 @@ import { FileModule } from './modules/file/file.module'
       useFactory: async () => ({
         type: 'mysql',
         entities: [`${__dirname}/modules/**/*.entity{.ts,.js}`],
-        ...dbConfig,
-      }),
+        ...dbConfig
+      })
     }),
     ArticleModule,
     TagModule,
@@ -34,7 +35,8 @@ import { FileModule } from './modules/file/file.module'
     AuthModule,
     CategoryModule,
     FileModule,
+    MenuModule
   ],
-  providers: [],
+  providers: []
 })
 export class AppModule {}

@@ -93,5 +93,13 @@ Nest is [MIT licensed](LICENSE).
 
 [自动格式化](https://blog.csdn.net/weixin_42357837/article/details/111909496)
 
-# .prettierrc参考配置
+## .prettierrc参考配置
 [参考配置](https://www.jianshu.com/p/a3b13dda486a)
+
+
+## 权限管理
+[参考](https://blog.csdn.net/javageektech/article/details/107075199)
+经典设计：
+  - 用户管理
+  - 角色管理
+  - 菜单管理

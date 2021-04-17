@@ -1,3 +1,5 @@
+/** @format */
+
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { User } from '../user/user.entity'
@@ -17,7 +19,7 @@ export class AuthService {
   }
 
   async login(user: Partial<User>) {
-    const { id, role } = await this.userService.login(user)
-    return this.generateJwt({ id, role })
+    const { id, roles } = await this.userService.login(user)
+    return this.generateJwt({ id })
   }
 }

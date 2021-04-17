@@ -10,7 +10,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeor
 @Entity()
 export class File {
   @PrimaryGeneratedColumn()
-  id: string
+  id: number
 
   @Column({ comment: '原文件名' })
   original_name: string

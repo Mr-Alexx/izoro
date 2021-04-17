@@ -13,7 +13,7 @@ export class FileService {
     private readonly fileReposity: Repository<File>
   ) {}
 
-  async upload(file: MultipartFile): Promise<{ id: string; url: string }> {
+  async upload(file: MultipartFile): Promise<{ id: number; url: string }> {
     const existFile = await this.fileReposity.findOne({ url: file.url })
     if (existFile) {
       return {

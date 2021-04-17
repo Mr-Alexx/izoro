@@ -1,9 +1,21 @@
+/** @format */
+
 import { UserStatus } from '@/interfaces/status.interface'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, IsString } from 'class-validator'
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert } from 'typeorm'
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BeforeInsert,
+  ManyToMany,
+  JoinTable
+} from 'typeorm'
 import * as bcrypt from 'bcrypt'
 import { Exclude } from 'class-transformer'
+import { Role } from '../role/role.entity'
 
 const SALT_OR_ROUNDS = 10
 
@@ -42,11 +54,9 @@ export class User {
   @Column({ length: 100, comment: '密码' })
   password: string
 
-  @ApiProperty({ description: '角色' })
-  @IsNotEmpty()
-  @IsString()
-  @Column({ length: 100, comment: '角色' })
-  role: string
+  // 角色，多对多
+  @ManyToMany(() => Role, role => role.users, { cascade: true })
+  roles: Array<Role>
 
   @ApiProperty({ required: false, description: '昵称' })
   @Column({ length: 100, comment: '昵称', default: null })
@@ -64,28 +74,28 @@ export class User {
     type: 'enum',
     enum: UserStatus,
     default: UserStatus.active,
-    comment: '账号状态：-1 作废，0 冻结，1 正常',
+    comment: '账号状态：-1 作废，0 冻结，1 正常'
   })
   status: UserStatus
 
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'create_at',
+    name: 'create_at'
   })
   create_at: Date
 
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
-    name: 'update_at',
+    name: 'update_at'
   })
   update_at: Date
 
   @UpdateDateColumn({
     type: 'datetime',
     comment: '最后登录时间',
-    name: 'last_login_at',
+    name: 'last_login_at'
   })
   last_login_at: Date
 

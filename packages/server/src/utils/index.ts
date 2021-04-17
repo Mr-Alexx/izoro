@@ -1,3 +1,5 @@
+/** @format */
+
 class Utils {
   private getTypeOf(value: any): string {
     const str = Object.prototype.toString.call(value)
@@ -22,7 +24,13 @@ class Utils {
     return this.getTypeOf(value) === 'null'
   }
   isEmpty(value) {
-    return this.isUndefined(value) || this.isNull(value) || (this.isArray(value) && value.length === 0) || (this.isObject(value) && Object.keys(value).length === 0) || value === ''
+    return (
+      this.isUndefined(value) ||
+      this.isNull(value) ||
+      (this.isArray(value) && value.length === 0) ||
+      (this.isObject(value) && Object.keys(value).length === 0) ||
+      value === ''
+    )
   }
 }
 
