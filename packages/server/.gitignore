@@ -34,3 +34,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 .env.prod
+
+# Upload
+public/upload/images/*
+public/upload/files/*
