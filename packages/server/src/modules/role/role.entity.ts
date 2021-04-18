@@ -5,6 +5,7 @@
  * @author 潜
  */
 
+import { IsString } from 'class-validator'
 import {
   Column,
   CreateDateColumn,
@@ -20,12 +21,13 @@ import { User } from '../user/user.entity'
 @Entity()
 export class Role {
   @PrimaryGeneratedColumn({ comment: '主键' })
-  id: string
+  id: number
 
+  @IsString()
   @Column({ comment: '角色名称' })
   name: string
 
-  @Column({ comment: '描述' })
+  @Column({ comment: '描述', default: null })
   description: string
 
   @ManyToMany(() => User, user => user.roles)

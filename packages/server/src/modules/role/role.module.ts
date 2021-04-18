@@ -1,13 +1,20 @@
-/** @format */
+/**
+ * @format
+ * @description 角色模块
+ * @module modules/role/module
+ * @author 潜
+ */
 
-// import { Module } from "@nestjs/common";
-// import { TypeOrmModule } from "@nestjs/typeorm";
+import { Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { RoleController } from './role.controller'
+import { Role } from './role.entity'
+import { RoleService } from './role.service'
 
-// @Module({
-//   // service内要想使用repository，必须在此处导入Entity
-//   imports: [TypeOrmModule.forFeature([])],
-//   providers: [UserService],
-//   controllers: [UserController],
-//   exports: [UserService],
-// })
-// export class UserModule {}
+@Module({
+  imports: [TypeOrmModule.forFeature([Role])],
+  controllers: [RoleController],
+  providers: [RoleService],
+  exports: [RoleService]
+})
+export class RoleModule {}

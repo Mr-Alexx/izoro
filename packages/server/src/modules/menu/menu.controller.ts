@@ -19,10 +19,7 @@ export class MenuController {
   @Get()
   @UseGuards(JwtAuthGuard)
   async findAll(): Promise<any> {
-    return Promise.resolve({
-      total: 0,
-      list: []
-    })
+    return this.menuService.findAll()
   }
 
   @Get(':id')
@@ -41,13 +38,13 @@ export class MenuController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  async update(@Param('id') id: number, @Body('data') data: Partial<Menu>): Promise<string> {
-    return Promise.resolve('更新成功')
+  async update(@Param('id') id: number, @Body() menu: Partial<Menu>): Promise<any> {
+    return this.menuService.updateById(id, menu)
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number): Promise<string> {
-    return Promise.resolve('删除成功')
+    return this.menuService.deleteById(id)
   }
 }

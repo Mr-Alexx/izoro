@@ -1,3 +1,5 @@
+/** @format */
+
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
@@ -7,7 +9,7 @@ import { User } from './user.entity'
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>
   ) {}
 
   /**
@@ -42,8 +44,8 @@ export class UserService {
     const { account, password } = user
     const existUser = await this.userRepository.findOne({
       where: {
-        account,
-      },
+        account
+      }
     })
     if (!existUser) {
       throw new HttpException('帐号不存在！', HttpStatus.BAD_REQUEST)
@@ -76,11 +78,11 @@ export class UserService {
     const [list, total] = await this.userRepository.findAndCount({
       where,
       order: {
-        id: 'ASC',
+        id: 'ASC'
       },
       skip: (page - 1) * limit,
       take: limit,
-      cache: false,
+      cache: false
     })
     return { list, total }
   }

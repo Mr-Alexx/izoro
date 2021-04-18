@@ -1,7 +1,3 @@
-/** @format */
-
-import { MenuNodeTypes, MenuStatus } from '@/interfaces/status.interface'
-import { IsNumber, IsString } from 'class-validator'
 /**
  * @format
  * @description 菜单模型
@@ -9,15 +5,9 @@ import { IsNumber, IsString } from 'class-validator'
  * @author 潜
  */
 
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from 'typeorm'
+import { MenuNodeTypes, MenuStatus } from '@/interfaces/status.interface'
+import { IsNumber, IsString } from 'class-validator'
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { Role } from '../role/role.entity'
 
 @Entity()

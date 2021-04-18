@@ -1,4 +1,9 @@
-/** @format */
+/**
+ * @format
+ * @description 菜单服务
+ * @module modules/menu/service
+ * @author 潜
+ */
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -14,10 +19,11 @@ export class MenuService {
   ) {}
 
   async findAll(): Promise<any> {
-    return Promise.resolve({
-      total: 0,
-      list: []
-    })
+    const [total, list] = await this.menuRepository.findAndCount()
+    return {
+      total,
+      list
+    }
   }
 
   async create(menu: Partial<Menu>): Promise<number> {
@@ -37,5 +43,27 @@ export class MenuService {
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR)
     }
+  }
+
+  async updateById(id: number, menu: Partial<Menu>): Promise<Menu> {
+    if (!id) {
+      throw new HttpException('menu id 必须有！', HttpStatus.BAD_REQUEST)
+    }
+    const oldMenu = await this.menuRepository.findOne(id)
+    if (!oldMenu) {
+      throw new HttpException('找不到对应id的menu！', HttpStatus.NOT_FOUND)
+    }
+
+    const newMenu = await this.menuRepository.merge(oldMenu, menu)
+    return this.menuRepository.save(newMenu)
+  }
+
+  async deleteById(id: number): Promise<string> {
+    if (!id) {
+      throw new HttpException('menu id 必须有！', HttpStatus.BAD_REQUEST)
+    }
+
+    await this.menuRepository.delete(id)
+    return `删除成功！`
   }
 }

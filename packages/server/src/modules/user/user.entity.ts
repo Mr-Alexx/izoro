@@ -10,8 +10,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BeforeInsert,
-  ManyToMany,
-  JoinTable
+  ManyToMany
 } from 'typeorm'
 import * as bcrypt from 'bcrypt'
 import { Exclude } from 'class-transformer'
