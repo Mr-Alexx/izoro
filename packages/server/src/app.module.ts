@@ -19,6 +19,7 @@ import { AuthModule } from './modules/auth/auth.module'
 import { CategoryModule } from './modules/category/category.module'
 import { FileModule } from './modules/file/file.module'
 import { MenuModule } from './modules/menu/menu.module'
+import { RoleModule } from './modules/role/role.module'
 
 @Module({
   imports: [
@@ -35,7 +36,8 @@ import { MenuModule } from './modules/menu/menu.module'
     AuthModule,
     CategoryModule,
     FileModule,
-    MenuModule
+    MenuModule,
+    RoleModule
   ],
   providers: []
 })

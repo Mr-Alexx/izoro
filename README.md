@@ -284,3 +284,7 @@ async function bootstrap() {
 
 ## Redis 安装
 [windows](https://www.cnblogs.com/liuqingzheng/p/9831331.html)
+
+## windows mysql
+[重置密码](https://blog.csdn.net/qq_36894378/article/details/107043741)
+[navicat 15](https://www.cnblogs.com/cyfblogs/p/13518305.html)
