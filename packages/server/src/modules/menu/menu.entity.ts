@@ -23,7 +23,8 @@ export class Menu {
   @Column({ comment: '菜单标识' })
   menu_code: string
 
-  @Column({ comment: '父id', default: null })
+  @IsNumber()
+  @Column({ comment: '父id', default: 0 })
   pid: number
 
   @Column({ comment: '节点类型，1目录 2页面 3按钮', default: MenuNodeTypes.directory })
@@ -39,7 +40,7 @@ export class Menu {
   @Column({ comment: '页面路径', default: null })
   url: string
 
-  @Column({ comment: '菜单树层级，以便于查询指定层级的菜单', default: null })
+  @Column({ comment: '菜单树层级，以便于查询指定层级的菜单', default: 1 })
   level: number
 
   @Column({
