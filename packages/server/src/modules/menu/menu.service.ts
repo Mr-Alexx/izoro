@@ -19,31 +19,28 @@ export class MenuService {
   ) {}
 
   async findAll(): Promise<any> {
-    const [total, list] = await this.menuRepository.findAndCount()
-    return {
-      total,
-      list
-    }
+    const data = await this.menuRepository.find()
+    return this.makeTree(data)
   }
 
-  makeTree(list: any[], pid = 0) {
-    if (list.length === 0) {
-      return list
-    }
-
-    // const arr = list.filter(item => item.pid === pid)
-    // arr.forEach(item => {
-    //   const children = list.filter(v => v.pid === item.id)
-    //   if (children.length > 0) {
-    //     item.children = this.makeTree(children, item.id)
-    //   }
-    // })
-    // return arr
+  /**
+   * @description 构造按钮属性结构-递归
+   * @param { Array } list
+   * @param { number } pid default: 0
+   * @return { Array }
+   */
+  makeTree(list: any[], pid = 0): any[] {
     const arr = []
     list.forEach(item => {
       if (item.pid === pid) {
+        const children = this.makeTree(list, item.id)
+        if (children.length > 0) {
+          item.children = children
+        }
+        arr.push(item)
       }
     })
+    return arr
   }
 
   /**
