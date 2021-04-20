@@ -51,6 +51,38 @@ export const constantRoutes = [
         meta: { title: '工作台', icon: 'home', affix: true } // dashboard
       }
     ]
+  },
+  {
+    path: '/permission',
+    component: Layout,
+    redirect: '/permission/index',
+    meta: { title: '系统管理', icon: 'el-icon-setting' },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/permission/index'),
+        name: 'Permission',
+        meta: { title: '权限管理', icon: '' }
+      },
+      {
+        path: 'user',
+        component: () => import('@/views/permission/user'),
+        name: 'User',
+        meta: { title: '账号管理', icon: '' }
+      },
+      {
+        path: 'role',
+        component: () => import('@/views/permission/role'),
+        name: 'Role',
+        meta: { title: '角色管理', icon: '' }
+      },
+      {
+        path: 'menu',
+        component: () => import('@/views/permission/menu'),
+        name: 'Menu',
+        meta: { title: '菜单管理', icon: '' }
+      }
+    ]
   }
 ]
 
