@@ -29,6 +29,7 @@
         label-width="60px"
         show-button
         :loading="confirmLoading"
+        :disabled="actionType === 'view'"
         @cancel="showDialog = false"
         @confirm="handleSubmit"
       />
@@ -37,11 +38,11 @@
 </template>
 
 <script>
-// , ADD_USER, EDIT_USER, DELETE_USER
-import { FETCH_USER_LIST } from '@/api/system'
+// DELETE_USER
+import { FETCH_USER_LIST, ADD_USER, EDIT_USER } from '@/api/system'
 const ACCOUNT_STATUS_LIST = [
-  { value: 1, label: '启用' },
-  { value: 0, label: '禁用' }
+  { value: 0, label: '禁用' },
+  { value: 1, label: '启用' }
 ]
 
 export default {
@@ -65,14 +66,18 @@ export default {
         { field: 'account', title: '账号', minWidth: 120 },
         { field: 'nickname', title: '昵称', minWidth: 80, formatter: 'formatEmpty' },
         { field: 'email', title: '邮箱', minWidth: 120, formatter: 'formatEmpty' },
-        { field: 'status', title: '状态', minWidth: 60 },
+        { field: 'status', title: '状态', minWidth: 60, slots: {
+          default: ({ row }) => [
+            <el-tag type={ row.status === 0 ? 'error' : 'success' }>{ ACCOUNT_STATUS_LIST.filter(v => v.value === row.status)[0].label }</el-tag>
+          ]
+        }},
         { field: 'create_at', title: '创建时间', minWidth: 100 },
         { field: 'update_at', title: '更新新建', minWidth: 100 },
-        { title: '操作', minWidth: 120, slots: {
-          default: (row) => {
+        { title: '操作', minWidth: 160, slots: {
+          default: ({ row }) => {
             return [
-              <el-button size='mini' type='success'>查看</el-button>,
-              <el-button size='mini' type='primary'>编辑</el-button>,
+              <el-button size='mini' type='success' onClick={ this.openDialog.bind(this, 'view', row) }>查看</el-button>,
+              <el-button size='mini' type='primary' onClick={ this.openDialog.bind(this, 'edit', row) }>编辑</el-button>,
               <el-button size='mini' type='danger'>删除</el-button>
             ]
           }
@@ -93,30 +98,68 @@ export default {
         { key: 'phone_number', label: '电话', span: 24, component: { name: 'input' }},
         { key: 'email', label: '邮箱', span: 24, component: { name: 'input' }},
         { key: 'avatar', label: '头像', span: 24, component: { name: 'input' }},
-        { key: 'status', label: '状态', span: 24, required: true, component: { name: 'select', options: [] }}
+        { key: 'status', label: '状态', span: 24, required: true, component: { name: 'select', options: ACCOUNT_STATUS_LIST }}
       ],
-      dialogTitle: '新增账号'
+      dialogTitle: '新增账号',
+      actionType: 'create'
     }
   },
   created () {
-    FETCH_USER_LIST().then(data => (this.data = data.list))
+    this.fetchList()
   },
   methods: {
-    fetchList () {
-
+    async fetchList (form) {
+      this.loading = true
+      try {
+        const data = await FETCH_USER_LIST({
+          page: this.pagination.page,
+          limit: this.pagination.pageSize,
+          ...form
+        })
+        this.data = data.list
+        this.pagination.total = data.total
+      } catch (err) {
+        console.error(err)
+      } finally {
+        this.loading = false
+      }
     },
-    createAccount () {
+    createAccount (row) {
 
     },
     openDialog (type = 'create', row = {}) {
-      this.form = row
+      this.actionType = type
       this.dialogTitle = type === 'create'
         ? '新增账号' : type === 'edit'
           ? `编辑账号-${row.account}` : `查看账号-${row.account}`
       this.showDialog = true
+      this.$nextTick(() => {
+        this.$refs.form.form = row
+        console.log(this.form)
+      })
     },
-    handleSubmit () {
+    handleSubmit (form) {
+      if (this.actionType === 'view') {
+        this.showDialog = false
+        return
+      }
 
+      this.$refs.form.validate().then(async () => {
+        this.confirmLoading = true
+        try {
+          this.actionType === 'create' ? await ADD_USER(form) : await EDIT_USER(form.id, form)
+          this.$message.success(this.actionType === 'edit' ? '编辑成功！' : '新增成功！')
+          this.showDialog = false
+          this.fetchList()
+        } catch (err) {
+          this.$message({
+            type: 'error',
+            message: err
+          })
+        } finally {
+          this.confirmLoading = false
+        }
+      })
     }
   }
 }

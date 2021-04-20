@@ -170,3 +170,11 @@ $border-color: #f1f1f7;
   box-shadow: 0 2px 0 rgba(0,0,0,.045);
   transition: all .3s cubic-bezier(.645,.045,.355,1);
 }
+
+.el-button--mini, .el-button--mini.is-round {
+  padding: 5px 8px;
+  
+  &+.el-button--mini {
+    margin-left: 3px;
+  }
+}

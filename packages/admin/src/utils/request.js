@@ -44,21 +44,11 @@ service.interceptors.response.use(
         message: res.msg || 'Error'
       })
       return Promise.reject(new Error(res.msg || 'Error'))
-
-      // Message({
-      //   type: 'error',
-      //   message: '登录过期，请重新登录'
-      // })
-      // router.replace('/login')
     }
   },
   error => {
-    console.log('err' + error) // for debug
-    Message({
-      type: 'error',
-      message: error.message || error.msg
-    })
-    return Promise.reject(error)
+    console.log(error) // for debug
+    return Promise.reject(error.response.data.msg)
   }
 )
 

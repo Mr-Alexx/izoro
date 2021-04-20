@@ -67,9 +67,10 @@ export const DELETE_MENU = (id) => request({
 })
 
 /* ============== user ============= */
-export const FETCH_USER_LIST = () => request({
+export const FETCH_USER_LIST = (params) => request({
   url: PREFIX + '/user',
-  method: 'GET'
+  method: 'GET',
+  params
 })
 
 // 新增

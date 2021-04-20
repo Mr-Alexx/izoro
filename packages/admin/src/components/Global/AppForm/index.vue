@@ -1,30 +1,34 @@
 <template>
-  <el-form
-    ref="form"
-    :model="form"
-    :rules="formatRules"
-    :status-icon="statusIcon"
-    class="app-form"
-  >
-    <el-row :gutter="20">
-      <el-col
-        v-for="(item, i) in options"
-        :key="i"
-        :lg="item.lg || item.span || 8"
-        :md="item.md || item.span || 8"
-        :sm="item.sm || item.span || 12"
-        :xs="item.xs || item.span || 24"
-      >
-        <el-form-item :label="item.label" :label-width="labelWidth" :prop="item.required ? item.key : ''" class="app-form-item">
-          <SearchColumn v-model="form[item.key]" :column="item" @change="handleChange" />
-        </el-form-item>
-      </el-col>
-    </el-row>
+  <div>
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="formatRules"
+      :status-icon="statusIcon"
+      :disabled="disabled"
+      class="app-form"
+    >
+      <el-row :gutter="20">
+        <el-col
+          v-for="(item, i) in options"
+          :key="i"
+          :lg="item.lg || item.span || 8"
+          :md="item.md || item.span || 8"
+          :sm="item.sm || item.span || 12"
+          :xs="item.xs || item.span || 24"
+        >
+          <el-form-item :label="item.label" :label-width="labelWidth" :prop="item.required ? item.key : ''" class="app-form-item">
+            <SearchColumn v-model="form[item.key]" :column="item" @change="handleChange" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+    </el-form>
     <div v-if="showButton" class="text-center app-form__footer">
       <el-button @click="$emit('cancel')">{{ buttonConfig.cancelText || '取消' }}</el-button>
-      <el-button type="primary" :loading="loading" @click="$emit('confirm')">{{ buttonConfig.confirmText || '确定' }}</el-button>
+      <el-button v-if="showConfirm" type="primary" :loading="loading" @click="$emit('confirm', form)">{{ buttonConfig.confirmText || '确定' }}</el-button>
     </div>
-  </el-form>
+  </div>
 </template>
 
 <script>
@@ -88,6 +92,14 @@ export default {
       default () {
         return {}
       }
+    },
+    showConfirm: {
+      type: Boolean,
+      default: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     },
     options: {
       type: Array,

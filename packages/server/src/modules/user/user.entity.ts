@@ -10,7 +10,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BeforeInsert,
-  ManyToMany
+  ManyToMany,
+  BeforeUpdate
 } from 'typeorm'
 import * as bcrypt from 'bcrypt'
 import { Exclude } from 'class-transformer'
@@ -73,7 +74,7 @@ export class User {
     type: 'enum',
     enum: UserStatus,
     default: UserStatus.active,
-    comment: '账号状态：-1 作废，0 冻结，1 正常'
+    comment: '账号状态：0 禁用，1 启用'
   })
   status: UserStatus
 
@@ -100,6 +101,7 @@ export class User {
 
   // 插入密码前，进行加密
   @BeforeInsert()
+  @BeforeUpdate()
   encrypt(): void {
     this.password = bcrypt.hashSync(this.password, SALT_OR_ROUNDS)
   }

@@ -1,3 +1,5 @@
+/** @format */
+
 import { errorLogger } from '@/logger/log4.logger'
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 
@@ -21,7 +23,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       code,
       msg: exception.message,
       success: false,
-      _t: new Date().getTime(),
+      _t: new Date().getTime()
     }
 
     // 返回错误响应

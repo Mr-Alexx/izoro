@@ -2,7 +2,7 @@
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { Like, Repository } from 'typeorm'
 import { User } from './user.entity'
 
 @Injectable()
@@ -68,12 +68,13 @@ export class UserService {
    * 复杂查询：https://www.jianshu.com/p/0fcf45030dd4
    */
   async findAll(query: Record<string, any>): Promise<any> {
-    let { page, limit, status, create_at } = query
+    const { status, account } = query
+    let { page, limit } = query
     page = page || 1
     limit = limit || 20
     const where = {}
     status && (where['status'] = status)
-    create_at && (where['create_at'] = create_at)
+    account && (where['account'] = Like(account))
 
     const [list, total] = await this.userRepository.findAndCount({
       where,
