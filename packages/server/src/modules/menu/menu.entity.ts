@@ -43,6 +43,24 @@ export class Menu {
   @Column({ comment: '页面路径', default: null })
   url: string
 
+  @Column({ comment: '组件路径', default: null })
+  component: string
+
+  @Column({ comment: '重定向', default: null })
+  redirect: string
+
+  @Column({ comment: '是否隐藏', default: false })
+  hidden: boolean
+
+  @Column({ comment: '是否缓存', default: false })
+  cache: boolean
+
+  @Column({ comment: '是否显示在面包屑', default: true })
+  breadcrumb: boolean
+
+  @Column({ comment: '是否固定菜单', default: false })
+  affix: boolean
+
   @Column({ comment: '菜单树层级，以便于查询指定层级的菜单', default: 1 })
   level: number
 

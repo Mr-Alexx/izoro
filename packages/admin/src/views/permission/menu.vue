@@ -25,54 +25,57 @@
         />
       </div>
     </el-card>
-    <el-dialog width="500px" :visible.sync="showDialog" :title="dialogTitle">
-      <el-form :model="form" :rules="rules" label-width="110px" size="small">
-        <el-form-item label="title" prop="title">
-          <el-input v-model="form.title" />
-        </el-form-item>
-        <el-form-item label="name" prop="name">
+    <el-dialog width="550px" :visible.sync="showDialog" :title="dialogTitle">
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="rules"
+        label-width="170px"
+        size="small"
+        :disabled="actionType === 'view'"
+      >
+        <el-form-item label="菜单名称(title)" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="path" prop="path">
-          <el-input v-model="form.path" />
+        <el-form-item label="菜单编码(name)" prop="menu_code">
+          <el-input v-model="form.menu_code" />
         </el-form-item>
-        <el-form-item label="component" prop="component">
+        <el-form-item label="页面路径(path)" prop="url">
+          <el-input v-model="form.url" />
+        </el-form-item>
+        <el-form-item label="组件路径(component)" prop="component">
           <el-input v-model="form.component" />
         </el-form-item>
-        <el-form-item label="icon">
-          <el-select v-model="form.icon">
-            <el-option value="el-icon-plus">
-              <i class="el-icon-plus"></i>
-              el-icon-plus
+        <el-form-item label="重定向(redirect)">
+          <el-input v-model="form.redirect" />
+        </el-form-item>
+        <el-form-item label="图标(icon)">
+          <el-select v-model="form.icon" filterable>
+            <el-option v-for="icon in EL_ICONS" :key="icon" :value="icon">
+              <i :class="icon"></i>
+              {{ icon }}
             </el-option>
           </el-select>
+          <i v-show="form.icon" style="margin-left: 10px; font-size: 18px;" :class="form.icon"></i>
         </el-form-item>
-        <el-form-item label="hidden" prop="status">
+        <el-form-item label="是否隐藏(hidden)">
           <el-switch
-            v-model="form.status"
-            :active-value="1"
-            :inactive-value="0"
+            v-model="form.hidden"
           />
         </el-form-item>
-        <el-form-item label="cache" prop="cache">
+        <el-form-item label="是否缓存(cache)">
           <el-switch
             v-model="form.cache"
-            :active-value="1"
-            :inactive-value="0"
           />
         </el-form-item>
-        <el-form-item label="breadcrumb" prop="breadcrumb">
+        <el-form-item label="面包屑(breadcrumb)">
           <el-switch
             v-model="form.breadcrumb"
-            :active-value="1"
-            :inactive-value="0"
           />
         </el-form-item>
-        <el-form-item label="affix" prop="affix">
+        <el-form-item label="固定菜单(affix)">
           <el-switch
             v-model="form.affix"
-            :active-value="1"
-            :inactive-value="0"
           />
         </el-form-item>
       </el-form>
@@ -86,6 +89,7 @@
 
 <script>
 import { FETCH_MENU_LIST, ADD_MENU, EDIT_MENU, DELETE_MENU } from '@/api/system'
+import EL_ICONS from './el-icon'
 const MENU_STATUS_LIST = [
   { value: 0, label: '隐藏' },
   { value: 1, label: '显示' }
@@ -95,6 +99,7 @@ export default {
   name: 'Menu',
   data () {
     return {
+      EL_ICONS,
       loading: false,
       data: [],
       currentRow: {},
@@ -106,8 +111,8 @@ export default {
             row.icon ? <i class={ row.icon }></i> : <i>-</i>
           ]
         }},
-        { field: 'path', title: '路径', minWidth: 100, formatter: 'formatEmpty' },
-        { field: 'component', title: '组件路径', minWidth: 100, formatter: 'formatEmpty' },
+        { field: 'url', title: '页面路径', minWidth: 140, formatter: 'formatEmpty' },
+        { field: 'component', title: '组件路径', minWidth: 180, formatter: 'formatEmpty' },
         { field: 'status', title: '状态', minWidth: 80, slots: {
           default: ({ row }) => [
             <el-tag type={ row.status === 0 ? 'error' : 'success' }>{ MENU_STATUS_LIST.filter(v => v.value === row.status)[0].label }</el-tag>
@@ -134,16 +139,16 @@ export default {
       showDialog: false,
       confirmLoading: false,
       form: {
-        status: 1,
-        cache: 1,
-        breadcrumb: 1,
-        affix: 0
+        hidden: false,
+        cache: false,
+        breadcrumb: true,
+        affix: false
       },
       rules: {
-        title: [{ required: true, trigger: 'blur' }],
-        name: [{ required: true, trigger: 'blur' }],
-        path: [{ required: true, trigger: 'blur' }],
-        component: [{ required: true, trigger: 'blur' }]
+        name: [{ required: true, trigger: 'blur', message: '菜单名称不能为空' }],
+        menu_code: [{ required: true, trigger: 'blur', message: '菜单编码不能为空' }]
+        // url: [{ required: true, trigger: 'blur', message: '页面路径不能为空' }],
+        // component: [{ required: true, trigger: 'blur', message: '组件路径不能为空' }]
       },
       dialogTitle: '新增菜单',
       actionType: 'create'
@@ -170,7 +175,7 @@ export default {
         ? '新增菜单' : type === 'edit'
           ? `编辑菜单-${row.name}` : `查看菜单-${row.name}`
       this.showDialog = true
-      this.form = type === 'create' ? { status: 1, cache: 1, breadcrumb: 1, affix: 0 } : row
+      this.form = type === 'create' ? { hidden: false, cache: false, breadcrumb: true, affix: false } : row
     },
     /**
      * @description 删除菜单
@@ -187,18 +192,17 @@ export default {
     },
     /**
      * @description 创建/编辑菜单
-     * @param { Object } form
      */
-    handleSubmit (form) {
+    handleSubmit () {
       if (this.actionType === 'view') {
         this.showDialog = false
         return
       }
 
-      this.$refs.form.validate().then(async () => {
+      this.$refs.form.validate(async () => {
         this.confirmLoading = true
         try {
-          this.actionType === 'create' ? await ADD_MENU(form) : await EDIT_MENU(form.id, form)
+          this.actionType === 'create' ? await ADD_MENU(this.form) : await EDIT_MENU(this.form.id, this.form)
           this.$message.success(this.actionType === 'edit' ? '编辑成功！' : '新增成功！')
           this.showDialog = false
           this.fetchList()
