@@ -7,9 +7,10 @@
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { Not, Repository } from 'typeorm'
 import { Menu } from './menu.entity'
 import _ from '@/utils'
+import { MenuNodeTypes } from '@/interfaces/status.interface'
 
 @Injectable()
 export class MenuService {
@@ -19,8 +20,18 @@ export class MenuService {
   ) {}
 
   async findAll(): Promise<any> {
-    const data = await this.menuRepository.find()
+    const data = await this.menuRepository.find({
+      node_type: Not(MenuNodeTypes.button) // 菜单结构
+    })
     return this.makeTree(data)
+  }
+
+  async findButtonsByMenuId(id: number): Promise<Menu[]> {
+    const data = await this.menuRepository.find({
+      pid: id,
+      node_type: MenuNodeTypes.button
+    })
+    return data
   }
 
   /**

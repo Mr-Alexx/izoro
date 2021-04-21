@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { toThousandFilter, money } from '@/filters'
+import moment from 'moment'
 import {
   VXETable,
   Grid,
@@ -31,6 +32,9 @@ VXETable.formats.mixin({
   },
   money ({ cellValue }) {
     return money(cellValue)
+  },
+  time ({ cellValue }) {
+    return moment(cellValue).format('YYYY-MM-DD hh:mm:ss')
   },
   formatEmpty ({ cellValue }) {
     if (cellValue === null || cellValue === undefined || cellValue === '') {

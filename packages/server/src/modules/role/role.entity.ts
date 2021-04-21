@@ -1,3 +1,6 @@
+/** @format */
+
+import { RoleStatus } from '@/interfaces/status.interface'
 /**
  * @format
  * @description 角色模型
@@ -29,6 +32,9 @@ export class Role {
 
   @Column({ comment: '描述', default: null })
   description: string
+
+  @Column({ comment: '状态，0禁用 1启用', default: RoleStatus.normal })
+  status: RoleStatus
 
   @ManyToMany(() => User, user => user.roles)
   @JoinTable()

@@ -38,8 +38,7 @@
 </template>
 
 <script>
-// DELETE_USER
-import { FETCH_USER_LIST, ADD_USER, EDIT_USER } from '@/api/system'
+import { FETCH_USER_LIST, ADD_USER, EDIT_USER, DELETE_USER } from '@/api/system'
 const ACCOUNT_STATUS_LIST = [
   { value: 0, label: '禁用' },
   { value: 1, label: '启用' }
@@ -51,7 +50,7 @@ export default {
     return {
       searchOptions: [
         { key: 'account', label: '账号', component: { name: 'input' }},
-        { key: 'status', label: '状态', component: { name: 'select', options: ACCOUNT_STATUS_LIST }}
+        { key: 'status', label: '状态', component: { name: 'select', options: ACCOUNT_STATUS_LIST, clearable: true }}
       ],
       loading: false,
       data: [],
@@ -71,14 +70,21 @@ export default {
             <el-tag type={ row.status === 0 ? 'error' : 'success' }>{ ACCOUNT_STATUS_LIST.filter(v => v.value === row.status)[0].label }</el-tag>
           ]
         }},
-        { field: 'create_at', title: '创建时间', minWidth: 100 },
-        { field: 'update_at', title: '更新新建', minWidth: 100 },
-        { title: '操作', minWidth: 160, slots: {
+        { field: 'create_at', title: '创建时间', minWidth: 100, formatter: 'time' },
+        { field: 'update_at', title: '更新新建', minWidth: 100, formatter: 'time' },
+        { title: '操作', minWidth: 160, fixed: 'right', slots: {
           default: ({ row }) => {
             return [
               <el-button size='mini' type='success' onClick={ this.openDialog.bind(this, 'view', row) }>查看</el-button>,
               <el-button size='mini' type='primary' onClick={ this.openDialog.bind(this, 'edit', row) }>编辑</el-button>,
-              <el-button size='mini' type='danger'>删除</el-button>
+              <el-popconfirm
+                icon='el-icon-info'
+                icon-color='red'
+                title='确定要删除该账号吗？'
+                onConfirm={ this.handleDelete.bind(this, row) }
+              >
+                <el-button slot='reference' size='mini' type='danger' style='margin-left: 5px'>删除</el-button>
+              </el-popconfirm>
             ]
           }
         }}
@@ -124,9 +130,6 @@ export default {
         this.loading = false
       }
     },
-    createAccount (row) {
-
-    },
     openDialog (type = 'create', row = {}) {
       this.actionType = type
       this.dialogTitle = type === 'create'
@@ -138,6 +141,23 @@ export default {
         console.log(this.form)
       })
     },
+    /**
+     * @description 删除账号
+     * @param { Object } row
+     */
+    async handleDelete (row) {
+      try {
+        await DELETE_USER(row.id)
+        this.$message.success('删除成功！')
+        this.fetchList()
+      } catch (err) {
+        this.$message.error(err)
+      }
+    },
+    /**
+     * @description 创建/编辑账号
+     * @param { Object } form
+     */
     handleSubmit (form) {
       if (this.actionType === 'view') {
         this.showDialog = false

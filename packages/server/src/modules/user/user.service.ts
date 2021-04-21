@@ -74,7 +74,7 @@ export class UserService {
     limit = limit || 20
     const where = {}
     status && (where['status'] = status)
-    account && (where['account'] = Like(account))
+    account && (where['account'] = Like(`%${account}%`))
 
     const [list, total] = await this.userRepository.findAndCount({
       where,
@@ -102,6 +102,15 @@ export class UserService {
       return this.userRepository.save(updatedUser)
     } catch (err) {
       console.error(err)
+    }
+  }
+
+  async deleteById(id: number): Promise<any> {
+    try {
+      await this.userRepository.delete(id)
+      return '删除成功'
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 }

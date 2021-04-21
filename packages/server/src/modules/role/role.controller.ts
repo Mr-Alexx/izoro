@@ -5,7 +5,19 @@
  * @author 潜
  */
 
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards
+} from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { Role } from './role.entity'
@@ -18,8 +30,8 @@ export class RoleController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async findAll(): Promise<any> {
-    return this.roleService.findAll()
+  async findAll(@Query() query: Record<string, any>): Promise<any> {
+    return this.roleService.findAll(query)
   }
 
   @Get(':id')

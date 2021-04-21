@@ -37,7 +37,7 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
-Vue.use(ElementUI, { size: 'small' })
+Vue.use(ElementUI, { size: 'medium' })
 // Vue.use(Table)
 
 // directives

@@ -25,8 +25,7 @@ export class MenuController {
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async findById(@Param('id') id: number): Promise<any> {
-    console.log(id)
-    return Promise.resolve({})
+    return this.menuService.findButtonsByMenuId(id)
   }
 
   @Post()

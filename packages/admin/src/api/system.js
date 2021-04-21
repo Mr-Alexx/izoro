@@ -3,9 +3,10 @@ import request from '@/utils/request'
 const PREFIX = 'http://localhost:3000'
 /* ============== role ============= */
 // 列表
-export const FETCH_ROLE_LIST = () => request({
+export const FETCH_ROLE_LIST = (params) => request({
   url: PREFIX + '/role',
-  method: 'GET'
+  method: 'GET',
+  params
 })
 
 // 新增
@@ -35,8 +36,15 @@ export const DELETE_ROLE = (id) => request({
 })
 
 /* ============== menu ============= */
+// 菜单列表
 export const FETCH_MENU_LIST = () => request({
   url: PREFIX + '/menu',
+  method: 'GET'
+})
+
+// 菜单下的权限列表
+export const FETCH_PERMISSION_LIST_BY_MENU_ID = (id) => request({
+  url: PREFIX + '/menu/' + id,
   method: 'GET'
 })
 

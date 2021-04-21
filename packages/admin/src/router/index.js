@@ -132,6 +132,7 @@ export const asyncRoutes = [
     path: '/article',
     component: Layout,
     redirect: '/article/index',
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -151,6 +152,7 @@ export const asyncRoutes = [
     path: '/account',
     component: Layout,
     redirect: '/account/index',
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -164,6 +166,7 @@ export const asyncRoutes = [
     path: '/category',
     component: Layout,
     redirect: '/category/index',
+    hidden: true,
     children: [
       {
         path: 'category',
@@ -177,6 +180,7 @@ export const asyncRoutes = [
     path: '/tag',
     component: Layout,
     redirect: '/tag/index',
+    hidden: true,
     children: [
       {
         path: 'tag',

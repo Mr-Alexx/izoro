@@ -12,7 +12,8 @@ import {
   Post,
   Query,
   UseGuards,
-  Request
+  Request,
+  Delete
 } from '@nestjs/common'
 import { ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
@@ -63,5 +64,13 @@ export class UserController {
       throw new HttpException('请填写要修改的用户信息！', HttpStatus.BAD_REQUEST)
     }
     return this.userService.updateById(id, user)
+  }
+
+  @ApiOperation({ summary: '删除用户' })
+  @ApiParam({ name: 'id', description: '用户id' })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async deleteUser(@Param('id') id: number): Promise<any> {
+    return this.userService.deleteById(id)
   }
 }

@@ -23,6 +23,9 @@ export class Menu {
   @Column({ comment: '菜单标识' })
   menu_code: string
 
+  @Column({ comment: '菜单描述', default: null })
+  description: string
+
   @IsNumber()
   @Column({ comment: '父id', default: 0 })
   pid: number
@@ -49,7 +52,7 @@ export class Menu {
   })
   path: string
 
-  @Column({ comment: '状态，-1删除 0正常', default: MenuStatus.normal })
+  @Column({ comment: '状态，0禁用 1正常', default: MenuStatus.normal })
   status: MenuStatus
 
   @ManyToMany(() => Role, role => role.menus, { cascade: true })

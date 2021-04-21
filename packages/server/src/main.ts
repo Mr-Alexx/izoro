@@ -30,11 +30,11 @@ async function bootstrap() {
         code: 429,
         success: false,
         msg: `访问受限，请${ctx.after}后再试！`,
-        _t: new Date().getTime(),
+        _t: new Date().getTime()
       }
       errorLogger.error(req.url, error)
       return error
-    },
+    }
   })
   adapter.register(fastifyCookie) // 使用fastifyCsrf必须引入此插件
   adapter.register(fastifyCsrf) // 防跨站点请求伪造
@@ -49,14 +49,14 @@ async function bootstrap() {
     //     scriptSrc: [`'self'`, `https: 'unsafe-inline'`, `cdn.jsdelivr.net`],
     //   },
     // }
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: false
   }) // 通过适当地设置 HTTP 头，Helmet 可以帮助保护您的应用免受一些众所周知的 Web 漏洞的影响
   adapter.register(fastifyCompress) // 压缩请求
   adapter.register(fastifyMultipart, {
     limits: {
       files: 10,
-      fileSize: 2 * 1024 * 1000, // 2MB
-    },
+      fileSize: 2 * 1024 * 1000 // 2MB
+    }
   }) // 文件上传解析file
   adapter.register(fastifySwagger)
 
@@ -69,7 +69,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe()) // 数据验证器
   app.useGlobalInterceptors(
     new ResponseInterceptor(), // 自定义接口响应，输出日志
-    new ClassSerializerInterceptor(app.get(Reflector)), // 要使entity内的@Exclude生效，需加这个
+    new ClassSerializerInterceptor(app.get(Reflector)) // 要使entity内的@Exclude生效，需加这个
   )
 
   const options = new DocumentBuilder()

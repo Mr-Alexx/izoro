@@ -7,7 +7,7 @@
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { Like, Repository } from 'typeorm'
 import { Role } from './role.entity'
 import _ from '@/utils'
 
@@ -18,8 +18,23 @@ export class RoleService {
     private readonly roleRepository: Repository<Role>
   ) {}
 
-  async findAll(): Promise<any> {
-    const [total, list] = await this.roleRepository.findAndCount()
+  async findAll(query: Record<string, any>): Promise<any> {
+    const { status, name } = query
+    let { page, limit } = query
+    page = page || 1
+    limit = limit || 20
+    const where = {}
+    status && (where['status'] = status)
+    name && (where['name'] = Like(`%${name}%`))
+
+    const [list, total] = await this.roleRepository.findAndCount({
+      where,
+      order: {
+        id: 'ASC'
+      },
+      skip: (page - 1) * limit,
+      take: limit
+    })
     return {
       total,
       list
