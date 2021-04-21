@@ -31,3 +31,8 @@
 
 ## juejin markdown主题
 [https://github.com/xitu/juejin-markdown-themes](https://github.com/xitu/juejin-markdown-themes)
+
+## 权限设置参考
+[React-Admin](https://isluo.com/work/admin/#/system/menuadmin)
+[Gin-Vue-Admin](http://demo.gin-vue-admin.com/#/layout/admin/menu)
+[ELADMIN-后台管理](https://el-admin.xin/system/menu)
