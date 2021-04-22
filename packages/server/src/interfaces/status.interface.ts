@@ -55,7 +55,8 @@ export enum MenuNodeTypes {
 
 // 菜单状态
 export enum MenuStatus {
-  delete = 0, // 已删除
+  deleted = -1, // 已删除
+  disabled = 0, // 禁用
   normal = 1 // 正常
 }
 

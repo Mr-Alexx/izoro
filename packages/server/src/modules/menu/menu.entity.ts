@@ -70,7 +70,7 @@ export class Menu {
   })
   path: string
 
-  @Column({ comment: '状态，0禁用 1正常', default: MenuStatus.normal })
+  @Column({ comment: '状态，-1删除 0禁用 1正常', default: MenuStatus.normal })
   status: MenuStatus
 
   @ManyToMany(() => Role, role => role.menus, { cascade: true })

@@ -36,6 +36,9 @@ VXETable.formats.mixin({
   time ({ cellValue }) {
     return moment(cellValue).format('YYYY-MM-DD hh:mm:ss')
   },
+  boolean ({ cellValue }) {
+    return cellValue ? '是' : '否'
+  },
   formatEmpty ({ cellValue }) {
     if (cellValue === null || cellValue === undefined || cellValue === '') {
       return '-'

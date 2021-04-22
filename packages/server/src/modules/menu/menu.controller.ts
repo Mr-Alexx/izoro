@@ -44,6 +44,6 @@ export class MenuController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number): Promise<string> {
-    return this.menuService.deleteById(id)
+    return this.menuService.softDeleteById(id)
   }
 }

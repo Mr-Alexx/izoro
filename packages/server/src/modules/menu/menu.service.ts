@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Not, Repository } from 'typeorm'
 import { Menu } from './menu.entity'
 import _ from '@/utils'
-import { MenuNodeTypes } from '@/interfaces/status.interface'
+import { MenuNodeTypes, MenuStatus } from '@/interfaces/status.interface'
 
 @Injectable()
 export class MenuService {
@@ -20,17 +20,29 @@ export class MenuService {
   ) {}
 
   async findAll(): Promise<any> {
-    const data = await this.menuRepository.find({
-      node_type: Not(MenuNodeTypes.button) // 菜单结构
-    })
+    const data = await this.menuRepository
+      .createQueryBuilder('menu')
+      .where('menu.status != :status AND menu.node_type != :type', {
+        status: MenuStatus.deleted,
+        type: MenuNodeTypes.button
+      })
+      .orderBy('sort', 'ASC')
+      .addOrderBy('update_at', 'DESC')
+      .getMany()
     return this.makeTree(data)
   }
 
   async findButtonsByMenuId(id: number): Promise<Menu[]> {
-    const data = await this.menuRepository.find({
-      pid: id,
-      node_type: MenuNodeTypes.button
-    })
+    const data = await this.menuRepository
+      .createQueryBuilder('menu')
+      .where({
+        pid: id,
+        status: Not(MenuStatus.deleted),
+        node_type: MenuNodeTypes.button
+      })
+      .orderBy('sort', 'ASC')
+      .addOrderBy('update_at', 'DESC')
+      .getMany()
     return data
   }
 
@@ -110,12 +122,50 @@ export class MenuService {
     return this.menuRepository.save(newMenu)
   }
 
+  /**
+   * @description 删除菜单及其子菜单 - 软删（状态改为-1）
+   * @param { number } id 菜单id
+   * @return { Promise<string> }
+   */
+  async softDeleteById(id: number): Promise<string> {
+    if (!id) {
+      throw new HttpException('menu id 必须有！', HttpStatus.BAD_REQUEST)
+    }
+    // 删除对应id行，并且删除pid为id的所有行
+    try {
+      await this.menuRepository
+        .createQueryBuilder('menu')
+        .update()
+        .set({ status: -1 })
+        .where('menu.id = :id', { id })
+        .orWhere('menu.pid = :id', { id })
+        .execute()
+      return `删除成功！`
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+  }
+
+  /**
+   * @description 删除菜单及其子菜单 - 硬删（注意）
+   * @param { number } id 菜单id
+   * @return { Promise<string> }
+   */
   async deleteById(id: number): Promise<string> {
     if (!id) {
       throw new HttpException('menu id 必须有！', HttpStatus.BAD_REQUEST)
     }
-
-    await this.menuRepository.delete(id)
-    return `删除成功！`
+    // 删除对应id行，并且删除pid为id的所有行
+    try {
+      await this.menuRepository
+        .createQueryBuilder('menu')
+        .where('menu.id = :id', { id })
+        .orWhere('menu.pid = :id', { id })
+        .delete()
+        .execute()
+      return `删除成功！`
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 }
