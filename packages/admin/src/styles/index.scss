@@ -483,3 +483,9 @@ div:focus {
     padding-top: 0 !important;
   }
 }
+
+.operation-wrapper {
+  [class *= el-icon] {
+    cursor: pointer;
+  }
+}

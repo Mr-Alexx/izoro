@@ -19,7 +19,7 @@
             size="medium"
             icon="el-icon-plus"
             :disabled="!currentMenu.id"
-            @click="openPermissionDialog"
+            @click="openPermissionDialog('create')"
           >新增{{ currentMenu.name || '' }}权限</el-button>
         </div>
       </div>
@@ -515,11 +515,6 @@ $border: 1px solid #f0f0f0;
   }
 }
 
-.operation-wrapper {
-  [class *= el-icon] {
-    cursor: pointer;
-  }
-}
 >>>.el-select {
   width: 100%;
   .el-input__inner {

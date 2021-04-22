@@ -65,19 +65,33 @@ export default {
         }},
         { field: 'create_at', title: '创建时间', minWidth: 100, formatter: 'time' },
         { field: 'update_at', title: '更新新建', minWidth: 100, formatter: 'time' },
-        { title: '操作', minWidth: 160, fixed: 'right', slots: {
+        { title: '操作', minWidth: 100, fixed: 'right', slots: {
           default: ({ row }) => {
             return [
-              <el-button size='mini' type='success' onClick={ this.openDialog.bind(this, 'view', row) }>查看</el-button>,
-              <el-button size='mini' type='primary' onClick={ this.openDialog.bind(this, 'edit', row) }>编辑</el-button>,
-              <el-popconfirm
-                icon='el-icon-info'
-                icon-color='red'
-                title='确定要删除该角色吗？'
-                onConfirm={ this.handleDelete.bind(this, row) }
-              >
-                <el-button slot='reference' size='mini' type='danger' style='margin-left: 5px'>删除</el-button>
-              </el-popconfirm>
+              <div class='operation-wrapper'>
+                <el-tooltip content='查看' placement='top'>
+                  <i class='el-icon-view success' onClick={ this.openDialog.bind(this, 'view', row) }/>
+                </el-tooltip>
+                <el-divider direction='vertical'/>
+                <el-tooltip content='编辑' placement='top'>
+                  <i class='el-icon-edit-outline primary' onClick={ this.openDialog.bind(this, 'edit', row) }/>
+                </el-tooltip>
+                <el-divider direction='vertical'/>
+                <el-tooltip content='新增子菜单' placement='top'>
+                  <i class='el-icon-plus warning' onClick={ this.openDialog.bind(this, 'create', row) }/>
+                </el-tooltip>
+                <el-divider direction='vertical'/>
+                <el-popconfirm
+                  icon='el-icon-info'
+                  icon-color='red'
+                  title='确定要删除该角色吗？'
+                  onConfirm={ this.handleDelete.bind(this, row) }
+                >
+                  <el-tooltip content='删除' slot='reference' placement='top'>
+                    <i class='el-icon-delete danger'/>
+                  </el-tooltip>
+                </el-popconfirm>
+              </div>
             ]
           }
         }}
