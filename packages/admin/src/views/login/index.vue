@@ -97,7 +97,11 @@ export default {
       try {
         await this.$store.dispatch('user/login', this.form)
         this.$message.success('登录成功')
-        this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+        let redirect = this.redirect
+        if (!redirect || redirect.indexOf('login') > -1) {
+          redirect = '/'
+        }
+        this.$router.push({ path: redirect, query: this.otherQuery })
       } catch (err) {
         console.error(err)
       }

@@ -37,9 +37,10 @@ export const DELETE_ROLE = (id) => request({
 
 /* ============== menu ============= */
 // 菜单列表
-export const FETCH_MENU_LIST = () => request({
+export const FETCH_MENU_LIST = (params) => request({
   url: PREFIX + '/menu',
-  method: 'GET'
+  method: 'GET',
+  params
 })
 
 // 菜单下的权限列表
@@ -61,6 +62,16 @@ export const ADD_MENU = (data) => request({
 // 编辑
 export const EDIT_MENU = (id, data) => request({
   url: PREFIX + '/menu/' + id,
+  method: 'PATCH',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  data
+})
+
+// 菜单-授权
+export const AUTHORIZE_MENU_TO_ROLE = (data) => request({
+  url: PREFIX + '/role/authorize',
   method: 'PATCH',
   headers: {
     'Content-Type': 'application/json'

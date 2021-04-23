@@ -58,4 +58,10 @@ export class RoleController {
   async delete(@Param('id') id: number): Promise<string> {
     return this.roleService.deleteById(id)
   }
+
+  @Patch('authorize')
+  @UseGuards(JwtAuthGuard)
+  async authorize(@Body() data: any): Promise<string> {
+    return this.roleService.authorize(data)
+  }
 }

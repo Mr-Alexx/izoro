@@ -178,3 +178,48 @@ $border-color: #f1f1f7;
     margin-left: 3px;
   }
 }
+
+.el-checkbox {
+  &__inner {
+    transition: none;
+
+    content: "";
+    height: 1em;
+    width: 1em;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    border-radius: 2px;
+    border: 2px solid #dcdfe6;
+
+    &:after {
+      transition: none;
+    }
+  }
+
+  &:hover {
+    .el-checkbox__inner {
+      border-color: #409eff;
+    }
+  }
+
+  &.is-checked {
+    .el-checkbox__inner {
+      transition: none;
+      &:after {
+        transition: none;
+        content: "";
+        position: absolute;
+        height: 0.64em;
+        width: 0.32em;
+        top: 50%;
+        left: 50%;
+        border: 2px solid #fff;
+        border-left: 0;
+        border-top: 0;
+        -webkit-transform: translate(-50%, -50%) rotate(45deg);
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+    }
+  }
+}

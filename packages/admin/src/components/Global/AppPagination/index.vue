@@ -4,9 +4,9 @@
     <el-pagination
       :current-page="value.page"
       :pager-count="5"
-      :page-sizes="[20, 30, 40, 50, 100, 200]"
+      :page-sizes="pageSizes"
       :page-size="value.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+      :layout="layout"
       :total="total"
       class="hidden-xs-only"
       @size-change="handleSizeChange"
@@ -57,6 +57,14 @@ export default {
       default () {
         return {}
       }
+    },
+    pageSizes: {
+      type: Array,
+      default: () => [20, 30, 40, 50, 100, 200]
+    },
+    layout: {
+      type: String,
+      default: 'total, sizes, prev, pager, next, jumper'
     }
   },
   computed: {

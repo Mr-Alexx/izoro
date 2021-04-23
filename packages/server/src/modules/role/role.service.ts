@@ -10,12 +10,14 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Like, Repository } from 'typeorm'
 import { Role } from './role.entity'
 import _ from '@/utils'
+import { MenuService } from '../menu/menu.service'
 
 @Injectable()
 export class RoleService {
   constructor(
     @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>
+    private readonly roleRepository: Repository<Role>,
+    private readonly menuService: MenuService
   ) {}
 
   async findAll(query: Record<string, any>): Promise<any> {
@@ -80,5 +82,31 @@ export class RoleService {
 
     await this.roleRepository.delete(id)
     return `删除成功！`
+  }
+
+  /**
+   * @description 角色授权菜单/权限
+   * @param { data } { ids: 角色id, menuIds: 菜单id数组 }
+   */
+  async authorize(data: any): Promise<string> {
+    try {
+      const { roleIds, menuIds } = data
+      const oldRoles = await this.roleRepository.findByIds(roleIds)
+      if (oldRoles.length === 0) {
+        throw new HttpException('角色不存在，无法授权！', HttpStatus.NOT_FOUND)
+      }
+
+      if (!Array.isArray(menuIds)) {
+        throw new HttpException('授权菜单参数不正确！', HttpStatus.BAD_REQUEST)
+      }
+
+      const menus = menuIds.length > 0 ? await this.menuService.findAll({ menuIds, node_type: 'all' }) : []
+      oldRoles.forEach(item => (item.menus = menus))
+      await this.roleRepository.save(oldRoles)
+    } catch (err) {
+      console.error(err)
+    }
+    // this.roleRepository.
+    return '授权成功'
   }
 }

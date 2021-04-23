@@ -5,7 +5,19 @@
  * @author 潜
  */
 
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards
+} from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { Menu } from './menu.entity'
@@ -18,8 +30,8 @@ export class MenuController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async findAll(): Promise<any> {
-    return this.menuService.findAll()
+  async findAll(@Query() query: any): Promise<any> {
+    return this.menuService.getMenuTree(query)
   }
 
   @Get(':id')

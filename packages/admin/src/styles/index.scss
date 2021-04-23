@@ -484,6 +484,22 @@ div:focus {
   }
 }
 
+.table-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .vxe-grid {
+    border: 1px solid #F0F0F0;
+
+    &:first-child {
+      width: 60%;
+    }
+    &:last-child {
+      width: calc(40% - 20px);
+    }
+  }
+}
 .operation-wrapper {
   [class *= el-icon] {
     cursor: pointer;

@@ -19,16 +19,44 @@ export class MenuService {
     private readonly menuRepository: Repository<Menu>
   ) {}
 
-  async findAll(): Promise<any> {
-    const data = await this.menuRepository
+  async findAll(query: any): Promise<any> {
+    const queryBuilder = this.menuRepository
       .createQueryBuilder('menu')
-      .where('menu.status != :status AND menu.node_type != :type', {
-        status: MenuStatus.deleted,
-        type: MenuNodeTypes.button
-      })
-      .orderBy('sort', 'ASC')
-      .addOrderBy('update_at', 'DESC')
-      .getMany()
+      .where('menu.status != :status', { status: MenuStatus.deleted })
+
+    if (_.isObject(query)) {
+      const { node_type, menuIds, roleIds } = query
+
+      if (node_type !== 'all') {
+        queryBuilder.andWhere('node_type != :type', { type: MenuNodeTypes.button })
+      }
+      if (_.isArray(menuIds) && menuIds.length > 0) {
+        queryBuilder.andWhere('menu.id IN (:menus)', { menus: query?.menuIds })
+      }
+      if (_.isArray(roleIds)) {
+        queryBuilder.leftJoin('menu.roles', 'role').andWhere('role.id IN (:ids)', { ids: roleIds }).addSelect('role.id')
+      }
+    }
+
+    try {
+      const data = await queryBuilder.orderBy('menu.sort', 'ASC').addOrderBy('menu.update_at', 'DESC').getMany()
+      // 设置checked属性
+      // data.forEach(v => {
+      //   v['checked'] = v.roles ? v.roles.length > 0 : false
+      //   delete v.roles
+      // })
+      return data
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+  }
+
+  async getMenuTree(query: any): Promise<any[]> {
+    if (_.isString(query?.roleIds)) {
+      query.roleIds = query.roleIds.split(',').map(Number)
+    }
+
+    const data = await this.findAll(query)
     return this.makeTree(data)
   }
 
@@ -77,7 +105,12 @@ export class MenuService {
       throw new HttpException('节点必须为一个对象！', HttpStatus.BAD_REQUEST)
     }
 
-    const existMenu = await this.menuRepository.findOne({ menu_code: menu.menu_code, pid: menu.pid })
+    // 权限不允许相同的出现
+    const existMenu = await this.menuRepository.findOne({
+      menu_code: menu.menu_code,
+      pid: menu.pid,
+      node_type: MenuNodeTypes.button
+    })
     if (existMenu) {
       throw new HttpException('同一父节点下的子节点编码不能重复！', HttpStatus.BAD_REQUEST)
     }
@@ -147,7 +180,7 @@ export class MenuService {
   }
 
   /**
-   * @description 删除菜单及其子菜单 - 硬删（注意）
+   * @description 删除菜单 - 硬删（注意）
    * @param { number } id 菜单id
    * @return { Promise<string> }
    */

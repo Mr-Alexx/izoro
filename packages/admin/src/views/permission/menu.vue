@@ -8,7 +8,7 @@
             type="primary"
             size="medium"
             icon="el-icon-plus"
-            @click="openDialog()"
+            @click="openDialog('create')"
           >新增菜单</el-button>
         </div>
 
@@ -45,7 +45,6 @@
           }"
           @cell-click="changeMenu"
         />
-
         <vxe-grid
           :loading="permissionTableLoading"
           :data="permissionData"
@@ -138,7 +137,7 @@
             <el-form-item label="上级菜单">
               <el-cascader
                 v-model="form.parentIds"
-                :options="[{ id: 0, name: '根菜单' }, ...data]"
+                :options="cascaderOptions"
                 :props="{ value: 'id', label: 'name', checkStrictly: true }"
                 filterable
               />
@@ -163,8 +162,8 @@
         <el-row :gutter="20">
           <el-col :sm="24" :md="12">
             <el-form-item label="权限名称" prop="name">
-              <el-select v-model="permissionForm.name" filterable @change="changeAction">
-                <el-option v-for="item in actionTypes" :key="item.code" :value="`${currentMenu.name}-${item.name}`" :label="item.name" />
+              <el-select v-model="permissionForm.name" filterable allow-create @change="changeAction">
+                <el-option v-for="item in actionTypes" :key="item.code" :value="item.name" :label="item.name" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -314,6 +313,11 @@ export default {
       ]
     }
   },
+  computed: {
+    cascaderOptions () {
+      return [{ id: 0, name: '根菜单' }, ...this.data]
+    }
+  },
   watch: {
     currentMenu: {
       deep: true,
@@ -362,8 +366,30 @@ export default {
         ? '新增菜单' : type === 'edit'
           ? `编辑菜单-${row.name}` : `查看菜单-${row.name}`
 
-      this.showDialog = true
-      const parentIds = row.path ? row.path.split(',').map(Number) : [0]
+      let parentIds = row.path
+        ? row.path.split(',') : []
+
+      if (type === 'create') {
+        if (row.id) {
+          parentIds.push(row.id)
+        } else {
+          parentIds.push(0)
+        }
+      } else {
+        !row.path && parentIds.push(0)
+      }
+      parentIds = parentIds.map(Number)
+
+      // 新增时，需要将当前菜单设为父级菜单
+      // if (type === 'create' && row.id && parentIds.every(id => id !== row.id)) {
+      //   parentIds = parentIds.concat(row.id)
+      // }
+
+      // 获取父类名称，构造标题
+      const checkedItems = this.cascaderOptions.filter(v => parentIds.includes(v.id))
+      const parentsName = checkedItems.map(v => v.name).join('-')
+      this.dialogTitle = type === 'create'
+        ? `新增菜单：${parentsName}-` : `${type === 'edit' ? '编辑' : '查看'}菜单：${parentsName}-${row.name}`
 
       if (type === 'create') {
         this.form = {
@@ -380,6 +406,8 @@ export default {
           parentIds
         }
       }
+
+      this.showDialog = true
     },
     openPermissionDialog (type = 'create', row = {}) {
       this.actionType = type
@@ -406,7 +434,8 @@ export default {
      * @param { string } name 权限名称
      */
     changeAction (name) {
-      const item = this.actionTypes.filter(v => name.indexOf(v.name) > -1)[0]
+      const item = this.actionTypes.filter(v => name === v.name)[0]
+      if (!item) { return }
       this.permissionForm.menu_code = `${this.currentMenu.menu_code}:${item.code}`
     },
     /**
@@ -495,22 +524,6 @@ $border: 1px solid #f0f0f0;
     }
     &:last-child {
       padding-left: 20px;
-    }
-  }
-}
-.table-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-
-  >>>.vxe-grid {
-    border: 1px solid #F0F0F0;
-
-    &:first-child {
-      width: 60%;
-    }
-    &:last-child {
-      width: calc(40% - 20px);
     }
   }
 }
