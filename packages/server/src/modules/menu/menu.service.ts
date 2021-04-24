@@ -28,23 +28,23 @@ export class MenuService {
       const { node_type, menuIds, roleIds } = query
 
       if (node_type !== 'all') {
-        queryBuilder.andWhere('node_type != :type', { type: MenuNodeTypes.button })
+        queryBuilder.andWhere('menu.node_type != :type', { type: MenuNodeTypes.button })
       }
       if (_.isArray(menuIds) && menuIds.length > 0) {
         queryBuilder.andWhere('menu.id IN (:menus)', { menus: query?.menuIds })
       }
       if (_.isArray(roleIds)) {
-        queryBuilder.leftJoin('menu.roles', 'role').andWhere('role.id IN (:ids)', { ids: roleIds }).addSelect('role.id')
+        queryBuilder.leftJoinAndSelect('menu.roles', 'role', 'role.id IN (:ids)', { ids: roleIds })
       }
     }
 
     try {
       const data = await queryBuilder.orderBy('menu.sort', 'ASC').addOrderBy('menu.update_at', 'DESC').getMany()
       // 设置checked属性
-      // data.forEach(v => {
-      //   v['checked'] = v.roles ? v.roles.length > 0 : false
-      //   delete v.roles
-      // })
+      data.forEach(v => {
+        v['checked'] = v.roles ? v.roles.length > 0 : false
+        delete v.roles
+      })
       return data
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)

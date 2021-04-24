@@ -3,13 +3,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Like, Repository } from 'typeorm'
+import { RoleService } from '../role/role.service'
 import { User } from './user.entity'
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    private readonly roleService: RoleService
   ) {}
 
   /**
@@ -17,17 +19,22 @@ export class UserService {
    * @desc 创建用户
    * @param { Object } user
    */
-  async create(user: { [propsName: string]: any }): Promise<number> {
+  async create(user: Record<string, any>): Promise<number> {
     // 判断用户是否存在
     const { account } = user
+    let { roles } = user
     const isExist = await this.userRepository.findOne({ where: { account } })
     if (isExist) {
       throw new HttpException('账号已存在', HttpStatus.BAD_REQUEST)
     }
 
+    if (Array.isArray(roles) && roles.length > 0) {
+      roles = await this.roleService.findByIds(roles)
+    }
+
     // 不存在则新建账号
     try {
-      const newUser = await this.userRepository.create(user)
+      const newUser = await this.userRepository.create({ ...user, roles })
       await this.userRepository.save(newUser)
       return newUser.id
     } catch (err) {
@@ -40,8 +47,9 @@ export class UserService {
    * @param { Partial<User> } user
    * @return { User }
    */
-  async login(user: Partial<User>) {
+  async login(user: Partial<User>): Promise<User> {
     const { account, password } = user
+
     const existUser = await this.userRepository.findOne({
       where: {
         account
@@ -72,20 +80,34 @@ export class UserService {
     let { page, limit } = query
     page = page || 1
     limit = limit || 20
-    const where = {}
-    status && (where['status'] = status)
-    account && (where['account'] = Like(`%${account}%`))
 
-    const [list, total] = await this.userRepository.findAndCount({
-      where,
-      order: {
-        id: 'ASC'
-      },
-      skip: (page - 1) * limit,
-      take: limit,
-      cache: false
-    })
-    return { list, total }
+    try {
+      const userQuery = this.userRepository
+        .createQueryBuilder('user')
+        .select([
+          'user.id',
+          'user.avatar',
+          'user.account',
+          'user.nickname',
+          'user.status',
+          'user.create_at',
+          'user.email',
+          'user.phone_number'
+        ])
+        .innerJoin('user.roles', 'role')
+        .addSelect(['role.id', 'role.name'])
+        .orderBy('user.id', 'ASC')
+        .skip((page - 1) * limit)
+        .take(limit)
+
+      status && userQuery.where('user.status = :status', { status })
+      account && userQuery.andWhere('user.account LIKE %:account%', { account })
+
+      const [list, total] = await userQuery.getManyAndCount()
+      return { list, total }
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 
   /**

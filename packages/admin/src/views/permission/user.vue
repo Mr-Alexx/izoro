@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { FETCH_USER_LIST, ADD_USER, EDIT_USER, DELETE_USER } from '@/api/system'
+import { FETCH_ROLE_LIST, FETCH_USER_LIST, ADD_USER, EDIT_USER, DELETE_USER } from '@/api/system'
 const ACCOUNT_STATUS_LIST = [
   { value: 0, label: '禁用' },
   { value: 1, label: '启用' }
@@ -67,24 +67,48 @@ export default {
         { field: 'email', title: '邮箱', minWidth: 120, formatter: 'formatEmpty' },
         { field: 'status', title: '状态', minWidth: 60, slots: {
           default: ({ row }) => [
-            <el-tag type={ row.status === 0 ? 'error' : 'success' }>{ ACCOUNT_STATUS_LIST.filter(v => v.value === row.status)[0].label }</el-tag>
+            <el-tag size='small' type={ row.status === 0 ? 'error' : 'success' }>{ ACCOUNT_STATUS_LIST.filter(v => v.value === row.status)[0].label }</el-tag>
           ]
         }},
+        { field: 'roles', title: '角色', minWidth: 80, slots: {
+          default: ({ row }) => {
+            if (!row.roles || row.roles.length === 0) {
+              return [<span>-</span>]
+            }
+            return [
+              <div>
+                {
+                  row.roles.map(role => <span>{ role.name }</span>,)
+                }
+              </div>
+            ]
+          }
+        }},
         { field: 'create_at', title: '创建时间', minWidth: 100, formatter: 'time' },
-        { field: 'update_at', title: '更新新建', minWidth: 100, formatter: 'time' },
+        // { field: 'update_at', title: '更新新建', minWidth: 100, formatter: 'time' },
         { title: '操作', minWidth: 160, fixed: 'right', slots: {
           default: ({ row }) => {
             return [
-              <el-button size='mini' type='success' onClick={ this.openDialog.bind(this, 'view', row) }>查看</el-button>,
-              <el-button size='mini' type='primary' onClick={ this.openDialog.bind(this, 'edit', row) }>编辑</el-button>,
-              <el-popconfirm
-                icon='el-icon-info'
-                icon-color='red'
-                title='确定要删除该账号吗？'
-                onConfirm={ this.handleDelete.bind(this, row) }
-              >
-                <el-button slot='reference' size='mini' type='danger' style='margin-left: 5px'>删除</el-button>
-              </el-popconfirm>
+              <div class='operation-wrapper'>
+                <el-tooltip content='查看' placement='top'>
+                  <i class='el-icon-view success' onClick={ this.openDialog.bind(this, 'view', row) }/>
+                </el-tooltip>
+                <el-divider direction='vertical'/>
+                <el-tooltip content='编辑' placement='top'>
+                  <i class='el-icon-edit-outline primary' onClick={ this.openDialog.bind(this, 'edit', row) }/>
+                </el-tooltip>
+                <el-divider direction='vertical'/>
+                <el-popconfirm
+                  icon='el-icon-info'
+                  icon-color='red'
+                  title='确定要删除该账号吗？'
+                  onConfirm={ this.handleDelete.bind(this, row) }
+                >
+                  <el-tooltip content='删除' slot='reference' placement='top'>
+                    <i class='el-icon-delete danger'/>
+                  </el-tooltip>
+                </el-popconfirm>
+              </div>
             ]
           }
         }}
@@ -97,20 +121,33 @@ export default {
       showDialog: false,
       confirmLoading: false,
       form: {},
-      formOptions: [
+      roleList: [],
+      dialogTitle: '新增账号',
+      actionType: 'create'
+    }
+  },
+  computed: {
+    formOptions () {
+      return [
         { key: 'account', label: '账号', span: 24, required: true, component: { name: 'input' }},
         { key: 'password', label: '密码', span: 24, required: true, component: { name: 'input', type: 'password' }},
         { key: 'nickname', label: '昵称', span: 24, component: { name: 'input' }},
         { key: 'phone_number', label: '电话', span: 24, component: { name: 'input' }},
         { key: 'email', label: '邮箱', span: 24, component: { name: 'input' }},
         { key: 'avatar', label: '头像', span: 24, component: { name: 'input' }},
-        { key: 'status', label: '状态', span: 24, required: true, component: { name: 'select', options: ACCOUNT_STATUS_LIST }}
-      ],
-      dialogTitle: '新增账号',
-      actionType: 'create'
+        { key: 'status', label: '状态', span: 24, required: true, component: { name: 'select', options: ACCOUNT_STATUS_LIST }},
+        { key: 'roles', label: '权限', span: 24, required: true, component: { name: 'select', multiple: true, options: this.roleList, filterable: true }}
+      ]
     }
   },
   created () {
+    FETCH_ROLE_LIST({ page: 1, limit: 50 }).then(data => {
+      this.roleList = data.list.map(v => ({
+        value: v.id,
+        label: v.name
+      }))
+      console.log(this.roleList)
+    })
     this.fetchList()
   },
   methods: {

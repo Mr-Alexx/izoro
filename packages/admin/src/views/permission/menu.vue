@@ -23,7 +23,7 @@
           >新增{{ currentMenu.name || '' }}权限</el-button>
         </div>
       </div>
-      <div class="table-wrapper">
+      <div class="table-wrapper double-table-wrapper">
         <!-- tree-config配置reserve属性才能使更新表格时保持展开状态，还需配置row-id属性 -->
         <vxe-grid
           :loading="loading"
