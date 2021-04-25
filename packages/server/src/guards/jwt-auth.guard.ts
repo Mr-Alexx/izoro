@@ -20,7 +20,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (err || !user) {
       throw new UnauthorizedException('token失效，请重新登录！')
     }
-    console.log(user)
     return user
   }
 }

@@ -49,12 +49,13 @@ export class UserService {
    */
   async login(user: Partial<User>): Promise<User> {
     const { account, password } = user
-
-    const existUser = await this.userRepository.findOne({
-      where: {
-        account
-      }
-    })
+    const existUser = await this.userRepository
+      .createQueryBuilder('user')
+      .select()
+      .leftJoin('user.roles', 'role')
+      .addSelect('role.id')
+      .where('user.account = :account', { account })
+      .getOne()
     if (!existUser) {
       throw new HttpException('帐号不存在！', HttpStatus.BAD_REQUEST)
     }

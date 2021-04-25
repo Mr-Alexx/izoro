@@ -74,6 +74,17 @@ export class MenuService {
     return data
   }
 
+  async findPermissionByRoleIds(roles: number[]): Promise<any> {
+    const data = await this.menuRepository
+      .createQueryBuilder('menu')
+      .select('menu.menu_code')
+      .leftJoin('menu.roles', 'role')
+      .where('menu.node_type = :type', { type: MenuNodeTypes.button })
+      .andWhere('role.id in (:roles)', { roles })
+      .getMany()
+    return data.map(v => v.menu_code)
+  }
+
   /**
    * @description 构造按钮属性结构-递归
    * @param { Array } list

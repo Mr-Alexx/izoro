@@ -16,12 +16,15 @@ import {
   Patch,
   Post,
   Query,
+  SetMetadata,
   UseGuards
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { Menu } from './menu.entity'
 import { MenuService } from './menu.service'
+import { PermissionGuard } from '@/guards/permission.guard'
+import { Permission } from '@/decorators/permission.decorator'
 
 @Controller('menu')
 @ApiTags('menu')
@@ -29,8 +32,10 @@ export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
   @Get()
+  @UseGuards(PermissionGuard)
+  @Permission('menu:list')
   @UseGuards(JwtAuthGuard)
-  async findAll(@Query() query: any): Promise<any> {
+  async findAll(@Query() query: undefined | Record<string, any>): Promise<any> {
     return this.menuService.getMenuTree(query)
   }
 

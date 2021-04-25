@@ -1,3 +1,5 @@
+/** @format */
+
 import jwtConfig from '@/config/jwt.config'
 import { Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
@@ -9,11 +11,11 @@ export class JwtStragegy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: jwtConfig.secret,
+      secretOrKey: jwtConfig.secret
     })
   }
 
-  async validate(payload: any) {
-    return { id: payload.id, role: payload.role }
+  async validate(payload: Record<string, any>): Promise<{ id: string; roles: number[] }> {
+    return { id: payload.id, roles: payload.roles }
   }
 }

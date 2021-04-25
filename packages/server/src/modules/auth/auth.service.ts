@@ -11,15 +11,15 @@ export class AuthService {
 
   /**
    * @desc 生成jwt
-   * @param { Partial<User> } user
+   * @param { Record<string, any> } options
    * @return { string } token
    */
-  generateJwt(user: Partial<User>): string {
-    return this.jwtService.sign(user)
+  generateJwt(options: Record<string, any>): string {
+    return this.jwtService.sign(options)
   }
 
-  async login(user: Partial<User>) {
+  async login(user: Partial<User>): Promise<string> {
     const { id, roles } = await this.userService.login(user)
-    return this.generateJwt({ id })
+    return this.generateJwt({ id, roles: roles.map(v => v.id) })
   }
 }

@@ -1,4 +1,6 @@
-import { Body, Controller, HttpStatus, Post } from '@nestjs/common'
+/** @format */
+
+import { Body, Controller, Post } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { User } from '../user/user.entity'
 import { AuthService } from './auth.service'
