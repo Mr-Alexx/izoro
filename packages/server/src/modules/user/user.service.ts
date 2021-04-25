@@ -40,7 +40,7 @@ export class UserService {
    * @param { Partial<User> } user
    * @return { User }
    */
-  async login(user: Partial<User>) {
+  async login(user: Partial<User>): Promise<User> {
     const { account, password } = user
     const existUser = await this.userRepository.findOne({
       where: {

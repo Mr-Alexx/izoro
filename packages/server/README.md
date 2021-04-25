@@ -103,3 +103,5 @@ Nest is [MIT licensed](LICENSE).
   - 用户管理
   - 角色管理
   - 菜单管理
+
+  https://blog.afacode.top/2020/01/25/nestjs-typeorm-mysql-rbac/
