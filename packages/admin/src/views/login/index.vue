@@ -103,7 +103,7 @@ export default {
         }
         this.$router.push({ path: redirect, query: this.otherQuery })
       } catch (err) {
-        console.error(err)
+        this.$message.error(err)
       }
       this.loading = false
     },

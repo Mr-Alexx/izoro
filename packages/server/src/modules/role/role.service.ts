@@ -43,6 +43,10 @@ export class RoleService {
     }
   }
 
+  async findByIds(ids: any[]): Promise<Array<Role>> {
+    return this.roleRepository.findByIds(ids)
+  }
+
   async create(role: Partial<Role>): Promise<number> {
     if (!_.isObject(role)) {
       throw new HttpException('角色必须为一个对象！', HttpStatus.BAD_REQUEST)

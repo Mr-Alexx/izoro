@@ -28,6 +28,7 @@ export class UserController {
   @ApiOperation({ summary: '用户注册' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard)
   async register(@Body() user: Partial<User>): Promise<any> {
     return this.userService.create(user)
   }

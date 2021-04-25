@@ -3,7 +3,7 @@
     <AppSearch :options="searchOptions" :action="fetchList" />
 
     <el-card class="base-box--top talent-list table-box__table">
-      <div class="table-wrapper">
+      <div class="table-wrapper double-table-wrapper">
         <vxe-grid
           :loading="loading"
           :data="data"
@@ -13,7 +13,7 @@
           height="100%"
           :columns="columns"
           :empty-render="{ name: 'Empty' }"
-          @cell-click="changeRole"
+          @current-change="changeRole"
         />
         <vxe-grid
           ref="permissionTable"
@@ -173,6 +173,7 @@ export default {
      * @description 获取权限菜单
      */
     async fetchMenuList (role_id) {
+      this.permissionTableLoading = true
       try {
         const data = await FETCH_MENU_LIST({ node_type: 'all', roleIds: role_id + '' })
         // 对数据进行改造，权限父菜单的children改为permissions，防止渲染成树形
@@ -182,6 +183,8 @@ export default {
         this.$refs.permissionTable.setCheckboxRow(checkedRow, true)
       } catch (err) {
         console.error(err)
+      } finally {
+        this.permissionTableLoading = false
       }
 
       function getCheckRow (data, checkedRow = []) {
@@ -244,12 +247,6 @@ export default {
     },
     changeCheckbox ({ records, ndeterminates, checked, row }) {
       this.permissionCheckAll(checked, row)
-      // if (!row.children && !row.permissions) { return }
-
-      // if (!row.children) {
-      //   this.$set(row, 'checkedList', checked ? row.permissions.map(v => v.id) : [])
-      //   return
-      // }
     },
     permissionCheckAll (checked, row) {
       if (row.children) {
@@ -317,11 +314,12 @@ export default {
      * @param { Object } { row, $event, ... }
      */
     changeRole ({ row, $event }) {
-      const node = $event.target.nodeName
+      const className = $event.target.className
+      if (className.indexOf('el-tooltip') > -1) { return }
       // 点击树形展开节点或者操作按钮，不操作
-      if (/i|button/ig.test(node)) {
-        return
-      }
+      // if (/i|button/ig.test(node)) {
+      //   return
+      // }
 
       this.currentRow = row
     },

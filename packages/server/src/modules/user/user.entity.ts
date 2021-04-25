@@ -70,6 +70,10 @@ export class User {
   @Column({ comment: '邮箱', default: null })
   email: string
 
+  @ApiProperty({ required: false, description: '电话号码' })
+  @Column({ comment: '手机号码', default: null })
+  phone_number: string
+
   @Column({
     type: 'enum',
     enum: UserStatus,
