@@ -47,18 +47,24 @@ export class MenuController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(PermissionGuard)
+  @Permission('menu:add')
   @UseGuards(JwtAuthGuard)
   async create(@Body() menu: Partial<Menu>): Promise<number> {
     return this.menuService.create(menu)
   }
 
   @Patch(':id')
+  @UseGuards(PermissionGuard)
+  @Permission('menu:edit')
   @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: number, @Body() menu: Partial<Menu>): Promise<any> {
     return this.menuService.updateById(id, menu)
   }
 
   @Delete(':id')
+  @UseGuards(PermissionGuard)
+  @Permission('menu:del')
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number): Promise<string> {
     return this.menuService.softDeleteById(id)

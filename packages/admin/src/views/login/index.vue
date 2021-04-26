@@ -56,8 +56,8 @@ export default {
     return {
       form: {
         // remember: true,
-        account: '',
-        password: ''
+        account: 'qian',
+        password: '123456'
       },
       rules: {
         account: [

@@ -92,7 +92,7 @@ export class RoleService {
    * @description 角色授权菜单/权限
    * @param { data } { ids: 角色id, menuIds: 菜单id数组 }
    */
-  async authorize(data: any): Promise<string> {
+  async authorize(data: Record<string, any>): Promise<string> {
     try {
       const { roleIds, menuIds } = data
       const oldRoles = await this.roleRepository.findByIds(roleIds)

@@ -10,7 +10,7 @@ import { Reflector } from '@nestjs/core'
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector, private readonly menuService: MenuService) {}
+  constructor(private readonly reflector: Reflector, private readonly menuService?: MenuService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // 获取当前角色
@@ -19,13 +19,13 @@ export class PermissionGuard implements CanActivate {
     // 比对角色所有权限和当前请求权限
     const request: Request = context.switchToHttp().getRequest()
     const user = (request as any).user
-    if (!user) {
+
+    if (!user || user?.roles.length === 0) {
       return false
     }
 
     // 当前请求所需权限
     const permission = this.reflector.get<string[]>('permission', context.getHandler())
-
     if (!permission) {
       // 空， 标识不需要权限
       return true

@@ -22,6 +22,8 @@ import { ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { Role } from './role.entity'
 import { RoleService } from './role.service'
+import { PermissionGuard } from '@/guards/permission.guard'
+import { Permission } from '@/decorators/permission.decorator'
 
 @Controller('role')
 @ApiTags('role')
@@ -48,6 +50,8 @@ export class RoleController {
   }
 
   @Patch(':id')
+  @UseGuards(PermissionGuard)
+  @Permission('role:edit')
   @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: number, @Body() role: Partial<Role>): Promise<any> {
     return this.roleService.updateById(id, role)
@@ -61,7 +65,8 @@ export class RoleController {
 
   @Patch('authorize')
   @UseGuards(JwtAuthGuard)
-  async authorize(@Body() data: any): Promise<string> {
+  async authorize(@Body() data: Record<string, any>): Promise<string> {
+    // 授权
     return this.roleService.authorize(data)
   }
 }

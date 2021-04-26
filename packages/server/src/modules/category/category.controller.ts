@@ -10,6 +10,8 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { Category } from './category.entity'
 import { CategoryService } from './category.service'
+import { Permission } from '@/decorators/permission.decorator'
+import { PermissionGuard } from '@/guards/permission.guard'
 
 @ApiTags('Category')
 @Controller('category')
@@ -24,6 +26,8 @@ export class CategoryController {
 
   @ApiOperation({ summary: '新增分类' })
   @Post()
+  @UseGuards(PermissionGuard)
+  @Permission('category:add')
   @UseGuards(JwtAuthGuard)
   create(@Body() category: Partial<Category>): Promise<any> {
     return this.categoryService.create(category)
@@ -31,6 +35,8 @@ export class CategoryController {
 
   @ApiOperation({ summary: '更新分类' })
   @Put()
+  @UseGuards(PermissionGuard)
+  @Permission('category:edit')
   @UseGuards(JwtAuthGuard)
   updateById(@Body() category: Partial<Category>): Promise<any> {
     return this.categoryService.updateById(category)
@@ -38,6 +44,8 @@ export class CategoryController {
 
   @ApiOperation({ summary: '删除分类' })
   @Delete()
+  @UseGuards(PermissionGuard)
+  @Permission('category:add')
   @UseGuards(JwtAuthGuard)
   delete(@Body('ids') ids: number[]): Promise<any> {
     return this.categoryService.delete(ids)

@@ -19,6 +19,8 @@ import { ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/sw
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { User } from './user.entity'
 import { UserService } from './user.service'
+import { Permission } from '@/decorators/permission.decorator'
+import { PermissionGuard } from '@/guards/permission.guard'
 
 @Controller('user')
 @ApiTags('User')
@@ -40,6 +42,8 @@ export class UserController {
   @Get()
   @ApiQuery({ name: 'page', description: '页码' })
   @ApiQuery({ name: 'limit', description: '每页条数' })
+  @UseGuards(PermissionGuard)
+  @Permission('user:list')
   @UseGuards(JwtAuthGuard)
   async findAll(@Query() query: Record<string, any>): Promise<any> {
     return await this.userService.findAll(query)
@@ -51,6 +55,8 @@ export class UserController {
   @ApiOperation({ summary: '用户个人信息' })
   @Get('info')
   @ApiHeader({ name: 'Authorization', description: 'bearer token' })
+  @UseGuards(PermissionGuard)
+  @Permission('user:detail')
   @UseGuards(JwtAuthGuard)
   GetInfo(@Request() req: Record<string, any>): Promise<any> {
     return this.userService.findById(req.user.id)
@@ -58,6 +64,8 @@ export class UserController {
 
   @ApiOperation({ summary: '更新用户信息' })
   @ApiParam({ name: 'id', description: '用户id' })
+  @UseGuards(PermissionGuard)
+  @Permission('user:edit')
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async updateUser(@Param('id') id: number, @Body() user: Partial<User>): Promise<any> {
@@ -69,6 +77,8 @@ export class UserController {
 
   @ApiOperation({ summary: '删除用户' })
   @ApiParam({ name: 'id', description: '用户id' })
+  @UseGuards(PermissionGuard)
+  @Permission('user:del')
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: number): Promise<any> {

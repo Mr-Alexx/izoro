@@ -22,6 +22,7 @@ import { PublishStatus } from '@/interfaces/status.interface'
 import { CacheService } from './cache.service'
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { Article } from './article.entity'
+import { Permission } from '@/decorators/permission.decorator'
 
 // @Crud({
 //   model: Article // Article采用增删改查接口模式
@@ -96,6 +97,7 @@ export class ArticleController {
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @Permission('article:add')
   @UseGuards(JwtAuthGuard)
   async create(@Body() article: Partial<Article>): Promise<any> {
     return await this.articleService.create(article)
@@ -118,6 +120,7 @@ export class ArticleController {
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
+  @Permission('article:edit')
   @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: string, @Body() article: Article): Promise<any> {
     return await this.articleService.update(id, article)
@@ -128,6 +131,7 @@ export class ArticleController {
    */
   @Patch('delete')
   @HttpCode(HttpStatus.OK)
+  @Permission('article:del')
   @UseGuards(JwtAuthGuard)
   async recycleAll(@Body('ids') ids: string[]): Promise<any> {
     if (!Array.isArray(ids) || ids.length === 0) {
@@ -138,6 +142,7 @@ export class ArticleController {
 
   @Delete()
   @HttpCode(HttpStatus.OK)
+  @Permission('article:del')
   @UseGuards(JwtAuthGuard)
   async deleteAll(@Body('ids') ids: string[]): Promise<any> {
     if (!Array.isArray(ids) || ids.length === 0) {

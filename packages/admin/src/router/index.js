@@ -41,7 +41,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/article/index',
+    redirect: '/permission/user',
     meta: {},
     children: [
       {

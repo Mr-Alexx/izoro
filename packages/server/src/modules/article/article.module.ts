@@ -1,3 +1,5 @@
+/** @format */
+
 import { Module } from '@nestjs/common'
 import { ArticleController } from './article.controller'
 import { ArticleService } from './article.service'
@@ -13,6 +15,6 @@ import { TagModule } from '../tag/tag.module'
   imports: [RedisModule.register(redisConfig), TypeOrmModule.forFeature([Article]), CategoryModule, TagModule],
   controllers: [ArticleController],
   providers: [ArticleService, CacheService],
-  exports: [ArticleService],
+  exports: [ArticleService]
 })
 export class ArticleModule {}
