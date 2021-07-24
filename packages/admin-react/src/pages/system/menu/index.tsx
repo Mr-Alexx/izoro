@@ -235,7 +235,6 @@ const Menu: React.ForwardedRef = () => {
         drawerProps={{
           forceRender: true,
           destroyOnClose: true,
-          placement: 'left',
         }}
         visible={visible}
         onVisibleChange={updateVisible}

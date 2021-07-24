@@ -57,13 +57,13 @@ export const getRoleMenu = (data: USERS_API.RoleMenuParams): Promise<USERS_API.M
   post('/users/menu_permission/list', data);
 
 // 菜单列表
-export const getMenus = (): Promise<USERS_API.MenuItem[]> => post('/users/menu/list');
+export const getMenus = (): Promise<USERS_API.MenuItem[]> => get('/menu');
 
 // 创建菜单
-export const createMenu = (data: USERS_API.CreateMenuParams): Promise<API.AnyRes> => post('/users/menu/create', data);
+export const createMenu = (data: USERS_API.CreateMenuParams): Promise<API.AnyRes> => post('/menu', data);
 
 // 编辑菜单
-export const editMenu = (data: USERS_API.EditItemParams): Promise<API.AnyRes> => post('/users/menu/edit', data);
+export const editMenu = (data: USERS_API.EditItemParams): Promise<API.AnyRes> => patch('/menu', data);
 
 // 权限列表
 export const getPermissions = (data: USERS_API.PerimssionListParams): Promise<API.ListRes> =>
