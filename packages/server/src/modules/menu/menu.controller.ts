@@ -19,7 +19,7 @@ import {
   SetMetadata,
   UseGuards
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { Menu } from './menu.entity'
 import { MenuService } from './menu.service'
@@ -31,6 +31,7 @@ import { Permission } from '@/decorators/permission.decorator'
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
+  @ApiOperation({ summary: '菜单列表' })
   @Get()
   @UseGuards(PermissionGuard)
   @Permission('menu:list')
@@ -39,12 +40,14 @@ export class MenuController {
     return this.menuService.getMenuTree(query)
   }
 
+  @ApiOperation({ summary: '菜单详情' })
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async findById(@Param('id') id: number): Promise<any> {
     return this.menuService.findButtonsByMenuId(id)
   }
 
+  @ApiOperation({ summary: '创建菜单' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(PermissionGuard)
@@ -54,6 +57,7 @@ export class MenuController {
     return this.menuService.create(menu)
   }
 
+  @ApiOperation({ summary: '更新菜单' })
   @Patch(':id')
   @UseGuards(PermissionGuard)
   @Permission('menu:edit')
@@ -62,6 +66,7 @@ export class MenuController {
     return this.menuService.updateById(id, menu)
   }
 
+  @ApiOperation({ summary: '移除菜单' })
   @Delete(':id')
   @UseGuards(PermissionGuard)
   @Permission('menu:del')
