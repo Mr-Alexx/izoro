@@ -16,7 +16,12 @@ export class AuthController {
    */
   @ApiOperation({ summary: '用户登录' })
   @Post('login')
-  async login(@Body() user: Partial<User>): Promise<string> {
-    return this.authService.login(user)
+  async login(@Body() user: Partial<User>): Promise<any> {
+    const token = await this.authService.login(user)
+    return {
+      accessExpire: new Date(new Date().getTime() + 3600 * 24), // token过期时间
+      refreshAfter: new Date(new Date().getTime() + 3600 * 12), // token在这之后刷新
+      accessToken: token // token
+    }
   }
 }

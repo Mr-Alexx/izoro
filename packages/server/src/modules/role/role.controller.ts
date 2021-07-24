@@ -18,7 +18,7 @@ import {
   Query,
   UseGuards
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { Role } from './role.entity'
 import { RoleService } from './role.service'
@@ -30,18 +30,20 @@ import { Permission } from '@/decorators/permission.decorator'
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
+  @ApiOperation({ summary: '角色列表' })
   @Get()
   @UseGuards(JwtAuthGuard)
   async findAll(@Query() query: Record<string, any>): Promise<any> {
     return this.roleService.findAll(query)
   }
 
-  @Get(':id')
+  @ApiOperation({ summary: '获取指定角色' })
   @UseGuards(JwtAuthGuard)
-  async findById(@Param('id') id: number): Promise<any> {
-    return Promise.resolve({})
+  async findByIds(@Query('ids') ids: any[]): Promise<any> {
+    return this.roleService.findByIds(ids)
   }
 
+  @ApiOperation({ summary: '创建角色' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard)
@@ -49,6 +51,7 @@ export class RoleController {
     return this.roleService.create(role)
   }
 
+  @ApiOperation({ summary: '更新角色' })
   @Patch(':id')
   @UseGuards(PermissionGuard)
   @Permission('role:edit')
@@ -57,12 +60,14 @@ export class RoleController {
     return this.roleService.updateById(id, role)
   }
 
+  @ApiOperation({ summary: '删除角色' })
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number): Promise<string> {
     return this.roleService.deleteById(id)
   }
 
+  @ApiOperation({ summary: '角色授权' })
   @Patch('authorize')
   @UseGuards(JwtAuthGuard)
   async authorize(@Body() data: Record<string, any>): Promise<string> {

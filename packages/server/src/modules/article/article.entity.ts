@@ -108,9 +108,9 @@ export class Article {
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'create_at'
+    name: 'created_at'
   })
-  create_at: Date
+  created_at: Date
 
   // 发布时间
   @ApiProperty({ description: '发布时间', example: '2021-03-03 09:16:25' })
@@ -127,9 +127,9 @@ export class Article {
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
-    name: 'update_at'
+    name: 'updated_at'
   })
-  update_at: Date
+  updated_at: Date
 
   // 标签--关联标签表
   // @ApiProperty({ description: '关联的标签', example: ['tag1', 'tag2'] })

@@ -55,14 +55,14 @@ export class ArticleController {
     example: '2021-03-04 22:53:00'
   })
   @ApiQuery({
-    name: 'create_at_start',
+    name: 'created_at_start',
     description: '创建开始时间',
     required: false,
     type: Date,
     example: '2021-03-04 22:53:00'
   })
   @ApiQuery({
-    name: 'create_at_end',
+    name: 'created_at_end',
     description: '创建结束时间',
     required: false,
     type: Date,

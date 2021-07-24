@@ -24,17 +24,17 @@ export class Category {
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'create_at',
+    name: 'created_at',
   })
-  create_at: Date
+  created_at: Date
 
   @ApiProperty({ description: '更新时间', example: '2021-03-34 21:18:00' })
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
-    name: 'update_at',
+    name: 'updated_at',
   })
-  update_at: Date
+  updated_at: Date
 
   @ApiProperty({ description: '关联的文章', example: [123, 134] })
   @OneToMany(() => Article, (article) => article.category)

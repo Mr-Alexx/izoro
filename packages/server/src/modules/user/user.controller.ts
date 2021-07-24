@@ -27,7 +27,7 @@ import { PermissionGuard } from '@/guards/permission.guard'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiOperation({ summary: '用户注册' })
+  @ApiOperation({ summary: '创建用户' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard)

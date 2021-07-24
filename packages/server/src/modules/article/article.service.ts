@@ -27,7 +27,7 @@ export class ArticleService {
    * @param { any } query 查询参数
    */
   async findAll(queryObj: any = {}): Promise<{ list: any[]; total: number }> {
-    const { keyword, cid, status, tags, create_at_start, create_at_end, publish_at_start, publish_at_end } = queryObj
+    const { keyword, cid, status, tags, created_at_start, created_at_end, publish_at_start, publish_at_end } = queryObj
     let { page, limit, sort } = queryObj
 
     page = +queryObj.page || 1
@@ -35,7 +35,7 @@ export class ArticleService {
     if (limit > 50) {
       throw new HttpException('非法操作，limit不能超过50条！', HttpStatus.BAD_REQUEST)
     }
-    sort = (sort || 'create_at') + ''
+    sort = (sort || 'created_at') + ''
 
     // 取缓存
     const cacheKey = JSON.stringify(queryObj)
@@ -51,9 +51,9 @@ export class ArticleService {
           'article.id',
           'article.title',
           'article.cover',
-          'article.create_at',
+          'article.created_at',
           'article.publish_at',
-          'article.update_at',
+          'article.updated_at',
           'article.status',
           'article.views'
         ])
@@ -73,8 +73,8 @@ export class ArticleService {
 
       _.isString(tags) && query.andWhere(`tag.id IN (:tt)`, { tt: tags })
 
-      if (_.isString(create_at_start) && _.isString(create_at_end)) {
-        query.andWhere('article.create_at BETWEEN :start AND :end', { start: create_at_start, end: create_at_end })
+      if (_.isString(created_at_start) && _.isString(created_at_end)) {
+        query.andWhere('article.created_at BETWEEN :start AND :end', { start: created_at_start, end: created_at_end })
       }
 
       if (_.isString(publish_at_start) && _.isString(publish_at_start)) {

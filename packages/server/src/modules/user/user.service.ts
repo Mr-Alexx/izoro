@@ -91,7 +91,7 @@ export class UserService {
           'user.account',
           'user.nickname',
           'user.status',
-          'user.create_at',
+          'user.created_at',
           'user.email',
           'user.phone_number'
         ])
@@ -100,10 +100,8 @@ export class UserService {
         .orderBy('user.id', 'ASC')
         .skip((page - 1) * limit)
         .take(limit)
-
       status && userQuery.where('user.status = :status', { status })
-      account && userQuery.andWhere('user.account LIKE %:account%', { account })
-
+      account && userQuery.andWhere('user.account LIKE :account', { account: `%${account}%` })
       const [list, total] = await userQuery.getManyAndCount()
       return { list, total }
     } catch (err) {
@@ -121,8 +119,12 @@ export class UserService {
   async updateById(id: number, user: Partial<User>): Promise<User> {
     try {
       const oldUser = await this.findById(id)
-      const updatedUser = await this.userRepository.merge(oldUser, user)
-      return this.userRepository.save(updatedUser)
+      const roles = await this.roleService.findByIds(user.roles)
+      const updatedUser = await this.userRepository.merge(oldUser, {
+        ...user,
+        roles
+      })
+      return await this.userRepository.save(updatedUser)
     } catch (err) {
       console.error(err)
     }

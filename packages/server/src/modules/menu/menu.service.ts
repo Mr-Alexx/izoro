@@ -39,7 +39,7 @@ export class MenuService {
     }
 
     try {
-      const data = await queryBuilder.orderBy('menu.sort', 'ASC').addOrderBy('menu.update_at', 'DESC').getMany()
+      const data = await queryBuilder.orderBy('menu.sort', 'ASC').addOrderBy('menu.updated_at', 'DESC').getMany()
       // 设置checked属性
       data.forEach(v => {
         v['checked'] = v.roles ? v.roles.length > 0 : false
@@ -69,7 +69,7 @@ export class MenuService {
         node_type: MenuNodeTypes.button
       })
       .orderBy('sort', 'ASC')
-      .addOrderBy('update_at', 'DESC')
+      .addOrderBy('updated_at', 'DESC')
       .getMany()
     return data
   }

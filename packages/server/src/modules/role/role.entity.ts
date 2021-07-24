@@ -47,14 +47,14 @@ export class Role {
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'create_at'
+    name: 'created_at'
   })
-  create_at: Date
+  created_at: Date
 
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
-    name: 'update_at'
+    name: 'updated_at'
   })
-  update_at: Date
+  updated_at: Date
 }

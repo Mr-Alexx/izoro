@@ -17,7 +17,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // 获取错误码，默认服务器错误码（500）
     let code = HttpStatus.INTERNAL_SERVER_ERROR
     if (exception) {
-      code = exception.getStatus() || code
+      code = exception?.getStatus?.() || code
     }
     const err = {
       code,

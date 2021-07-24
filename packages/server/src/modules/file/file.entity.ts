@@ -30,7 +30,7 @@ export class File {
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'create_at'
+    name: 'created_at'
   })
-  create_at: Date
+  created_at: Date
 }

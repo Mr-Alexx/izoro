@@ -105,3 +105,6 @@ Nest is [MIT licensed](LICENSE).
   - 菜单管理
 
   https://blog.afacode.top/2020/01/25/nestjs-typeorm-mysql-rbac/
+
+  # 宝塔部署
+  [参考文章](https://www.cnblogs.com/ajanuw/p/14237635.html)
