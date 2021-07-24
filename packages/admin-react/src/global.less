@@ -1,0 +1,233 @@
+@import '~antd/es/style/themes/default.less';
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.colorWeak {
+  filter: invert(80%);
+}
+
+.ant-layout {
+  min-height: 100vh;
+}
+.ant-pro-sider.ant-layout-sider.ant-pro-sider-fixed {
+  left: unset;
+}
+
+canvas {
+  display: block;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+@media (max-width: @screen-xs) {
+  .ant-table {
+    width: 100%;
+    overflow-x: auto;
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
+        white-space: pre;
+        > span {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+// 兼容IE11
+@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
+  body .ant-design-pro > .ant-layout {
+    min-height: 100vh;
+  }
+}
+
+.ant-pro-global-footer {
+  margin: 10px 0 20px 0;
+}
+// ant sticky table样式
+// table非全屏下的top
+.ant-table-header.ant-table-sticky-header {
+  top: 48px !important;
+}
+// table全屏时
+.ant-pro-table:not(:root):fullscreen {
+  .ant-table-header.ant-table-sticky-header {
+    top: 0 !important;
+  }
+}
+
+.success {
+  color: @success-color;
+}
+.cyan {
+  color: #36cfc9;
+}
+.primary {
+  color: @primary-color;
+}
+.warning {
+  color: @warning-color;
+}
+.danger {
+  color: @error-color;
+}
+
+.modal-form {
+  .ant-space-align-center {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+.menu-wrapper {
+  height: calc(100vh - 198px);
+  min-height: 500px;
+}
+
+// 侧栏logo文字
+.ant-pro-sider-logo {
+  h1 {
+    font-size: 15px !important;
+  }
+}
+
+.no-margin-bottom {
+  margin-bottom: 0;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+.title-total-info {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+// 卡片式 ProTable
+.card-table {
+  // 模拟卡片形式标题下的分割线
+  .ant-card-body {
+    position: relative;
+    &:after {
+      position: absolute;
+      top: 56px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: #f0f0f0;
+      content: '';
+    }
+  }
+  .ant-pro-table-list-toolbar-container {
+    // padding: 20px 0;
+    height: 56px;
+    line-height: 56px;
+    box-sizing: border-box;
+  }
+  .ant-table-wrapper {
+    margin-top: 20px;
+  }
+}
+
+.nopadding-table {
+  .ant-card-body {
+    padding: 0;
+  }
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+.mb-20 {
+  margin-bottom: 20px;
+}
+.ml {
+  margin-left: 20px;
+}
+.mr {
+  margin-right: 20px;
+}
+
+.full-screen-modal {
+  .ant-modal {
+    width: 100%;
+    transform-origin: 1439.5px 182px;
+    height: 100%;
+    top: 0;
+    transform: none;
+    margin: 0;
+    transform-origin: unset;
+    padding-bottom: 0;
+    max-width: unset;
+
+    .ant-modal-body {
+      padding: 0;
+    }
+  }
+}
+
+// pageContainer 锚点导航
+.anchor-tabs {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  // 固定到顶部的样式
+  .ant-affix {
+    box-shadow: @shadow-1-down;
+  }
+  
+  .ant-anchor-wrapper {
+    background-color: #fff;
+    padding-left: 20px;
+    margin-left: -10px;
+  }
+  .ant-anchor {
+    width: 100%;
+    display: flex;
+    .ant-anchor-link {
+      padding: 0;
+      &+.ant-anchor-link {
+        margin-left: 20px;
+      }
+    }
+    .ant-anchor-ink { // 移除左侧线
+      display: none;
+    }
+    .ant-anchor-link-title {
+      padding: 12px 0;
+      border-bottom: 2px solid transparent;
+      &.ant-anchor-link-title-active {
+        border-bottom-color: @primary-color;
+      }
+    }
+  }
+}
+.ant-page-header {
+  &.has-anchor-tabs {
+    padding-bottom: 50px;
+  }
+}

@@ -1,0 +1,83 @@
+@color-primary: #5f95ff;
+
+.x6-widget-snapline-vertical {
+  border-right-color: #ff4e50 !important;
+}
+.x6-widget-snapline-horizontal {
+  border-bottom-color: #ff4e50 !important;
+}
+.x6-widget-selection-box {
+  margin-top: -3px;
+  margin-left: -3px;
+  border: 1px dashed @color-primary;
+}
+.x6-widget-selection-inner {
+  border: 1px dashed @color-primary;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: -400;
+  }
+}
+.animate-text1,
+.animate-text2,
+.animate-text3,
+.animate-text4 {
+  font-weight: bold;
+  animation: stroke 3s infinite linear;
+  fill: none;
+  stroke-width: 2px;
+  stroke-dasharray: 90 310;
+}
+.animate-text1 {
+  text-shadow: 0 0 2px #873bf4;
+  animation-delay: -1.5s;
+  stroke: #873bf4;
+}
+.animate-text2 {
+  text-shadow: 0 0 2px #ff6e06;
+  animation-delay: -3s;
+  stroke: #ff6e06;
+}
+
+.approval-card {
+  border: 2px solid @color-primary;
+  .ant-card-head {
+    min-height: unset;
+    padding: 0;
+
+    .ant-card-head-title {
+      height: 30px;
+      padding: 0 10px;
+      color: #fff;
+      font-size: 12px;
+      line-height: 30px;
+      background: @color-primary;
+    }
+  }
+  .ant-card-body {
+    position: relative;
+    box-sizing: border-box;
+    box-sizing: border-box;
+    height: 40px;
+    padding: 5px 10px 5px 10px;
+  }
+}
+
+.config-footer {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  width: 520px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  background-color: #fff;
+  border-top: 1px solid #f0f0f0;
+
+  .ant-btn {
+    margin: 0 5px;
+  }
+}

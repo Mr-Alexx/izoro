@@ -1,0 +1,45 @@
+.flex {
+  display: flex;
+}
+.flex1 {
+  flex: 1;
+}
+.alignCenter {
+  align-items: center;
+}
+
+.stepBox {
+  width: 100%;
+  margin-bottom: 20px;
+  background: #f1f2f5;
+}
+.stepItem {
+  position: relative;
+  height: 50px;
+  color: #999999;
+  line-height: 50px;
+  text-align: center;
+  cursor: pointer;
+  > i {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+  }
+}
+
+//表单
+.form {
+  :global {
+    .ant-col {
+      width: 140px;//修改表单label的宽度
+    }
+  }
+}
+
+.title {
+  margin-bottom: 30px;
+  color: #000000;
+  font-weight: bold;
+  font-size: 14px;
+}
