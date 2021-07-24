@@ -82,7 +82,7 @@ export default {
         { key: 'category', xs: 24, sm: 12, md: 8, lg: 8, label: '分类', component: { name: 'select', placeholder: '请选择', options: this.categoryList }},
         { key: 'publish_status', xs: 24, sm: 12, md: 8, lg: 8, label: '发布状态', component: { name: 'select', placeholder: '请选择', options: [] }},
         { key: 'tags', xs: 24, sm: 12, md: 8, lg: 8, label: '标签', component: { name: 'select', placeholder: '请选择', multiple: true, options: [] }},
-        { key: 'create_at', xs: 24, sm: 12, md: 8, lg: 8, label: '创建时间', component: { name: 'range' }},
+        { key: 'created_at', xs: 24, sm: 12, md: 8, lg: 8, label: '创建时间', component: { name: 'range' }},
         { key: 'publish_at', xs: 24, sm: 12, md: 8, lg: 8, label: '发布时间', component: { name: 'range' }}
       ]
     }

@@ -65,8 +65,8 @@ export default {
         { type: 'checkbox', width: 50 },
         { field: 'id', title: 'ID', width: 80 },
         { field: 'name', title: '标签名称', minWidth: 120 },
-        { field: 'create_at', title: '创建时间', minWidth: 120 },
-        { field: 'update_at', title: '更新时间', minWidth: 120 },
+        { field: 'created_at', title: '创建时间', minWidth: 120 },
+        { field: 'updated_at', title: '更新时间', minWidth: 120 },
         { title: '操作', minWidth: 100, fixed: 'right', slots: {
           default: ({ row, rowIndex }) => {
             return [

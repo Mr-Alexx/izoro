@@ -53,7 +53,7 @@ export default {
         { field: 'status_text', title: '状态', minWidth: 100 },
         { field: 'role', title: '角色', width: 100 },
         { field: 'login_times', title: '登陆次数', formatter: 'formatEmpty', width: 100 },
-        { field: 'create_at', title: '创建时间', width: 100 },
+        { field: 'created_at', title: '创建时间', width: 100 },
         { field: 'last_login_at', title: '上一次登录时间', formatter: 'formatEmpty', minWidth: 100 },
         { field: 'last_login_location', title: '上一次登陆地点', formatter: 'formatEmpty', minWidth: 120 },
         { field: 'last_login_ip', title: '上一次登陆IP', formatter: 'formatEmpty', width: 120 },
@@ -76,7 +76,7 @@ export default {
       return [
         { key: 'keyword', xs: 24, sm: 12, md: 8, lg: 8, label: '用户名', component: { name: 'input' }},
         { key: 'status', xs: 24, sm: 12, md: 8, lg: 8, label: '帐号状态', component: { name: 'select', placeholder: '请选择', options: [] }},
-        { key: 'create_at', xs: 24, sm: 12, md: 8, lg: 8, label: '创建时间', component: { name: 'range' }}
+        { key: 'created_at', xs: 24, sm: 12, md: 8, lg: 8, label: '创建时间', component: { name: 'range' }}
       ]
     }
   },

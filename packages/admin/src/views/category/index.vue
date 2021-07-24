@@ -65,8 +65,8 @@ export default {
         { field: 'name', title: '分类名称', minWidth: 120 },
         { field: 'id', title: '分类ID', width: 80 },
         { field: 'level', title: '分类层级', width: 80 },
-        { field: 'create_at', title: '创建时间', minWidth: 120 },
-        { field: 'update_at', title: '更新时间', minWidth: 120 },
+        { field: 'created_at', title: '创建时间', minWidth: 120 },
+        { field: 'updated_at', title: '更新时间', minWidth: 120 },
         { title: '操作', minWidth: 140, fixed: 'right', slots: {
           default: ({ row, rowIndex }) => {
             return [

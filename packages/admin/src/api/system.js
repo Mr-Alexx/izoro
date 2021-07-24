@@ -1,17 +1,16 @@
 import request from '@/utils/request'
 
-const PREFIX = 'http://localhost:3000'
 /* ============== role ============= */
 // 列表
 export const FETCH_ROLE_LIST = (params) => request({
-  url: PREFIX + '/role',
+  url: '/role',
   method: 'GET',
   params
 })
 
 // 新增
 export const ADD_ROLE = (data) => request({
-  url: PREFIX + '/role',
+  url: '/role',
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -21,7 +20,7 @@ export const ADD_ROLE = (data) => request({
 
 // 编辑
 export const EDIT_ROLE = (id, data) => request({
-  url: PREFIX + '/role/' + id,
+  url: '/role/' + id,
   method: 'PATCH',
   headers: {
     'Content-Type': 'application/json'
@@ -31,27 +30,27 @@ export const EDIT_ROLE = (id, data) => request({
 
 // 删除
 export const DELETE_ROLE = (id) => request({
-  url: PREFIX + '/role/' + id,
+  url: '/role/' + id,
   method: 'DELETE'
 })
 
 /* ============== menu ============= */
 // 菜单列表
 export const FETCH_MENU_LIST = (params) => request({
-  url: PREFIX + '/menu',
+  url: '/menu',
   method: 'GET',
   params
 })
 
 // 菜单下的权限列表
 export const FETCH_PERMISSION_LIST_BY_MENU_ID = (id) => request({
-  url: PREFIX + '/menu/' + id,
+  url: '/menu/' + id,
   method: 'GET'
 })
 
 // 新增
 export const ADD_MENU = (data) => request({
-  url: PREFIX + '/menu',
+  url: '/menu',
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -61,7 +60,7 @@ export const ADD_MENU = (data) => request({
 
 // 编辑
 export const EDIT_MENU = (id, data) => request({
-  url: PREFIX + '/menu/' + id,
+  url: '/menu/' + id,
   method: 'PATCH',
   headers: {
     'Content-Type': 'application/json'
@@ -71,7 +70,7 @@ export const EDIT_MENU = (id, data) => request({
 
 // 菜单-授权
 export const AUTHORIZE_MENU_TO_ROLE = (data) => request({
-  url: PREFIX + '/role/authorize',
+  url: '/role/authorize',
   method: 'PATCH',
   headers: {
     'Content-Type': 'application/json'
@@ -81,20 +80,20 @@ export const AUTHORIZE_MENU_TO_ROLE = (data) => request({
 
 // 删除
 export const DELETE_MENU = (id) => request({
-  url: PREFIX + '/menu/' + id,
+  url: '/menu/' + id,
   method: 'DELETE'
 })
 
 /* ============== user ============= */
 export const FETCH_USER_LIST = (params) => request({
-  url: PREFIX + '/user',
+  url: '/user',
   method: 'GET',
   params
 })
 
 // 新增
 export const ADD_USER = (data) => request({
-  url: PREFIX + '/user',
+  url: '/user',
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -104,7 +103,7 @@ export const ADD_USER = (data) => request({
 
 // 编辑
 export const EDIT_USER = (id, data) => request({
-  url: PREFIX + '/user/' + id,
+  url: '/user/' + id,
   method: 'PATCH',
   headers: {
     'Content-Type': 'application/json'
@@ -114,6 +113,6 @@ export const EDIT_USER = (id, data) => request({
 
 // 删除
 export const DELETE_USER = (id) => request({
-  url: PREFIX + '/user/' + id,
+  url: '/user/' + id,
   method: 'DELETE'
 })

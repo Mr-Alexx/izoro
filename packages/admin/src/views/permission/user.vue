@@ -84,8 +84,8 @@ export default {
             ]
           }
         }},
-        { field: 'create_at', title: '创建时间', minWidth: 100, formatter: 'time' },
-        // { field: 'update_at', title: '更新新建', minWidth: 100, formatter: 'time' },
+        { field: 'created_at', title: '创建时间', minWidth: 100, formatter: 'time' },
+        // { field: 'updated_at', title: '更新新建', minWidth: 100, formatter: 'time' },
         { title: '操作', minWidth: 160, fixed: 'right', slots: {
           default: ({ row }) => {
             return [

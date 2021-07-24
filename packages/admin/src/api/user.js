@@ -41,7 +41,7 @@ export function logout () {
 
 export function fetchUserList () {
   return request({
-    url: 'http://localhost:3000/user',
+    url: '/user',
     method: 'GET',
     params: {
       page: 1,

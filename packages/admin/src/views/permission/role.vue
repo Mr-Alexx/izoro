@@ -92,7 +92,7 @@ export default {
             <el-tag size='small' type={ row.status === 0 ? 'error' : 'success' }>{ ROLE_STATUS_LIST.filter(v => v.value === row.status)[0].label }</el-tag>
           ]
         }},
-        { field: 'create_at', title: '创建时间', minWidth: 140, formatter: 'time' },
+        { field: 'created_at', title: '创建时间', minWidth: 140, formatter: 'time' },
         { title: '操作', minWidth: 100, fixed: 'right', slots: {
           default: ({ row }) => {
             return [
