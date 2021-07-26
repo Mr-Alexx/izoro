@@ -1,5 +1,4 @@
 /**
- * @format
  * @description 菜单控制器
  * @module modules/menu/controller
  * @author 潜
@@ -17,14 +16,15 @@ import {
   Post,
   Query,
   SetMetadata,
-  UseGuards
-} from '@nestjs/common'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
-import { Menu } from './menu.entity'
-import { MenuService } from './menu.service'
-import { PermissionGuard } from '@/guards/permission.guard'
-import { Permission } from '@/decorators/permission.decorator'
+  UseGuards,
+} from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
+import { Menu } from './menu.entity';
+import { MenuService } from './menu.service';
+import { PermissionGuard } from '@/guards/permission.guard';
+import { Permission } from '@/decorators/permission.decorator';
+import { PermissionsType } from '@/interfaces/permission.interface';
 
 @Controller('menu')
 @ApiTags('menu')
@@ -34,44 +34,45 @@ export class MenuController {
   @ApiOperation({ summary: '菜单列表' })
   @Get()
   @UseGuards(PermissionGuard)
-  @Permission('menu:list')
+  @Permission(PermissionsType.菜单列表)
   @UseGuards(JwtAuthGuard)
   async findAll(@Query() query: undefined | Record<string, any>): Promise<any> {
-    return this.menuService.getMenuTree(query)
+    return this.menuService.getMenuTree(query);
   }
 
   @ApiOperation({ summary: '菜单详情' })
   @Get(':id')
+  @Permission('菜单详情')
   @UseGuards(JwtAuthGuard)
   async findById(@Param('id') id: number): Promise<any> {
-    return this.menuService.findButtonsByMenuId(id)
+    return this.menuService.findButtonsByMenuId(id);
   }
 
   @ApiOperation({ summary: '创建菜单' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(PermissionGuard)
-  @Permission('menu:add')
+  @Permission('创建菜单')
   @UseGuards(JwtAuthGuard)
   async create(@Body() menu: Partial<Menu>): Promise<number> {
-    return this.menuService.create(menu)
+    return this.menuService.create(menu);
   }
 
   @ApiOperation({ summary: '更新菜单' })
   @Patch(':id')
   @UseGuards(PermissionGuard)
-  @Permission('menu:edit')
+  @Permission('编辑菜单')
   @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: number, @Body() menu: Partial<Menu>): Promise<any> {
-    return this.menuService.updateById(id, menu)
+    return this.menuService.updateById(id, menu);
   }
 
-  @ApiOperation({ summary: '移除菜单' })
+  @ApiOperation({ summary: '删除菜单' })
   @Delete(':id')
   @UseGuards(PermissionGuard)
-  @Permission('menu:del')
+  @Permission('删除菜单')
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number): Promise<string> {
-    return this.menuService.softDeleteById(id)
+    return this.menuService.softDeleteById(id);
   }
 }
