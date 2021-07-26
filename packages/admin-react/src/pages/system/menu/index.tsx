@@ -50,7 +50,7 @@ const Menu: React.ForwardedRef = () => {
   }, [actionType]);
 
   // 初始化权限列表（返回所有），绑定权限用
-  useRequest(() => getPermissions({ current: 1, pageSize: 1000 }), {
+  useRequest(() => getPermissions(), {
     onSuccess: data => {
       setPermissionList(data.map(item => ({ value: item.id, label: item.name })));
     },

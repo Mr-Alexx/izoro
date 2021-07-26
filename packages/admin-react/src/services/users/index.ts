@@ -66,8 +66,7 @@ export const createMenu = (data: USERS_API.CreateMenuParams): Promise<API.AnyRes
 export const editMenu = (data: USERS_API.EditItemParams): Promise<API.AnyRes> => patch('/menu', data);
 
 // 权限列表
-export const getPermissions = (data: USERS_API.PerimssionListParams): Promise<API.ListRes> =>
-  post('/users/permission/list', data);
+export const getPermissions = (): Promise<API.ListRes> => get('/common/map-list', { type: 'perimissionsType' });
 
 // 创建权限
 export const createPermission = (data: USERS_API.CreatePermissionParams): Promise<API.AnyRes> =>
