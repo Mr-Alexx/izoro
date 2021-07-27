@@ -171,8 +171,8 @@ declare namespace USERS_API {
     };
   // 菜单绑定权限参数
   type BindPermissionParams = {
-    permission_ids: number[]; // 权限id
-    menu_id: number; // 菜单id
+    permissions: string[]; // 权限id
+    id: number; // 菜单id
   };
 
   /* =============== api route =============== */

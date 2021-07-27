@@ -52,7 +52,7 @@ const Menu: React.ForwardedRef = () => {
   // 初始化权限列表（返回所有），绑定权限用
   useRequest(() => getPermissions(), {
     onSuccess: data => {
-      setPermissionList(data.map(item => ({ value: item.id, label: item.name })));
+      setPermissionList(data);
     },
   });
 
@@ -78,9 +78,9 @@ const Menu: React.ForwardedRef = () => {
         });
       } else {
         // 绑定权限（菜单下有子菜单不允许绑定，后台设定问题，这次要做过滤）
-        if (!currentRow?.children) {
-          await bindPermission({ permission_ids: value.permissions, menu_id: currentRow?.id as number });
-        }
+        // if (!currentRow?.children) {
+        //   await bindPermission({ permissions: value.permissions, id: currentRow?.id as number });
+        // }
 
         await editMenu({
           ...value,
@@ -143,8 +143,14 @@ const Menu: React.ForwardedRef = () => {
       title: '路由地址',
       key: 'path',
       dataIndex: 'path',
-      width: 250,
+      width: 160,
       ellipsis: true,
+    },
+    {
+      title: '组件路径',
+      key: 'component',
+      dataIndex: 'component',
+      width: 200,
     },
     {
       title: '权限',
@@ -156,19 +162,12 @@ const Menu: React.ForwardedRef = () => {
         }
         return row.permissions.map(v => {
           return (
-            <Tag color="blue" key={v.id} style={{ marginTop: 3, marginBottom: 3 }}>
-              {v.name}
+            <Tag color="blue" key={v} style={{ marginTop: 3, marginBottom: 3 }}>
+              {permissionList.find(item => item.value === v)?.label}
             </Tag>
           );
         });
       },
-    },
-    {
-      title: '组件路径',
-      key: 'component',
-      dataIndex: 'component',
-      width: 120,
-      ellipsis: true,
     },
     {
       title: '操作',
@@ -251,7 +250,7 @@ const Menu: React.ForwardedRef = () => {
           status: currentRow?.status || 1,
           node_type: currentRow?.node_type || 1,
           pid: currentRow?.pid || 0,
-          permissions: ((currentRow?.permissions || []) as USERS_API.PermissionItem[]).map(v => v.id),
+          permissions: currentRow?.permissions,
         }}
         submitter={{
           submitButtonProps: {

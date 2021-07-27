@@ -42,7 +42,7 @@ export class MenuController {
 
   @ApiOperation({ summary: '菜单详情' })
   @Get(':id')
-  @Permission('菜单详情')
+  @Permission(PermissionsType.菜单详情)
   @UseGuards(JwtAuthGuard)
   async findById(@Param('id') id: number): Promise<any> {
     return this.menuService.findButtonsByMenuId(id);
@@ -52,16 +52,16 @@ export class MenuController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(PermissionGuard)
-  @Permission('创建菜单')
+  @Permission(PermissionsType.创建菜单)
   @UseGuards(JwtAuthGuard)
   async create(@Body() menu: Partial<Menu>): Promise<number> {
     return this.menuService.create(menu);
   }
 
-  @ApiOperation({ summary: '更新菜单' })
+  @ApiOperation({ summary: '编辑菜单' })
   @Patch(':id')
   @UseGuards(PermissionGuard)
-  @Permission('编辑菜单')
+  @Permission(PermissionsType.编辑菜单)
   @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: number, @Body() menu: Partial<Menu>): Promise<any> {
     return this.menuService.updateById(id, menu);
@@ -70,7 +70,7 @@ export class MenuController {
   @ApiOperation({ summary: '删除菜单' })
   @Delete(':id')
   @UseGuards(PermissionGuard)
-  @Permission('删除菜单')
+  @Permission(PermissionsType.删除菜单)
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number): Promise<string> {
     return this.menuService.softDeleteById(id);

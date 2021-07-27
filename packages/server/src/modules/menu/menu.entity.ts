@@ -75,6 +75,12 @@ export class Menu {
   @ManyToMany(() => Role, role => role.menus, { cascade: true })
   roles: Array<Role>;
 
+  @Column({
+    comment: '绑定的权限列表，所有权限在 @/guards/interfaces/permission.interfaces.ts 内定义',
+    type: 'simple-array',
+  })
+  permissions: string[];
+
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',

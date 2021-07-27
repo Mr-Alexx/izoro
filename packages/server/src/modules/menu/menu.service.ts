@@ -73,6 +73,9 @@ export class MenuService {
     return data;
   }
 
+  /**
+   * @description 获取角色的菜单和权限列表
+   */
   async findPermissionByRoleIds(roles: number[]): Promise<any> {
     try {
       const data = await this.menuRepository
@@ -118,16 +121,16 @@ export class MenuService {
     if (!_.isObject(menu)) {
       throw new HttpException('节点必须为一个对象！', HttpStatus.BAD_REQUEST);
     }
-
+    console.log(menu);
     // 权限不允许相同的出现
-    const existMenu = await this.menuRepository.findOne({
-      menu_code: menu.menu_code,
-      pid: menu.pid,
-      node_type: MenuNodeTypes.button,
-    });
-    if (existMenu) {
-      throw new HttpException('同一父节点下的子节点编码不能重复！', HttpStatus.BAD_REQUEST);
-    }
+    // const existMenu = await this.menuRepository.findOne({
+    //   menu_code: menu.menu_code,
+    //   pid: menu.pid,
+    //   node_type: MenuNodeTypes.button,
+    // });
+    // if (existMenu) {
+    //   throw new HttpException('同一父节点下的子节点编码不能重复！', HttpStatus.BAD_REQUEST);
+    // }
 
     try {
       if (menu.pid) {

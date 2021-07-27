@@ -6,11 +6,13 @@
 
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { PermissionsType } from '@/interfaces/permission.interface';
+import { CommonService } from './common.service';
 
 @Controller('common')
 @ApiTags('common')
 export class CommonController {
+  constructor(private readonly commonService: CommonService) {}
+
   @ApiOperation({ summary: 'Map列表' })
   @Get('map-list')
   async findByType(@Query('type') type: string): Promise<any> {
@@ -18,7 +20,7 @@ export class CommonController {
     switch (type) {
       case 'permissions':
         // 权限配置映射集
-        result = Object.keys(PermissionsType).map(key => ({ label: key, value: PermissionsType[key] }));
+        result = this.commonService.getPermissionsType();
         break;
     }
     return {

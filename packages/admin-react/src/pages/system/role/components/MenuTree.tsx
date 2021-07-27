@@ -157,7 +157,7 @@ const MenuTree: FC<Props> = (props: Props) => {
       width={900}
       onClose={onClose}
       visible={visible}
-      placement="left"
+      placement="right"
       bodyStyle={{ paddingBottom: 80 }}
       destroyOnClose
       footer={

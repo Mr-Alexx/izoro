@@ -40,6 +40,12 @@ export class Role {
   @JoinTable()
   menus: Array<Menu>;
 
+  @Column({
+    comment: '角色绑定的权限列表',
+    type: 'simple-array',
+  })
+  permissions: string[];
+
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',

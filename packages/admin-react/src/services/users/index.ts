@@ -63,10 +63,10 @@ export const getMenus = (): Promise<USERS_API.MenuItem[]> => get('/menu');
 export const createMenu = (data: USERS_API.CreateMenuParams): Promise<API.AnyRes> => post('/menu', data);
 
 // 编辑菜单
-export const editMenu = (data: USERS_API.EditItemParams): Promise<API.AnyRes> => patch('/menu', data);
+export const editMenu = (data: USERS_API.EditItemParams): Promise<API.AnyRes> => patch(`/menu/${data.id}`, data);
 
 // 权限列表
-export const getPermissions = (): Promise<API.ListRes> => get('/common/map-list', { type: 'perimissionsType' });
+export const getPermissions = (): Promise<API.ListRes> => get('/common/map-list', { type: 'permissions' });
 
 // 创建权限
 export const createPermission = (data: USERS_API.CreatePermissionParams): Promise<API.AnyRes> =>
