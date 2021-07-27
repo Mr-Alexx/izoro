@@ -26,7 +26,7 @@ const actions = {
   login ({ commit }, userInfo) {
     return login(userInfo)
       .then(data => {
-        const token = 'Bearer ' + data
+        const token = 'Bearer ' + data.accessToken
         commit('SET_TOKEN', token)
         // 如果选择了当天内免登录，则cookie设置当天23:59:59为过期时间
         // 否则，设置过期时间为1个小时
