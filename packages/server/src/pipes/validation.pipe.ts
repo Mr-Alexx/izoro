@@ -5,34 +5,34 @@
  * @author 潜
  */
 
-import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common'
-import { plainToClass } from 'class-transformer'
-import { validate } from 'class-validator'
+import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
   async transform(value: any, { metatype }: ArgumentMetadata) {
     if (!metatype || !this.toValidate(metatype)) {
-      return value
+      return value;
     }
-    const object = plainToClass(metatype, value)
-    const errors = await validate(object)
+    const object = plainToClass(metatype, value);
+    const errors = await validate(object);
     if (errors.length > 0) {
       // entity定义的验证信息合并返回
       const errorMessage = errors
-        .map((error) => {
+        .map(error => {
           return Object.values(error.constraints)
-            .map((v) => `${v}!`)
-            .join(' && ')
+            .map(v => `${v}!`)
+            .join(' && ');
         })
-        .join('; ')
-      throw new BadRequestException(errorMessage)
+        .join('; ');
+      throw new BadRequestException(errorMessage);
     }
-    return value
+    return value;
   }
 
   private toValidate(metatype: Function): boolean {
-    const types: Function[] = [String, Boolean, Number, Array, Object]
-    return !types.includes(metatype)
+    const types: Function[] = [String, Boolean, Number, Array, Object];
+    return !types.includes(metatype);
   }
 }

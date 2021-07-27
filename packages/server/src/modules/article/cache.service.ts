@@ -1,17 +1,17 @@
-import { Injectable } from '@nestjs/common'
-import { RedisService } from 'nestjs-redis'
+import { Injectable } from '@nestjs/common';
+import { RedisService } from 'nestjs-redis';
 
 @Injectable()
 export class CacheService {
-  public client
+  public client;
   constructor(private redisService: RedisService) {
-    this.getClient()
+    this.getClient();
   }
   async getClient(): Promise<void> {
     if (this.client) {
-      return
+      return;
     }
-    this.client = await this.redisService.getClient()
+    this.client = await this.redisService.getClient();
   }
   /**
    * @description 存储
@@ -20,12 +20,12 @@ export class CacheService {
    * @param { number } seconds 可选过期时间，单位：秒
    */
   async set(key: string, value: any, seconds?: number): Promise<void> {
-    await this.getClient()
+    await this.getClient();
 
-    value = JSON.stringify(value)
-    const params = [key, value]
-    seconds && params.push('EX', seconds)
-    await this.client.set(...params)
+    value = JSON.stringify(value);
+    const params = [key, value];
+    seconds && params.push('EX', seconds);
+    await this.client.set(...params);
   }
 
   /**
@@ -34,13 +34,13 @@ export class CacheService {
    * @return { any }
    */
   async get(key: string): Promise<any> {
-    await this.getClient()
+    await this.getClient();
 
-    const value = await this.client.get(key)
+    const value = await this.client.get(key);
     if (!value) {
-      return
+      return;
     }
-    return JSON.parse(value)
+    return JSON.parse(value);
   }
 
   /**
@@ -48,11 +48,11 @@ export class CacheService {
    * @param { string } key
    */
   async del(key: string): Promise<void> {
-    await this.getClient()
-    const isExist = await this.client.get(key)
+    await this.getClient();
+    const isExist = await this.client.get(key);
     if (!isExist) {
-      return
+      return;
     }
-    await this.client.del(key)
+    await this.client.del(key);
   }
 }

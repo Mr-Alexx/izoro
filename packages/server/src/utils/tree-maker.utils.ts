@@ -1,8 +1,8 @@
 export default function treeMaker(list: any[], pid: number | null, level: number | 0) {
   if (list.length === 0) {
-    return list
+    return list;
   }
-  let result = []
+  const result = [];
 
-  list.forEach((v) => {})
+  list.forEach(v => {});
 }

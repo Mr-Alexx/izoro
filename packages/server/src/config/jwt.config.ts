@@ -3,4 +3,4 @@ export default {
   signOptions: {
     expiresIn: '4h',
   },
-}
+};

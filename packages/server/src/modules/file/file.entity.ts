@@ -1,36 +1,35 @@
 /**
- * @format
  * @description 文件模型
  * @module modules/file/entity
  * @author 潜
  */
 
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class File {
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @Column({ comment: '原文件名' })
-  original_name: string
+  original_name: string;
 
   @Column({ comment: '保存的文件名' })
-  name: string
+  name: string;
 
   @Column({ comment: '文件类型' })
-  mimetype: string
+  mimetype: string;
 
   @Column({ comment: '文件大小,KB' })
-  size: number
+  size: number;
 
   @Column({ comment: '文件相对路径' })
-  url: string
+  url: string;
 
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'created_at'
+    name: 'created_at',
   })
-  created_at: Date
+  created_at: Date;
 }

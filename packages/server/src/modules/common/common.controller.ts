@@ -16,14 +16,14 @@ export class CommonController {
   async findByType(@Query('type') type: string): Promise<any> {
     let result;
     switch (type) {
-      case 'permissionsType':
+      case 'permissions':
+        // 权限配置映射集
         result = Object.keys(PermissionsType).map(key => ({ label: key, value: PermissionsType[key] }));
         break;
     }
-    console.log('res', PermissionsType);
     return {
       data: result,
-      total: result?.length || 0,
+      total: result.length,
     };
   }
 }

@@ -1,7 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
-import { In, Repository } from 'typeorm'
-import { Tag } from './tag.entity'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, Repository } from 'typeorm';
+import { Tag } from './tag.entity';
 
 @Injectable()
 export class TagService {
@@ -15,41 +15,41 @@ export class TagService {
    * @return { array }
    */
   async findAll(query: Record<string, any>): Promise<any> {
-    let { page, limit } = query
-    page = page || 1
-    limit = limit || 20
+    let { page, limit } = query;
+    page = page || 1;
+    limit = limit || 20;
 
-    const [list, total] = await this.tagReposity.findAndCount()
+    const [list, total] = await this.tagReposity.findAndCount();
     return {
       list,
       total,
-    }
+    };
   }
 
   /**
    * @desc 创建标签
    */
   async create(tag: Partial<Tag>): Promise<null> {
-    const { name } = tag
-    const existTag = await this.tagReposity.find({ where: { name } })
+    const { name } = tag;
+    const existTag = await this.tagReposity.find({ where: { name } });
 
     if (existTag.length > 0) {
-      throw new HttpException('该标签已存在！', HttpStatus.BAD_REQUEST)
+      throw new HttpException('该标签已存在！', HttpStatus.BAD_REQUEST);
     }
-    const newTag = await this.tagReposity.create(tag)
-    await this.tagReposity.save(newTag)
-    return Promise.resolve(null)
+    const newTag = await this.tagReposity.create(tag);
+    await this.tagReposity.save(newTag);
+    return Promise.resolve(null);
   }
 
   /**
    * @desc 更新标签信息
    */
   async updateById(tag: Record<string, any>): Promise<null> {
-    const { id } = tag
-    const oldTag = await this.tagReposity.findOne({ where: { id } })
-    const updateTag = await this.tagReposity.merge(oldTag, tag)
-    await this.tagReposity.save(updateTag)
-    return Promise.resolve(null)
+    const { id } = tag;
+    const oldTag = await this.tagReposity.findOne({ where: { id } });
+    const updateTag = await this.tagReposity.merge(oldTag, tag);
+    await this.tagReposity.save(updateTag);
+    return Promise.resolve(null);
   }
 
   /**
@@ -61,11 +61,11 @@ export class TagService {
       .createQueryBuilder()
       .delete()
       .where({ id: In(ids) })
-      .execute()
-    return Promise.resolve(null)
+      .execute();
+    return Promise.resolve(null);
   }
 
   async findByIds(ids: any[]): Promise<Array<Tag>> {
-    return this.tagReposity.findByIds(ids)
+    return this.tagReposity.findByIds(ids);
   }
 }

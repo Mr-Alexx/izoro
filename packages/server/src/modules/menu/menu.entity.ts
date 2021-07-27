@@ -1,92 +1,91 @@
 /**
- * @format
  * @description 菜单模型
  * @module modules/menu/entity
  * @author 潜
  */
 
-import { MenuNodeTypes, MenuStatus } from '@/interfaces/status.interface'
-import { IsNumber, IsString } from 'class-validator'
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
-import { Role } from '../role/role.entity'
+import { MenuNodeTypes, MenuStatus } from '@/interfaces/status.interface';
+import { IsNumber, IsString } from 'class-validator';
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Role } from '../role/role.entity';
 
 @Entity()
 export class Menu {
   @PrimaryGeneratedColumn({ comment: '主键' })
-  id: number
+  id: number;
 
   @IsString()
   @Column({ comment: '菜单名称' })
-  name: string
+  name: string;
 
   @IsString()
   @Column({ comment: '菜单标识' })
-  menu_code: string
+  menu_code: string;
 
   @Column({ comment: '菜单描述', default: null })
-  description: string
+  description: string;
 
   @IsNumber()
   @Column({ comment: '父id', default: 0 })
-  pid: number
+  pid: number;
 
   @Column({ comment: '节点类型，1目录 2页面 3按钮', default: MenuNodeTypes.directory })
-  node_type: MenuNodeTypes
+  node_type: MenuNodeTypes;
 
   @Column({ comment: '图标', default: null })
-  icon: string
+  icon: string;
 
   @Column({ comment: '排序', default: 1 })
   @IsNumber()
-  sort: number
+  sort: number;
 
   @Column({ comment: '页面路径', default: null })
-  url: string
+  url: string;
 
   @Column({ comment: '组件路径', default: null })
-  component: string
+  component: string;
 
   @Column({ comment: '重定向', default: null })
-  redirect: string
+  redirect: string;
 
   @Column({ comment: '是否隐藏', default: false })
-  hidden: boolean
+  hidden: boolean;
 
   @Column({ comment: '是否缓存', default: false })
-  cache: boolean
+  cache: boolean;
 
   @Column({ comment: '是否显示在面包屑', default: true })
-  breadcrumb: boolean
+  breadcrumb: boolean;
 
   @Column({ comment: '是否固定菜单', default: false })
-  affix: boolean
+  affix: boolean;
 
   @Column({ comment: '菜单树层级，以便于查询指定层级的菜单', default: 1 })
-  level: number
+  level: number;
 
   @Column({
     comment: '树id的路径，主要用于存放从根节点到当前树的父节点的路径，逗号分隔，想要找父节点会特别快',
-    default: null
+    default: null,
   })
-  path: string
+  path: string;
 
   @Column({ comment: '状态，-1删除 0禁用 1正常', default: MenuStatus.normal })
-  status: MenuStatus
+  status: MenuStatus;
 
   @ManyToMany(() => Role, role => role.menus, { cascade: true })
-  roles: Array<Role>
+  roles: Array<Role>;
 
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'created_at'
+    name: 'created_at',
   })
-  created_at: Date
+  created_at: Date;
 
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
-    name: 'updated_at'
+    name: 'updated_at',
   })
-  updated_at: Date
+  updated_at: Date;
 }

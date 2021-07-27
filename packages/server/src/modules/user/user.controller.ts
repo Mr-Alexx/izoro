@@ -1,5 +1,3 @@
-/** @format */
-
 import {
   Body,
   Controller,
@@ -13,14 +11,14 @@ import {
   Query,
   UseGuards,
   Request,
-  Delete
-} from '@nestjs/common'
-import { ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
-import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
-import { User } from './user.entity'
-import { UserService } from './user.service'
-import { Permission } from '@/decorators/permission.decorator'
-import { PermissionGuard } from '@/guards/permission.guard'
+  Delete,
+} from '@nestjs/common';
+import { ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
+import { User } from './user.entity';
+import { UserService } from './user.service';
+import { Permission } from '@/decorators/permission.decorator';
+import { PermissionGuard } from '@/guards/permission.guard';
 
 @Controller('user')
 @ApiTags('User')
@@ -32,7 +30,7 @@ export class UserController {
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard)
   async register(@Body() user: Partial<User>): Promise<any> {
-    return this.userService.create(user)
+    return this.userService.create(user);
   }
 
   /**
@@ -46,7 +44,7 @@ export class UserController {
   @Permission('user:list')
   @UseGuards(JwtAuthGuard)
   async findAll(@Query() query: Record<string, any>): Promise<any> {
-    return await this.userService.findAll(query)
+    return await this.userService.findAll(query);
   }
 
   /**
@@ -59,7 +57,7 @@ export class UserController {
   @Permission('user:detail')
   @UseGuards(JwtAuthGuard)
   GetInfo(@Request() req: Record<string, any>): Promise<any> {
-    return this.userService.findById(req.user.id)
+    return this.userService.findById(req.user.id);
   }
 
   @ApiOperation({ summary: '更新用户信息' })
@@ -70,9 +68,9 @@ export class UserController {
   @Patch(':id')
   async updateUser(@Param('id') id: number, @Body() user: Partial<User>): Promise<any> {
     if (Object.keys(user).length === 0) {
-      throw new HttpException('请填写要修改的用户信息！', HttpStatus.BAD_REQUEST)
+      throw new HttpException('请填写要修改的用户信息！', HttpStatus.BAD_REQUEST);
     }
-    return this.userService.updateById(id, user)
+    return this.userService.updateById(id, user);
   }
 
   @ApiOperation({ summary: '删除用户' })
@@ -82,6 +80,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: number): Promise<any> {
-    return this.userService.deleteById(id)
+    return this.userService.deleteById(id);
   }
 }

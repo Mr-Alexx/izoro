@@ -1,9 +1,7 @@
-/** @format */
-
-import { Injectable } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
-import { User } from '../user/user.entity'
-import { UserService } from '../user/user.service'
+import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { User } from '../user/user.entity';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -15,11 +13,11 @@ export class AuthService {
    * @return { string } token
    */
   generateJwt(options: Record<string, any>): string {
-    return this.jwtService.sign(options)
+    return this.jwtService.sign(options);
   }
 
   async login(user: Partial<User>): Promise<string> {
-    const { id, roles } = await this.userService.login(user)
-    return this.generateJwt({ id, roles: roles.map(v => v.id) })
+    const { id, roles } = await this.userService.login(user);
+    return this.generateJwt({ id, roles: roles.map(v => v.id) });
   }
 }

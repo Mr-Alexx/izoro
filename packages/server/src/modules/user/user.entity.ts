@@ -1,8 +1,6 @@
-/** @format */
-
-import { UserStatus } from '@/interfaces/status.interface'
-import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsString } from 'class-validator'
+import { UserStatus } from '@/interfaces/status.interface';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 import {
   Column,
   Entity,
@@ -11,13 +9,13 @@ import {
   UpdateDateColumn,
   BeforeInsert,
   ManyToMany,
-  BeforeUpdate
-} from 'typeorm'
-import * as bcrypt from 'bcrypt'
-import { Exclude } from 'class-transformer'
-import { Role } from '../role/role.entity'
+  BeforeUpdate,
+} from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { Exclude } from 'class-transformer';
+import { Role } from '../role/role.entity';
 
-const SALT_OR_ROUNDS = 10
+const SALT_OR_ROUNDS = 10;
 
 @Entity()
 export class User {
@@ -27,7 +25,7 @@ export class User {
    * @param { string } password2 加密后密码
    */
   static async comparePassword(password1: string, password2: string): Promise<boolean> {
-    return bcrypt.compareSync(password1, password2)
+    return bcrypt.compareSync(password1, password2);
   }
 
   /**
@@ -35,78 +33,78 @@ export class User {
    * @param { string } password
    */
   static encryptPassword(password: string): string {
-    return bcrypt.hashSync(password, SALT_OR_ROUNDS)
+    return bcrypt.hashSync(password, SALT_OR_ROUNDS);
   }
 
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @ApiProperty({ description: '账号' })
   @IsNotEmpty()
   @IsString()
   @Column({ length: 100, comment: '账号' })
-  account: string
+  account: string;
 
   @ApiProperty({ description: '密码' })
   @IsNotEmpty()
   @IsString()
   @Exclude()
   @Column({ length: 100, comment: '密码' })
-  password: string
+  password: string;
 
   // 角色，多对多
   @ManyToMany(() => Role, role => role.users, { cascade: true })
-  roles: Array<Role>
+  roles: Array<Role>;
 
   @ApiProperty({ required: false, description: '昵称' })
   @Column({ length: 100, comment: '昵称', default: null })
-  nickname: string
+  nickname: string;
 
   @ApiProperty({ required: false, description: '头像' })
   @Column({ length: 255, comment: '头像', default: null })
-  avatar: string
+  avatar: string;
 
   @ApiProperty({ required: false, description: '邮箱' })
   @Column({ comment: '邮箱', default: null })
-  email: string
+  email: string;
 
   @ApiProperty({ required: false, description: '电话号码' })
   @Column({ comment: '手机号码', default: null })
-  phone_number: string
+  phone_number: string;
 
   @Column({
     type: 'enum',
     enum: UserStatus,
     default: UserStatus.active,
-    comment: '账号状态：0 禁用，1 启用'
+    comment: '账号状态：0 禁用，1 启用',
   })
-  status: UserStatus
+  status: UserStatus;
 
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'created_at'
+    name: 'created_at',
   })
-  created_at: Date
+  created_at: Date;
 
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
-    name: 'updated_at'
+    name: 'updated_at',
   })
-  updated_at: Date
+  updated_at: Date;
 
   @UpdateDateColumn({
     type: 'datetime',
     comment: '最后登录时间',
-    name: 'last_login_at'
+    name: 'last_login_at',
   })
-  last_login_at: Date
+  last_login_at: Date;
 
   // 插入密码前，进行加密
   @BeforeInsert()
   @BeforeUpdate()
   encrypt(): void {
-    this.password = bcrypt.hashSync(this.password, SALT_OR_ROUNDS)
+    this.password = bcrypt.hashSync(this.password, SALT_OR_ROUNDS);
   }
 }

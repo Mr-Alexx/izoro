@@ -3,4 +3,4 @@ export default {
   port: 6379,
   db: 0,
   // password: 'qian'
-}
+};
