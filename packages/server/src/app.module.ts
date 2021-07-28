@@ -20,6 +20,9 @@ import { FileModule } from './modules/file/file.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { RoleModule } from './modules/role/role.module';
 import { CommonModule } from './modules/common/common.module';
+import { ScheduleModule } from '@nestjs/schedule';
+// import { TasksService } from './schedule/tasks.service';
+import { ScheduleModule as TaskModule } from '@/modules/schedule/schedule.module';
 
 @Module({
   imports: [
@@ -39,7 +42,9 @@ import { CommonModule } from './modules/common/common.module';
     FileModule,
     MenuModule,
     RoleModule,
+    ScheduleModule.forRoot(),
+    TaskModule,
   ],
-  providers: [],
+  // providers: [TasksService],
 })
 export class AppModule {}

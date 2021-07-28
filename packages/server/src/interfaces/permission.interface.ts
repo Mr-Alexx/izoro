@@ -41,4 +41,11 @@ export enum PermissionsType {
   编辑文章 = 'article:edit',
   文章列表 = 'article:list',
   文章详情 = 'article:detail',
+
+  /*============= 定时任务 =============*/
+  创建定时任务 = 'schedule:add',
+  删除定时任务 = 'schedule:del',
+  编辑定时任务 = 'schedule:edit',
+  定时任务列表 = 'schedule:list',
+  定时任务详情 = 'schedule:detail',
 }

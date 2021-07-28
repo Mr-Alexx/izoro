@@ -4,6 +4,12 @@
  * @author 潜
  */
 
+// 通用状态
+export enum StatusType {
+  disabled = 0, // 禁用
+  active = 1, // 启用
+}
+
 // 排序状态
 export enum SortType {
   desc = -1, // 降序
