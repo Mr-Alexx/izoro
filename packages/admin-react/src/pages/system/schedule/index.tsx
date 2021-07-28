@@ -3,8 +3,25 @@ import AppPageContainer from '@/components/AppPageContainer';
 import AppTable from '@/components/AppTable';
 import type { ProColumns } from '@ant-design/pro-table';
 import { getSchedules } from '@/services/system';
+import { Button } from 'antd';
+import { ModalForm, ProFormDigit, ProFormText, ProFormSelect } from '@ant-design/pro-form';
+import { useState } from 'react';
+
+const types = [
+  { label: '间隔执行', value: 0 },
+  { label: '定时执行', value: 1 },
+];
 
 const Schedule: FC = () => {
+  const [visible, setVisible] = useState<boolean>(false);
+
+  /**
+   * @description 新增定时任务
+   */
+  const addSchedule = row => {
+    console.log(row);
+  };
+
   const columns: ProColumns<SYSTEM_API.ScheduleItem>[] = [
     {
       title: '序号',
@@ -101,7 +118,25 @@ const Schedule: FC = () => {
 
   return (
     <AppPageContainer>
-      <AppTable<SYSTEM_API.ScheduleItem> columns={columns} request={getSchedules} scroll={{ x: 1200 }} />
+      <AppTable<SYSTEM_API.ScheduleItem>
+        columns={columns}
+        request={getSchedules}
+        scroll={{ x: 1200 }}
+        toolBarRender={({ row }) => [
+          <Button type="primary" onClick={() => addSchedule(row)}>
+            新增定时任务
+          </Button>,
+        ]}
+      />
+
+      <ModalForm visible={visible} onVisibleChange={setVisible}>
+        <ProFormText name="name" label="任务名称"></ProFormText>
+        <ProFormText name="method" label="调用方法"></ProFormText>
+        <ProFormDigit name="max_run_time" label="最大运行时间"></ProFormDigit>
+        <ProFormSelect name="status" label="任务状态"></ProFormSelect>
+        <ProFormSelect name="type" label="任务类型" options={types}></ProFormSelect>
+        <ProFormDigit name=""></ProFormDigit>
+      </ModalForm>
     </AppPageContainer>
   );
 };
