@@ -76,6 +76,11 @@ export default [
         path: 'logs',
         component: './system/logs/index',
       },
+      {
+        name: '定时任务管理',
+        path: 'schedule',
+        component: './system/schedule',
+      },
     ],
   },
   {

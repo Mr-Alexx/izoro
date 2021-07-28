@@ -41,3 +41,7 @@ export const getRegisteredLogs = (
 // 获取指定的日志信息
 export const getLogs = (data: SYSTEM_API.GetLogParams): Promise<SYSTEM_API.LogDetailItem[]> =>
   get('/system/log/get', data);
+
+/* =============== 定时任务 =============== */
+export const getSchedules = (params: API.ListQueryParams): Promise<SYSTEM_API.ScheduleItem[]> =>
+  get('/schedule', params);

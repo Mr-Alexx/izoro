@@ -142,4 +142,19 @@ declare namespace SYSTEM_API {
       next_node: string | number; // 下一节点ID
     }[];
   };
+
+  /* =============== 定时任务 =============== */
+  type CreateScheduleParams = {
+    rpc?: string;
+    method: string;
+    max_run_time?: number;
+    name: string;
+    status: number;
+  };
+  type EditScheduleParams = API.EditParams & CreateScheduleParams;
+  type ScheduleItem = EditScheduleParams &
+    API.TableItem & {
+      run_timer?: string | number;
+      run_status?: string | number;
+    };
 }
