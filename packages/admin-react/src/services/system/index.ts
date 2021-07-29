@@ -1,4 +1,4 @@
-import { get, post } from '@/utils/request';
+import { get, post, patch } from '@/utils/request';
 
 /* =============== 状态字典 =============== */
 // 添加状态字典
@@ -43,5 +43,17 @@ export const getLogs = (data: SYSTEM_API.GetLogParams): Promise<SYSTEM_API.LogDe
   get('/system/log/get', data);
 
 /* =============== 定时任务 =============== */
+// 定时任务列表
 export const getSchedules = (params: API.ListQueryParams): Promise<SYSTEM_API.ScheduleItem[]> =>
   get('/schedule', params);
+
+// 定时任务绑定方法列表
+export const getScheduleMethods = (): Promise<any> => get('/schedule/methods');
+
+// 创建定时任务
+export const addSchedule = (data: SYSTEM_API.CreateScheduleParams): Promise<number> => post('/schedule', data);
+
+// 编辑定时任务
+export const editSchedule = (data: SYSTEM_API.EditScheduleParams): Promise<any> => patch(`/schedule/${data.id}`, data);
+
+// 删除定时任务

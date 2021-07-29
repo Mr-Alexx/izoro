@@ -65,6 +65,15 @@ export default function access(initialState: { currentUser?: (USERS_API.UserInfo
         delete: get('dictionary:DeleteStatus'),
         view: get('dictionary:StatusList'),
       },
+      schedule: {
+        create: get('schedule:CreateSchedule'),
+        edit: get('schedule:EditSchedule'),
+        delete: get('schedule:DeleteSchedule'),
+        view: get('schedule:ScheduleList'),
+        start: get('schedule:StartSchedule'),
+        stop: get('schedule:StopSchedule'),
+        reset: get('schedule:ResetSchedule'),
+      },
     },
   };
 }

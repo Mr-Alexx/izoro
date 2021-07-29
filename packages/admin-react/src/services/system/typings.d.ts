@@ -154,7 +154,7 @@ declare namespace SYSTEM_API {
   type EditScheduleParams = API.EditParams & CreateScheduleParams;
   type ScheduleItem = EditScheduleParams &
     API.TableItem & {
-      run_timer?: string | number;
+      cron_time: string;
       run_status?: string | number;
     };
 }
