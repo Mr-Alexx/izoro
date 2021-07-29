@@ -5,6 +5,7 @@
  */
 
 import { StatusType } from '@/interfaces/status.interface';
+import { IsNotEmpty } from 'class-validator';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
@@ -13,7 +14,11 @@ export class Schedule {
   id: number;
 
   @Column({ comment: '任务名称' })
+  @IsNotEmpty()
   name: string;
+
+  @Column({ comment: '详细描述', default: null })
+  description: string;
 
   @Column({ comment: '调用方法' })
   method: string;
@@ -21,8 +26,11 @@ export class Schedule {
   @Column({ comment: '最大运行时间', default: null })
   max_run_time: number;
 
-  @Column({ comment: '运行中的Timer', default: null })
-  run_timer?: string;
+  // 参考 https://github.com/kelektiv/node-cron
+  // https://blog.csdn.net/m0_37263637/article/details/83862250
+  @Column({ comment: '配置定时任务的时间' })
+  @IsNotEmpty()
+  cron_time: string;
 
   @Column({ comment: '运行状态（0：未运行，1：运行中）', type: 'enum', enum: StatusType, default: StatusType.disabled })
   run_status: StatusType;

@@ -26,6 +26,7 @@ import { Permission } from '@/decorators/permission.decorator';
 import { PermissionsType } from '@/interfaces/permission.interface';
 import { ScheduleService } from './schedule.service';
 import { Schedule } from './schedule.entity';
+import { scheduleMethods } from '@/interfaces/schedule.interface';
 
 @Controller('schedule')
 @ApiTags('schedule')
@@ -46,5 +47,14 @@ export class ScheduleController {
   @UseGuards(JwtAuthGuard)
   async create(@Body() schedule: Partial<Schedule>): Promise<number> {
     return await this.scheduleService.create(schedule);
+  }
+
+  @ApiOperation({ summary: '定时任务方法列表' })
+  @Get('methods')
+  async getMethods(): Promise<any> {
+    return {
+      data: scheduleMethods,
+      total: scheduleMethods.length,
+    };
   }
 }
