@@ -33,6 +33,15 @@ import { scheduleMethods } from '@/interfaces/schedule.interface';
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
+  @ApiOperation({ summary: '定时任务方法列表' })
+  @Get('methods')
+  async getMethods(): Promise<any> {
+    return {
+      data: scheduleMethods,
+      total: scheduleMethods.length,
+    };
+  }
+
   @ApiOperation({ summary: '定时任务列表' })
   @Get()
   // @UseGuards(PermissionGuard)
@@ -49,12 +58,17 @@ export class ScheduleController {
     return await this.scheduleService.create(schedule);
   }
 
-  @ApiOperation({ summary: '定时任务方法列表' })
-  @Get('methods')
-  async getMethods(): Promise<any> {
-    return {
-      data: scheduleMethods,
-      total: scheduleMethods.length,
-    };
+  @ApiOperation({ summary: '更新定时任务' })
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  async update(@Body() schedule: Schedule): Promise<any> {
+    return await this.scheduleService.update(schedule, true);
+  }
+
+  @ApiOperation({ summary: '删除定时任务' })
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  async delete(@Param('id') id: number): Promise<any> {
+    return await this.scheduleService.delete(id);
   }
 }

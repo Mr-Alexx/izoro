@@ -11,7 +11,7 @@ import { ScheduleMethods } from '@/interfaces/schedule.interface';
 export class ScheduleService {
   constructor(
     @InjectRepository(Schedule)
-    private readonly ScheduleRepository: Repository<Schedule>,
+    private readonly scheduleRepository: Repository<Schedule>,
     private readonly schedulerRegistry: SchedulerRegistry,
   ) {}
 
@@ -24,7 +24,7 @@ export class ScheduleService {
     limit = limit || 20;
 
     try {
-      const [list, total] = await this.ScheduleRepository.findAndCount({
+      const [list, total] = await this.scheduleRepository.findAndCount({
         order: {
           id: 'ASC',
         },
@@ -41,30 +41,28 @@ export class ScheduleService {
    */
   async create(schedule: Partial<Schedule>): Promise<number> {
     const { name } = schedule;
-    const existSchedule = await this.ScheduleRepository.findOne({ where: { name } });
+    const existSchedule = await this.scheduleRepository.findOne({ where: { name } });
     if (existSchedule) {
       throw new HttpException('该定时任务已存在！', HttpStatus.BAD_REQUEST);
     }
 
-    const newSchedule = await this.ScheduleRepository.create(schedule);
-    await this.ScheduleRepository.save(newSchedule);
+    const newSchedule = await this.scheduleRepository.create(schedule);
+    await this.scheduleRepository.save(newSchedule);
     this.addJob(newSchedule);
     // 添加定时任务
     return Promise.resolve(newSchedule.id);
   }
   /**
-   * @description 添加定时任务
+   * @description 创建cron任务
    * @param {Schedule} schedule 定时任务设置
    * cron定义参考
    * @url https://docs.nestjs.cn/8/techniques?id=%e5%ae%9a%e6%97%b6%e4%bb%bb%e5%8a%a1
    */
   addJob(schedule: Schedule): void {
-    const { name, status, cron_time, method } = schedule;
-    console.log(name, status, cron_time, method);
+    const { id, name, status, cron_time, method } = schedule;
     const job = new CronJob(cron_time, () => {
-      console.log('执行方法: ', method);
       if (method in this) {
-        this[method]?.();
+        this[method]?.(id, name);
       }
     });
     if (status === StatusType.active) {
@@ -72,8 +70,30 @@ export class ScheduleService {
     }
     this.schedulerRegistry.addCronJob(name, job);
   }
+
   /**
    * @description 删除定时任务
+   */
+  async delete(id: number): Promise<any> {
+    try {
+      // await this.scheduleRepository.createQueryBuilder().delete().where({ id }).execute();
+      const queryBuilder = this.scheduleRepository.createQueryBuilder();
+      const job = await queryBuilder.where({ id }).getOne();
+      if (!job) {
+        throw new HttpException('该定时任务不存在！', HttpStatus.NOT_FOUND);
+      }
+      await queryBuilder.where({ id }).delete().execute();
+      const isExistJob = this.schedulerRegistry.getCronJob(job.name);
+      if (isExistJob) {
+        this.schedulerRegistry.deleteCronJob(job.name);
+      }
+      return '删除成功';
+    } catch (err) {
+      return err.message;
+    }
+  }
+  /**
+   * @description 删除cron任务
    * @param {string} id 定时任务id
    */
   deleteJob(id: number): void {
@@ -109,7 +129,8 @@ export class ScheduleService {
   @Timeout(50)
   async initSchedules(): Promise<void> {
     try {
-      const schedules = await this.ScheduleRepository.createQueryBuilder()
+      const schedules = await this.scheduleRepository
+        .createQueryBuilder()
         .where('status = :status', { status: '1' })
         .getMany();
       if (schedules.length > 0) {
@@ -126,7 +147,41 @@ export class ScheduleService {
     }
   }
 
-  [ScheduleMethods.获取Github列表](): void {
-    console.log('这是一个测试方法');
+  /**
+   * @description 更新数据库信息
+   */
+  async update(data: Partial<Schedule>, resetCron?: boolean): Promise<any> {
+    try {
+      const oldSchedule = await this.scheduleRepository.findOne(data?.id);
+      const newSchedule = await this.scheduleRepository.merge(oldSchedule, {
+        ...data,
+        count: oldSchedule.count + Number(data.count || 0),
+      });
+      await this.scheduleRepository.save(newSchedule);
+      // 如果需要重置定时任务，则重置
+      if (resetCron && this.schedulerRegistry.getCronJob(data.name)) {
+        // 由于没有重置api，需要先删除原有的定时任务，再重新添加
+        this.schedulerRegistry.deleteCronJob(data.name);
+        this.addJob(data as Schedule);
+      }
+      return '更新成功';
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async [ScheduleMethods.获取Github列表](id: number, name: string): Promise<void> {
+    // 修改任务运行状态为运行中
+    try {
+      console.log(`=========== 任务 ${name} 运行中 ===========`);
+      await this.update({ run_status: 1, last_started_time: new Date() });
+      await new Promise(resolve => {
+        setTimeout(() => resolve(true), 10000);
+      });
+      await this.update({ run_status: 0, last_end_time: new Date(), count: 1 });
+      console.log(`=========== 任务 ${name} 运行完毕 ===========`);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

@@ -38,6 +38,25 @@ export class Schedule {
   @Column({ comment: '任务状态（0：禁用，1：启用）', type: 'enum', enum: StatusType, default: StatusType.disabled })
   status: StatusType;
 
+  @Column({ comment: '运行次数', default: 0 })
+  count: number;
+
+  @Column({
+    type: 'datetime',
+    comment: '上次运行开始时间',
+    name: 'last_started_time',
+    default: null,
+  })
+  last_started_time: Date;
+
+  @Column({
+    type: 'datetime',
+    comment: '上次运行结束时间',
+    name: 'last_end_time',
+    default: null,
+  })
+  last_end_time: Date;
+
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
