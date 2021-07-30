@@ -147,6 +147,7 @@ declare namespace SYSTEM_API {
   type CreateScheduleParams = {
     rpc?: string;
     method: string;
+    description?: string;
     max_run_time?: number;
     name: string;
     status: number;
@@ -156,5 +157,8 @@ declare namespace SYSTEM_API {
     API.TableItem & {
       cron_time: string;
       run_status?: string | number;
+      count: number;
+      last_started_time?: string;
+      last_end_time?: string;
     };
 }

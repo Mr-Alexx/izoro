@@ -27,3 +27,12 @@ export const patch = (url: string, data?: any, headers?: any) => {
     headers,
   });
 };
+
+export const del = (url: string, data?: any, headers?: any) => {
+  const fullUrl = url.includes('/api') ? url : prefix + url;
+  return request(fullUrl, {
+    method: 'DELETE',
+    data,
+    headers,
+  });
+};

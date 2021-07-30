@@ -1,9 +1,9 @@
 import type { FC } from 'react';
 import AppPageContainer from '@/components/AppPageContainer';
 import AppTable from '@/components/AppTable';
-import type { ProColumns } from '@ant-design/pro-table';
-import { getSchedules, getScheduleMethods, addSchedule } from '@/services/system';
-import { Button, Col, message, Row, Space } from 'antd';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import { getSchedules, getScheduleMethods, addSchedule, delSchedule } from '@/services/system';
+import { Button, Col, message, Popconfirm, Row, Tag } from 'antd';
 import ProForm, {
   ModalForm,
   ProFormDigit,
@@ -12,10 +12,11 @@ import ProForm, {
   ProFormGroup,
   ProFormTextArea,
 } from '@ant-design/pro-form';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Access, useAccess, useRequest } from 'umi';
 import { values } from 'lodash';
 import { editSchedule } from '../../../services/system/index';
+import moment from 'moment';
 
 // const types = [
 //   { label: '间隔执行', value: 0 },
@@ -39,6 +40,7 @@ const Schedule: FC = () => {
   const [cronTimes, setCronTimes] = useState<string[]>(['*', '*', '*', '*', '*', '*']);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const access = useAccess();
+  const actionRef = useRef<ActionType>();
 
   useRequest(getScheduleMethods, {
     onSuccess: data => {
@@ -67,7 +69,7 @@ const Schedule: FC = () => {
   };
 
   /**
-   * @description 表单提交
+   * @description 新增/编辑定时任务
    */
   const submit = async value => {
     const cron_time = cronTimes.join(' ');
@@ -80,11 +82,25 @@ const Schedule: FC = () => {
         msg = '编辑成功！';
       }
       message.success(msg);
+      actionRef.current?.reload();
       return true;
     } catch (err) {
       message.error(err.message);
     }
     return false;
+  };
+
+  /**
+   * @description 删除定时任务
+   */
+  const deleteSchedule = async (id: number) => {
+    try {
+      await delSchedule(id);
+      message.success('删除成功！');
+      actionRef.current?.reload();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const columns: ProColumns<SYSTEM_API.ScheduleItem>[] = [
@@ -130,7 +146,7 @@ const Schedule: FC = () => {
       search: false,
     },
     {
-      title: '运行Timer',
+      title: '定时设置',
       key: 'cron_time',
       width: 120,
       align: 'center',
@@ -139,35 +155,64 @@ const Schedule: FC = () => {
       search: false,
     },
     {
+      title: '状态',
+      key: 'status',
+      align: 'center',
+      width: 80,
+      dataIndex: 'status',
+      valueType: 'select',
+      fieldProps: {
+        options: [
+          { value: 0, label: '禁用' },
+          { value: 1, label: '启用' },
+        ],
+      },
+      render: (text, row) => {
+        return <Tag color={row.status === 1 ? 'processing' : 'error'}>{row.status === 1 ? '启用' : '禁用'}</Tag>;
+      },
+    },
+    {
       title: '运行状态',
       key: 'run_status',
       align: 'center',
       width: 80,
       dataIndex: 'run_status',
       valueType: 'select',
-      fieldProps: {
-        options: [
-          { label: '未运行', value: 0 },
-          { label: '运行中', value: 1 },
-        ],
-      },
-    },
-    {
-      title: '任务状态',
-      key: 'status',
-      align: 'center',
-      width: 80,
-      dataIndex: 'status',
-      valueType: 'select',
       valueEnum: {
         0: {
-          text: '禁用',
+          text: '未运行',
           status: 'Error',
         },
         1: {
-          text: '启用',
+          text: '运行中',
           status: 'Processing',
         },
+      },
+    },
+    {
+      title: '运行次数',
+      key: 'count',
+      align: 'center',
+      width: 80,
+      dataIndex: 'count',
+      search: false,
+    },
+    {
+      title: '上次运行历史',
+      key: 'history',
+      align: 'center',
+      width: 240,
+      search: false,
+      render: (text, row) => {
+        if (row.last_started_time) {
+          return (
+            <>
+              <p style={{ margin: 0 }}>开始：{moment(row.last_started_time).format('YYYY-MM-DD HH:mm:ss')}</p>
+              <p style={{ margin: 0 }}>结束：{moment(row.last_end_time).format('YYYY-MM-DD HH:mm:ss')}</p>
+            </>
+          );
+        }
+        return '未运行';
       },
     },
     {
@@ -179,15 +224,7 @@ const Schedule: FC = () => {
       align: 'center',
       search: false,
     },
-    {
-      title: '更新时间',
-      dataIndex: 'updated_at',
-      width: 180,
-      key: 'updated_at',
-      valueType: 'dateTime',
-      align: 'center',
-      search: false,
-    },
+
     {
       title: '操作',
       dataIndex: 'operation',
@@ -196,29 +233,42 @@ const Schedule: FC = () => {
       key: 'operation',
       render: (text, row) => {
         const actions = [
-          <Access key="view" accessible={access.system.schedule.view}>
-            <a>查看</a>
-          </Access>,
+          // <Access key="view" accessible={access.system.schedule.view}>
+          //   <a className="action">查看</a>
+          // </Access>,
           <Access key="edit" accessible={access.system.schedule.edit}>
-            <a>编辑</a>
+            <a className="action" onClick={() => openModal(row)}>
+              编辑
+            </a>
           </Access>,
         ];
-        if (row.status === 0) {
-          actions.push(
-            <Access key="start" accessible={access.system.schedule.start}>
-              <a>启动</a>
-            </Access>,
-          );
-        } else {
-          actions.push(
-            <Access key="stop" accessible={access.system.schedule.stop}>
-              <a>停止</a>
-            </Access>,
-          );
-        }
+        // if (row.status === 0) {
+        //   actions.push(
+        //     <Access key="start" accessible={access.system.schedule.start}>
+        //       <a className="action">启动</a>
+        //     </Access>,
+        //   );
+        // } else {
+        //   actions.push(
+        //     <Access key="stop" accessible={access.system.schedule.stop}>
+        //       <a className="action">停止</a>
+        //     </Access>,
+        //   );
+        // }
         actions.push(
           <Access key="reset" accessible={access.system.schedule.reset}>
-            <a>重置</a>
+            <a className="action">重置</a>
+          </Access>,
+        );
+        actions.push(
+          <Access key="del" accessible={access.system.schedule.delete}>
+            <Popconfirm
+              placement="bottomRight"
+              key="delete"
+              title="确定要删除该定时任务吗？"
+              onConfirm={() => deleteSchedule(row.id)}>
+              <a className="action">删除</a>
+            </Popconfirm>
           </Access>,
         );
         return actions;
@@ -229,6 +279,7 @@ const Schedule: FC = () => {
   return (
     <AppPageContainer>
       <AppTable<SYSTEM_API.ScheduleItem>
+        actionRef={actionRef}
         columns={columns}
         request={getSchedules}
         scroll={{ x: 1200 }}
@@ -246,8 +297,12 @@ const Schedule: FC = () => {
         layout="horizontal"
         labelCol={{ span: 3 }}
         onFinish={submit}
+        modalProps={{
+          destroyOnClose: true,
+        }}
         initialValues={{
           name: currentRow?.name,
+          description: currentRow?.description,
           method: currentRow?.method,
           max_run_time: currentRow?.max_run_time,
           status: Number(currentRow?.status) === 0 ? 0 : 1,

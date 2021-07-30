@@ -1,4 +1,4 @@
-import { get, post, patch } from '@/utils/request';
+import { get, post, patch, del } from '@/utils/request';
 
 /* =============== 状态字典 =============== */
 // 添加状态字典
@@ -57,3 +57,4 @@ export const addSchedule = (data: SYSTEM_API.CreateScheduleParams): Promise<numb
 export const editSchedule = (data: SYSTEM_API.EditScheduleParams): Promise<any> => patch(`/schedule/${data.id}`, data);
 
 // 删除定时任务
+export const delSchedule = (id: number): Promise<any> => del(`/schedule/${id}`);
