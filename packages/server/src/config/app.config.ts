@@ -1,4 +1,4 @@
 export default {
   HOST: '',
-  PORT: 3000,
+  PORT: 3001,
 };

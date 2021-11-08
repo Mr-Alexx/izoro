@@ -1,3 +1,4 @@
+import config from '@/config/app.config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -79,7 +80,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/doc', app, document);
 
-  await app.listen(3000, '0.0.0.0');
+  await app.listen(config.PORT, '0.0.0.0');
   console.log(`App is listen on http://localhost:${3000}`);
 }
 bootstrap();

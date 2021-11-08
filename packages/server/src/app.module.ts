@@ -20,6 +20,7 @@ import { FileModule } from './modules/file/file.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { RoleModule } from './modules/role/role.module';
 import { CommonModule } from './modules/common/common.module';
+import { RentModule } from './modules/rent/rent.module';
 import { ScheduleModule } from '@nestjs/schedule';
 // import { TasksService } from './schedule/tasks.service';
 import { ScheduleModule as TaskModule } from '@/modules/schedule/schedule.module';
@@ -44,6 +45,7 @@ import { ScheduleModule as TaskModule } from '@/modules/schedule/schedule.module
     RoleModule,
     ScheduleModule.forRoot(),
     TaskModule,
+    RentModule,
   ],
   // providers: [TasksService],
 })
