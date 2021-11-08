@@ -1,0 +1,15 @@
+@import './var.scss';
+
+/* Breakpoints
+   ========================================================================== */
+@mixin query($breakpoint) {
+  $query: map-get($breakpoints, $breakpoint);
+  // 这里是scss error提示估计大部分人（包括我）都没怎么使用过
+  @if not $query {
+    @error 'No value found for `#{$breakpoint}`. Please make sure it is defined in `$breakpoints` map.';
+  }
+  @media #{if(type-of($query) == 'string', unquote($query), inspect($query))}
+   {
+    @content;
+  }
+}

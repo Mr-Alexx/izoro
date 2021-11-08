@@ -1,0 +1,74 @@
+/* normalize
+   ========================================================================== */
+body {
+  margin: 0;
+}
+ul,
+ol {
+  padding-left: 0;
+  margin: 0;
+}
+li {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Flex
+   ========================================================================== */
+.flex {
+  display: flex;
+}
+.flex-1 {
+  flex: 1;
+}
+.jcc {
+  justify-content: center;
+}
+.jcsb {
+  justify-content: space-between;
+}
+.aic{
+  align-items: center;
+}
+
+/* Space
+   ========================================================================== */
+@for $i from 1 through 6 {
+  $space: #{$i * 5}px;
+  // padding
+  .pd-#{$i} {
+    padding: $space;
+  }
+  .pdl-#{$i} {
+    padding-left: $space;
+  }
+  .pdr-#{$i} {
+    padding-left: $space;
+  }
+  .pdt-#{$i} {
+    padding-top: $space;
+  }
+  .pdb-#{$i} {
+    padding-bottom: $space;
+  }
+
+  // margin
+  .mg-#{$i} {
+    padding: $space;
+  }
+  .mgl-#{$i} {
+    padding-left: $space;
+  }
+  .mgr-#{$i} {
+    padding-left: $space;
+  }
+  .mgt-#{$i} {
+    padding-top: $space;
+  }
+  .mgb-#{$i} {
+    padding-bottom: $space;
+  }
+}
