@@ -1,0 +1,1 @@
+export type COLOR_TYPE = 'primary' | 'success' | 'danger' | 'warning'

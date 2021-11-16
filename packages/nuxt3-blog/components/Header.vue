@@ -20,9 +20,10 @@ import { ref } from "vue";
 
 const navList = ref([
   { name: "首页", link: "/" },
+  { name: "分类", link: "/" },
   { name: "归档", link: "/" },
-  { name: "开源", link: "/" },
-  { name: "首页", link: "/" },
+  { name: "友链", link: "/" },
+  { name: "关于", link: "/" },
 ]);
 </script>
 

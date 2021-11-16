@@ -2,6 +2,13 @@ $design-width: 1200px;
 $nav-height: 44px;
 $aside-width: 200px;
 
+/* Color
+   ========================================================================== */
+$color-primary: var(--color-primary);
+$color-success: var(--color-success);
+$color-danger: var(--color-danger);
+$color-warning: var(--color-warning);
+
 /* Breakpoints
    ========================================================================== */
 $breakpoints: (
