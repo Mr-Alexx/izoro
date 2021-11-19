@@ -1,6 +1,6 @@
 import { errorLogger } from '@/logger/log4.logger';
 
-export default function errorHandler(obj: { code: number; msg: string; url: string | undefined }) {
+export default function errorHandler(obj: { code: number; msg: string; url?: string }): void {
   const { code, msg, url } = obj;
   const err = {
     code,
@@ -14,5 +14,4 @@ export default function errorHandler(obj: { code: number; msg: string; url: stri
     ==========================================
   `,
   );
-  return;
 }

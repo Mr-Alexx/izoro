@@ -54,6 +54,7 @@ export class ArticleService {
           'article.updated_at',
           'article.status',
           'article.views',
+          'article.summary',
         ])
         .innerJoin('article.category', 'category')
         .addSelect(['category.name', 'category.id'])
