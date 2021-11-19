@@ -9,27 +9,16 @@
 
 <script setup lang="ts">
 import { COLOR_TYPE } from "../constants";
-// import { defineNuxtComponent } from 'nuxt3'
 
 defineProps<{
   type?: COLOR_TYPE;
   size?: number | string;
 }>();
-
-// defineNuxtComponent({
-//   name: 'Tag'
-// })
 </script>
 
 <style lang="scss">
 @import "@/styles/var.scss";
-$types: primary, success, danger, warning;
-$vars: (
-  primary: $color-primary,
-  success: $color-success,
-  danger: $color-danger,
-  warning: $color-warning,
-);
+$types: primary, success, error, warning;
 
 .q-tag {
   box-sizing: border-box;
@@ -54,7 +43,9 @@ $vars: (
 
   @each $item in $types {
     &.q-tag--#{$item} {
-      color: map-get($vars, $item);
+      color: var(--#{$item}-color);
+      background-color: var(--#{$item}-color-deprecated-bg);
+      border-color: var(--#{$item}-color-deprecated-border);
     }
   }
 }

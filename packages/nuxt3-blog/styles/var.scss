@@ -2,12 +2,19 @@ $design-width: 1200px;
 $nav-height: 44px;
 $aside-width: 200px;
 
+/* Space
+   ========================================================================== */
+$space-large: 20px;
+$space: 15px;
+$space-small: 10px;
+$space-mini: 5px;
+
 /* Color
    ========================================================================== */
-$color-primary: var(--color-primary);
-$color-success: var(--color-success);
-$color-danger: var(--color-danger);
-$color-warning: var(--color-warning);
+$color-primary: var(--primary-color);
+$color-success: var(--success-color);
+$color-danger: var(--error-color);
+$color-warning: var(--warning-color);
 
 /* Breakpoints
    ========================================================================== */

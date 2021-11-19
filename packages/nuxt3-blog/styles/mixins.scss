@@ -1,5 +1,31 @@
 @import './var.scss';
 
+// 1px 线条
+@mixin line1px($position: top, $bg: #f6f6f6) {
+  position: relative;
+
+  @if $position == top {
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 1px;
+      background: $bg;
+    }
+  }
+  @if $position == bottom {
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 1px;
+      background: $bg;
+    }
+  }
+}
+
 /* Breakpoints
    ========================================================================== */
 @mixin query($breakpoint) {

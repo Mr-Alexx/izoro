@@ -1,10 +1,8 @@
 <template>
   <Wrapper>
-    <div>
-      <div v-for="item in list" :key="item.id">
-        <PostItem :item="item" />
-      </div>
-    </div>
+    <ul>
+      <PostItem v-for="item in list" :key="item.id" :item="item" />
+    </ul>
     <Aside slot="aside" />
   </Wrapper>
 </template>
