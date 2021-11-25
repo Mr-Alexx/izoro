@@ -1,7 +1,7 @@
 import { PublishStatus } from '@/interfaces/status.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 import { CategoryService } from '../category/category.service';
 import { TagService } from '../tag/tag.service';
 import { Article } from './article.entity';
@@ -30,6 +30,11 @@ export class ArticleService {
 
     page = +queryObj.page || 1;
     limit = +queryObj.limit || 10;
+    const whereObj: Record<string, any> = {};
+    if (status) {
+      whereObj.status = Equal(status);
+    }
+
     if (limit > 50) {
       throw new HttpException('非法操作，limit不能超过50条！', HttpStatus.BAD_REQUEST);
     }
@@ -56,6 +61,7 @@ export class ArticleService {
           'article.views',
           'article.summary',
         ])
+        .where(whereObj)
         .innerJoin('article.category', 'category')
         .addSelect(['category.name', 'category.id'])
         .leftJoin('article.tags', 'tag')
