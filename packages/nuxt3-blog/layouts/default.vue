@@ -1,7 +1,7 @@
 
   <template>
   <div class="default-layout">
-    <Header/>
+    <Header />
     <slot />
   </div>
 </template>

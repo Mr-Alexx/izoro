@@ -40,10 +40,14 @@
   --warning-color-outline:  rgba(250, 173, 20, 0.2);
   --warning-color-deprecated-bg:  #fffbe6;
   --warning-color-deprecated-border:  #ffe58f;
+  --app-background-color: #f3f4f5;
 }
 
 /* normalize
    ========================================================================== */
+html {
+  background-color: var(--app-background-color);
+}
 body {
   margin: 0;
 }

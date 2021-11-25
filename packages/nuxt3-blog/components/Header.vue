@@ -1,5 +1,5 @@
 <template>
-  <nav class="nav">
+  <nav class="nav" style="display: none">
     <Wrapper>
       <!-- 左侧logo -->
       <div></div>

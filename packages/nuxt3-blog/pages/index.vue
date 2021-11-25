@@ -1,8 +1,6 @@
 <template>
-  <Wrapper>
-    <ul>
-      <PostItem v-for="item in list" :key="item.id" :item="item" />
-    </ul>
+  <Wrapper white>
+    <PostList :dataSource="list" />
     <Aside slot="aside" />
   </Wrapper>
 </template>
@@ -11,7 +9,7 @@
 import { ref, computed, watch, onMounted } from "vue";
 
 const { data, refresh, pending } = await useAsyncData("/article", () =>
-  $fetch("http://localhost:3001/article")
+  $fetch("http://localhost:3001/article?status=1")
 );
 
 // data
