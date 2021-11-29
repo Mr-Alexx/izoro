@@ -2,7 +2,6 @@ import config from '@/config/app.config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'; // api文档插件
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { ValidationPipe } from './pipes/validation.pipe';
@@ -14,12 +13,14 @@ import fastifyCookie from 'fastify-cookie';
 import fastifyMultipart from 'fastify-multipart';
 import { errorLogger } from './logger/log4.logger';
 import fastifySwagger from 'fastify-swagger';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'; // api文档插件
 import { ClassSerializerInterceptor } from '@nestjs/common';
 
 async function bootstrap() {
   const adapter = new FastifyAdapter({
     // http2: true, // 设为true需要nginx配置
   });
+  // api访问速率限制
   adapter.register(fastifyRateLimit, {
     // 限制单ip单位时间访问频率
     timeWindow: 1000 * 60, // 单位时间ms
@@ -35,8 +36,11 @@ async function bootstrap() {
       return error;
     },
   });
-  adapter.register(fastifyCookie); // 使用fastifyCsrf必须引入此插件
-  adapter.register(fastifyCsrf); // 防跨站点请求伪造
+  // 使用fastifyCsrf必须引入此插件
+  adapter.register(fastifyCookie);
+  // 防跨站点请求伪造
+  adapter.register(fastifyCsrf);
+  // 通过适当地设置 HTTP 头，Helmet 可以帮助保护您的应用免受一些众所周知的 Web 漏洞的影响
   adapter.register(fastifyHelmet, {
     // https://docs.nestjs.cn/7/security?id=helmet
     // contentSecurityPolicy: {
@@ -49,15 +53,34 @@ async function bootstrap() {
     //   },
     // }
     contentSecurityPolicy: false,
-  }); // 通过适当地设置 HTTP 头，Helmet 可以帮助保护您的应用免受一些众所周知的 Web 漏洞的影响
-  adapter.register(fastifyCompress); // 压缩请求
+  });
+  // 压缩请求
+  adapter.register(fastifyCompress);
+  // 文件上传解析file
   adapter.register(fastifyMultipart, {
     limits: {
       files: 10,
       fileSize: 2 * 1024 * 1000, // 2MB
     },
-  }); // 文件上传解析file
-  adapter.register(fastifySwagger);
+  });
+  // swagger配置，https://github.com/fastify/fastify-swagger
+  adapter.register(fastifySwagger, {
+    routePrefix: '/doc',
+    swagger: {
+      info: {
+        version: '1.0.0',
+        title: 'NestJs BL',
+        description: 'BL base on nestjs.',
+      },
+      externalDocs: {
+        url: 'http:localhost:5000',
+      },
+      host: 'localhost',
+      schemes: ['http', 'https'],
+      consumes: ['application/json'],
+      produces: ['application/json'],
+    },
+  });
 
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter);
   // const app = await NestFactory.create(AppModule);
@@ -71,16 +94,12 @@ async function bootstrap() {
     new ClassSerializerInterceptor(app.get(Reflector)), // 要使entity内的@Exclude生效，需加这个
   );
 
-  const options = new DocumentBuilder()
-    .setTitle('nestjs bl')
-    .setDescription('nestjs实现的restful接口')
-    .setVersion('1.0.0')
-    // .setBasePath('http://localhost:5000')
-    .build();
+  const options = new DocumentBuilder().build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/doc', app, document);
 
-  await app.listen(config.PORT, '0.0.0.0');
-  console.log(`App is listen on http://localhost:${3000}`);
+  await app.listen(config.PORT, config.HOST);
+  console.log(`App is listen on http://localhost:${config.PORT}`);
+  console.log(`Document listen on http://localhost:5000 or http://localhost:${config.PORT}/doc`);
 }
 bootstrap();

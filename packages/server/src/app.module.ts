@@ -22,6 +22,7 @@ import { RoleModule } from './modules/role/role.module';
 import { CommonModule } from './modules/common/common.module';
 import { RentModule } from './modules/rent/rent.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { CacheModule } from './modules/cache/cache.module';
 // import { TasksService } from './schedule/tasks.service';
 import { ScheduleModule as TaskModule } from '@/modules/schedule/schedule.module';
 
@@ -35,6 +36,7 @@ import { ScheduleModule as TaskModule } from '@/modules/schedule/schedule.module
       }),
     }),
     CommonModule,
+    CacheModule,
     ArticleModule,
     TagModule,
     UserModule,
