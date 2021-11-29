@@ -25,7 +25,7 @@ export class FileInterceptor implements NestInterceptor {
     if (!isMultipart) {
       throw new HttpException('Body type must be multipart/form-data!', HttpStatus.BAD_REQUEST);
     }
-    let file = await req.file();
+    let file: MultipartFile = await req.file();
     if (!file) {
       throw new HttpException('File expected!', HttpStatus.BAD_REQUEST);
     }

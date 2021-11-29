@@ -35,9 +35,18 @@ import { ScheduleModule as TaskModule } from '@/modules/schedule/schedule.module
         ...dbConfig,
       }),
     }),
+    // /**
+    //  * cache模块
+    //  * @see https://www.npmjs.com/package/cache-manager-redis-store
+    //  * @see https://www.zhangshengrong.com/p/Z9a23xlyNV/
+    //  */
+    // CacheModule.register({
+    //   ...redisConfig,
+    //   store: redisStore,
+    // }),
     CommonModule,
     CacheModule,
-    ArticleModule,
+    // ArticleModule,
     TagModule,
     UserModule,
     AuthModule,
@@ -45,8 +54,8 @@ import { ScheduleModule as TaskModule } from '@/modules/schedule/schedule.module
     FileModule,
     MenuModule,
     RoleModule,
-    ScheduleModule.forRoot(),
-    TaskModule,
+    // ScheduleModule.forRoot(),
+    // TaskModule,
     RentModule,
   ],
   // providers: [TasksService],

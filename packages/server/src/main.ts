@@ -94,7 +94,7 @@ async function bootstrap() {
     new ClassSerializerInterceptor(app.get(Reflector)), // 要使entity内的@Exclude生效，需加这个
   );
 
-  const options = new DocumentBuilder().build();
+  const options = new DocumentBuilder().addBearerAuth().build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/doc', app, document);
 

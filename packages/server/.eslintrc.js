@@ -1,39 +1,35 @@
-
 // https://segmentfault.com/a/1190000019661168
 module.exports = {
-  parser:  '@typescript-eslint/parser', //定义ESLint的解析器
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-    'prettier',
-  ],//定义文件继承的子规范
-  plugins: ['@typescript-eslint'],//定义了该eslint文件所依赖的插件
-  env:{                          //指定代码的运行环境
+  parser: '@typescript-eslint/parser', //定义ESLint的解析器
+  extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended', 'prettier'], //定义文件继承的子规范
+  plugins: ['@typescript-eslint'], //定义了该eslint文件所依赖的插件
+  env: {
+    //指定代码的运行环境
     // browser: true,
     node: true,
     es6: true,
   },
   rules: {
-    // '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }], 
+    // '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
     '@typescript-eslint/explicit-function-return-type': [
       // 'warn',
-      'off', 
+      'off',
       {
-        allowExpressions: true, 
+        allowExpressions: true,
         allowTypedFunctionExpressions: true,
-      }
+      },
     ],
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/consistent-type-assertions': 'off',
-    "@typescript-eslint/no-angle-bracket-type-assertion": 'off',
+    '@typescript-eslint/no-angle-bracket-type-assertion': 'off',
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-this-alias': 'off',
     /**
      * 变量名必须是 camelcase 风格的
      * @reason 很多 api 或文件名都不是 camelcase 风格的
      */
-    '@typescript-eslint/camelcase': ['off', {properties: 'always'}],
+    '@typescript-eslint/camelcase': ['off', { properties: 'always' }],
     /**
      * 限制数组类型必须使用 Array<T> 或 T[]
      * @reason 允许灵活运用两者
@@ -60,7 +56,7 @@ module.exports = {
      * @reason 编译阶段检查就足够了
      */
     '@typescript-eslint/explicit-function-return-type': 'off',
-     /**
+    /**
      * 约束泛型的命名规则
      */
     '@typescript-eslint/generic-type-naming': 'off',
@@ -94,17 +90,24 @@ module.exports = {
      * 禁止调用 Promise 时没有处理异常情况
      */
     '@typescript-eslint/no-floating-promises': 'off',
-    '@typescript-eslint/no-unused-vars': ['error', {
-      'vars': 'all',
-      'args': 'none',
-      'ignoreRestSiblings': true,
-    }],
-    'eqeqeq': [2, 'allow-null'],
-    'indent': [2, 2, {
-      'SwitchCase': 1
-    }],
-    "object-curly-spacing": ["error","always"]
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        vars: 'all',
+        args: 'none',
+        ignoreRestSiblings: true,
+      },
+    ],
+    eqeqeq: [2, 'allow-null'],
+    indent: [
+      2,
+      2,
+      {
+        SwitchCase: 1,
+      },
+    ],
+    'object-curly-spacing': ['error', 'always'],
     // 强制在函数名与(间有空格
     // 'space-before-function-paren': [2, 'always'],
-  }                               
-}
+  },
+};
