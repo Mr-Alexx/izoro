@@ -43,9 +43,7 @@
 
       <!-- 摘要 -->
       <div class="post-item__content">
-        <nuxt-link :to="`/post/${item.id}`" :target="target">
-          {{ item.summary }}
-        </nuxt-link>
+        {{ item.summary }}
       </div>
     </li>
   </ul>
@@ -94,6 +92,7 @@ const props = withDefaults(
 @import "@/styles/mixins.scss";
 .post-list {
   padding: $space;
+  background-color: #fff;
 }
 .post-item {
   padding: $space 0;

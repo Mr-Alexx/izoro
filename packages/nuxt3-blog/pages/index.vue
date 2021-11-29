@@ -1,5 +1,5 @@
 <template>
-  <Wrapper white>
+  <Wrapper>
     <PostList :dataSource="list" />
     <Aside slot="aside" />
   </Wrapper>
