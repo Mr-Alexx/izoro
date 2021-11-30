@@ -87,6 +87,10 @@ async function bootstrap() {
 
   app.enableCors(); // 允许跨域
 
+  app.use((req, res, next) => {
+    console.log('dsfsdf');
+    next();
+  });
   app.useGlobalFilters(new HttpExceptionFilter()); // 自定义接口异常详情
   app.useGlobalPipes(new ValidationPipe()); // 数据验证器
   app.useGlobalInterceptors(

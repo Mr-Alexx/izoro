@@ -5,9 +5,9 @@ import { Equal, In, Repository } from 'typeorm';
 import { CategoryService } from '../category/category.service';
 import { TagService } from '../tag/tag.service';
 import { Article } from './article.entity';
-import { CacheService } from './cache.service';
 import * as FlakeId from 'flakeid'; // module.export 模块，需要使用该引用模式
 import _ from '@/utils';
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class ArticleService {
@@ -16,8 +16,7 @@ export class ArticleService {
     @InjectRepository(Article)
     private readonly articleRepository: Repository<Article>,
     private readonly tagService: TagService,
-    private readonly categoryService: CategoryService,
-    private readonly cacheService: CacheService,
+    private readonly categoryService: CategoryService, // private readonly cacheService: CacheService,
   ) {}
 
   /**
@@ -42,10 +41,10 @@ export class ArticleService {
 
     // 取缓存
     const cacheKey = JSON.stringify(queryObj);
-    const cache = await this.cacheService.get(`article:list:${cacheKey}`);
-    if (cache) {
-      return cache;
-    }
+    // const cache = await this.cacheService.get(`article:list:${cacheKey}`);
+    // if (cache) {
+    //   return cache;
+    // }
 
     try {
       const query = this.articleRepository
@@ -88,7 +87,7 @@ export class ArticleService {
 
       const [list, total] = await query.getManyAndCount();
       // 设置缓存
-      this.cacheService.set(`article:list:${cacheKey}`, { list, total });
+      // this.cacheService.set(`article:list:${cacheKey}`, { list, total });
       return { list, total };
     } catch (err) {
       throw new HttpException(err, HttpStatus.BAD_REQUEST);
@@ -99,10 +98,10 @@ export class ArticleService {
    * @description 根据id获取
    */
   async findById(id: string): Promise<Article> {
-    const cache = await this.cacheService.get(`article:detail:${id}`);
-    if (cache) {
-      return cache;
-    }
+    // const cache = await this.cacheService.get(`article:detail:${id}`);
+    // if (cache) {
+    //   return cache;
+    // }
 
     /* eslint-disable-next-line */
     const article = await this.articleRepository
@@ -119,7 +118,7 @@ export class ArticleService {
     }
 
     // 设置缓存
-    this.cacheService.set(`article:detail:${id}`, article);
+    // this.cacheService.set(`article:detail:${id}`, article);
     return article;
   }
 

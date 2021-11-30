@@ -12,15 +12,15 @@ export enum StatusType {
 
 // 排序状态
 export enum SortType {
-  desc = -1, // 降序
+  desc = 0, // 降序
   asc = 1, // 升序
 }
 
 // 发布状态
 export enum PublishStatus {
-  recycle = -1, // 回收站
-  draft = 0, // 草稿
-  published = 1, // 已发布
+  recycle = 0, // 回收站
+  draft = 1, // 草稿
+  published = 2, // 已发布
 }
 
 // 公开状态
@@ -38,17 +38,17 @@ export enum sourceType {
 
 // 账号状态
 export enum UserStatus {
-  invalid = -1, // 作废
-  frozen = 0, // 冻结
-  active = 1, // 正常
+  invalid = 0, // 作废
+  frozen = 1, // 冻结
+  active = 2, // 正常
 }
 
 // 评论状态
 export enum CommentStatus {
-  trash = -2, // 垃圾
-  deleted = -1, // 已删除
   reviewing = 0, // 审核中
   published = 1, // 正常
+  trash = 2, // 垃圾
+  deleted = 3, // 已删除
 }
 
 // 菜单节点类型
@@ -60,9 +60,9 @@ export enum MenuNodeTypes {
 
 // 菜单状态
 export enum MenuStatus {
-  deleted = -1, // 已删除
-  disabled = 0, // 禁用
-  normal = 1, // 正常
+  deleted = 0, // 已删除
+  disabled = 1, // 禁用
+  normal = 2, // 正常
 }
 
 export enum RoleStatus {

@@ -15,9 +15,8 @@ import {
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 // import { Article } from './article.model';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PublishStatus } from '@/interfaces/status.interface';
-import { CacheService } from './cache.service';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { Article } from './article.entity';
 import { Permission } from '@/decorators/permission.decorator';
@@ -29,13 +28,17 @@ import { Permission } from '@/decorators/permission.decorator';
 @ApiTags('Article')
 export class ArticleController {
   // 注入service，this调用
-  constructor(private readonly articleService: ArticleService, private readonly cacheService: CacheService) {}
+  constructor(private readonly articleService: ArticleService) {}
 
   /**
    * @create 2021/03/04 21:48
    * @desc 获取文章列表
    * @author 潜
    */
+  @ApiOperation({ summary: '文章列表' })
+  // @ApiQuery({schema: {example: {
+  //   pulish_at_start: '',
+  // }}})
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiQuery({
@@ -99,21 +102,6 @@ export class ArticleController {
   @UseGuards(JwtAuthGuard)
   async create(@Body() article: Partial<Article>): Promise<any> {
     return await this.articleService.create(article);
-  }
-
-  @Put('cache')
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
-  async cache(@Body() article: Article): Promise<any> {
-    if (!article.id) {
-      throw new HttpException('无法缓存该文章，文章id不存在！', HttpStatus.NOT_ACCEPTABLE);
-    }
-    try {
-      await this.cacheService.set(`article:id:${article.id}`, article);
-      return Promise.resolve('缓存成功');
-    } catch (err) {
-      throw new HttpException('缓存失败', HttpStatus.BAD_REQUEST);
-    }
   }
 
   @Put(':id')

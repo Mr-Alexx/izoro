@@ -28,7 +28,7 @@ export class CacheController {
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   @ApiOperation({ summary: '新增缓存' })
-  @ApiBody({ schema: { example: { key: 'test', value: '测试', seconds: 20 }, type: 'CacheItem' } })
+  @ApiBody({ schema: { example: { key: 'test', value: '测试', ttl: 20 }, type: 'CacheItem' } })
   @ApiBearerAuth()
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -36,27 +36,27 @@ export class CacheController {
   // @UseGuards(PermissionGuard)
   // @UseGuards(JwtAuthGuard)
   async create(@Body() cache: CacheItem): Promise<any> {
-    const { key, value, seconds } = cache;
-    return this.cacheManager.set(key, value, { ttl: seconds });
+    const { key, value, ttl } = cache;
+    return this.cacheManager.set(key, value, { ttl });
     // return this.cacheService.set(key, value, seconds);
   }
 
-  // @ApiOperation({ summary: '删除单个缓存' })
-  // @Delete(':key')
-  // @HttpCode(HttpStatus.CREATED)
-  // // @Permission('cache:del')
-  // // @UseGuards(PermissionGuard)
-  // // @UseGuards(JwtAuthGuard)
-  // async deleteCache(@Param('key') key: string): Promise<any> {
-  //   return this.cacheService.del(key);
-  // }
-  // @ApiOperation({ summary: '删除所有缓存' })
-  // @Delete('clear')
-  // @HttpCode(HttpStatus.CREATED)
-  // // @Permission('cache:clear')
-  // // @UseGuards(PermissionGuard)
-  // // @UseGuards(JwtAuthGuard)
-  // async clearCache(): Promise<any> {
-  //   return this.cacheService.clearAll();
-  // }
+  @ApiOperation({ summary: '删除单个缓存' })
+  @Delete(':key')
+  @HttpCode(HttpStatus.CREATED)
+  // @Permission('cache:del')
+  // @UseGuards(PermissionGuard)
+  // @UseGuards(JwtAuthGuard)
+  async deleteCache(@Param('key') key: string): Promise<any> {
+    return this.cacheManager.del(key);
+  }
+  @ApiOperation({ summary: '删除所有缓存' })
+  @Delete('clear')
+  @HttpCode(HttpStatus.CREATED)
+  // @Permission('cache:clear')
+  // @UseGuards(PermissionGuard)
+  // @UseGuards(JwtAuthGuard)
+  async clearCache(): Promise<any> {
+    return this.cacheManager.reset();
+  }
 }

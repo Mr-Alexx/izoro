@@ -17,9 +17,8 @@ import * as redisStore from 'cache-manager-redis-store';
       store: redisStore,
     }),
   ],
-  // imports: [RedisModule.register(redisConfig)],
   controllers: [CacheController],
-  // providers: [CacheService],
-  // exports: [CacheService],
+  providers: [CacheService],
+  exports: [CacheService],
 })
 export class CacheModule {}

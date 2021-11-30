@@ -3,7 +3,7 @@
  * @author 潜
  */
 
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import dbConfig from '@/config/db.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -25,6 +25,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CacheModule } from './modules/cache/cache.module';
 // import { TasksService } from './schedule/tasks.service';
 import { ScheduleModule as TaskModule } from '@/modules/schedule/schedule.module';
+import { TagController } from './modules/tag/tag.controller';
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { ScheduleModule as TaskModule } from '@/modules/schedule/schedule.module
     // }),
     CommonModule,
     CacheModule,
-    // ArticleModule,
+    ArticleModule,
     TagModule,
     UserModule,
     AuthModule,
