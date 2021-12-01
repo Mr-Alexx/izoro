@@ -93,18 +93,37 @@ Nest is [MIT licensed](LICENSE).
 
 [自动格式化](https://blog.csdn.net/weixin_42357837/article/details/111909496)
 
-## .prettierrc参考配置
+## .prettierrc 参考配置
+
 [参考配置](https://www.jianshu.com/p/a3b13dda486a)
 
-
 ## 权限管理
+
 [参考](https://blog.csdn.net/javageektech/article/details/107075199)
 经典设计：
-  - 用户管理
-  - 角色管理
-  - 菜单管理
 
-  https://blog.afacode.top/2020/01/25/nestjs-typeorm-mysql-rbac/
+- 用户管理
+- 角色管理
+- 菜单管理
 
-  # 宝塔部署
-  [参考文章](https://www.cnblogs.com/ajanuw/p/14237635.html)
+https://blog.afacode.top/2020/01/25/nestjs-typeorm-mysql-rbac/
+
+# 宝塔部署
+
+[参考文章](https://www.cnblogs.com/ajanuw/p/14237635.html)
+
+## DTO 与 ENTITY 区别
+
+[参考地址](https://www.5axxw.com/questions/content/smpqih)：
+DTO：数据传输对象，用于接口数据描述
+ENTITY：数据实体，用于与数据库表映射
+
+## Swagger 文档
+
+[参考地址](https://cloud.tencent.com/developer/article/1616157)
+
+## Eslint 和 Prettier
+
+[参考文章](https://zhuanlan.zhihu.com/p/80574300)
+Eslint: 代码质量检查工具
+Prettier: 代码格式检查工具

@@ -1,7 +1,7 @@
 // https://segmentfault.com/a/1190000019661168
 module.exports = {
   parser: '@typescript-eslint/parser', //定义ESLint的解析器
-  extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended', 'prettier'], //定义文件继承的子规范
+  extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'], //定义文件继承的子规范
   plugins: ['@typescript-eslint'], //定义了该eslint文件所依赖的插件
   env: {
     //指定代码的运行环境
@@ -99,13 +99,14 @@ module.exports = {
       },
     ],
     eqeqeq: [2, 'allow-null'],
-    indent: [
-      2,
-      2,
-      {
-        SwitchCase: 1,
-      },
-    ],
+    index: ['error', 2],
+    // indent: [
+    //   2,
+    //   2,
+    //   {
+    //     SwitchCase: 1,
+    //   },
+    // ],
     'object-curly-spacing': ['error', 'always'],
     // 强制在函数名与(间有空格
     // 'space-before-function-paren': [2, 'always'],

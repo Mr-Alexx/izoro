@@ -38,3 +38,6 @@ lerna-debug.log*
 # Upload
 public/upload/images/*
 public/upload/files/*
+
+# Config
+config/*
