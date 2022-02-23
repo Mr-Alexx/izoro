@@ -2,17 +2,24 @@
  * @description 操作日志组件
  */
 import ProTable from '@ant-design/pro-table';
-import type { FC } from 'react';
 import { getLogs } from '@/services/system/index';
-import type { LogsItem, OperationLogsProps } from './data';
+import type { OperationLogsProps } from './data';
 import type { ProColumns } from '@ant-design/pro-table';
 // 测试数据
 import { Tag, Tooltip } from 'antd';
-import { useEffect } from 'react';
+import { memo, useState, useEffect } from 'react';
 
-const OperationLogs: FC<OperationLogsProps> = (props: OperationLogsProps) => {
+const OperationLogs = memo((props: OperationLogsProps) => {
   const { params } = props;
-  const columns: ProColumns<LogsItem>[] = [
+  const [data, setData] = useState<SYSTEM_API.LogDetailItem[]>();
+
+  useEffect(() => {
+    getLogs(params).then(res => {
+      setData(res);
+    });
+  }, []);
+
+  const columns: ProColumns<SYSTEM_API.LogDetailItem>[] = [
     {
       title: '序号',
       width: 60,
@@ -88,36 +95,15 @@ const OperationLogs: FC<OperationLogsProps> = (props: OperationLogsProps) => {
 
   return (
     <ProTable
-      // headerTitle={
-      //   <Space>
-      //     <span>操作日志</span>
-      //     <span style={{ fontSize: 14, fontWeight: 'normal' }}>(共{4}条记录)</span>
-      //   </Space>
-      // }
       className="nopadding-table"
       scroll={{
         x: 1300,
       }}
       sticky
       rowKey="action_time"
+      dataSource={data}
       search={false}
       columns={columns}
-      // @ts-ignore
-      request={async () => {
-        try {
-          const data = await getLogs(params);
-          return {
-            total: data.length,
-            data,
-            success: true,
-          };
-        } catch (err) {
-          console.error(err);
-          return {
-            success: false,
-          };
-        }
-      }}
       options={false}
       pagination={{
         showSizeChanger: false,
@@ -125,6 +111,6 @@ const OperationLogs: FC<OperationLogsProps> = (props: OperationLogsProps) => {
       }}
     />
   );
-};
+});
 
 export default OperationLogs;

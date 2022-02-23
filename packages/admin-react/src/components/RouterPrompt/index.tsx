@@ -1,20 +1,46 @@
+/**
+ * @description 页面刷新、离开、前进、后退拦截组件
+ * 监听页面跳转是否需要保存信息
+ */
 import { Modal } from 'antd';
 import { Prompt, useHistory } from 'react-router';
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useState, useEffect } from 'react';
+import NavigationPrompt from 'react-router-navigation-prompt';
+import { BrowserRouter } from 'react-router-dom';
 
 type IRouterPromptProps = {
+  children?: any;
   when: boolean;
   title?: string;
   content?: string;
   onOk?: () => void;
 };
 
-/**
- * @description 页面刷新、离开、前进、后退拦截组件
- * 监听页面跳转是否需要保存信息
- */
-export const RouterPrompt: FC<IRouterPromptProps> = props => {
+// const RouterPrompt = memo((props: IRouterPromptProps) => {
+//   const { when, children } = props;
+//   return (
+//     <BrowserRouter>
+//       <NavigationPrompt when={when}>
+//         {({ onConfirm, onCancel }) => {
+//           console.log(324);
+//           Modal.confirm({
+//             title: title || '信息还没保存，确定离开吗？',
+//             content: content || '离开后编辑的表单内容将不保留',
+//             okText: '狠心离开',
+//             cancelText: '再想想',
+//             onOk: onConfirm,
+//             onCancel,
+//           });
+//         }}
+//       </NavigationPrompt>
+//       {children}
+//     </BrowserRouter>
+//   );
+// });
+
+const RouterPrompt: FC<IRouterPromptProps> = props => {
   const { when, title, content, onOk, children } = props;
   const history = useHistory();
   const [isBlock, setIsBlock] = useState(when);
@@ -28,7 +54,7 @@ export const RouterPrompt: FC<IRouterPromptProps> = props => {
     if (type === 'cancel') {
       return;
     }
-
+    console.log(2);
     setTimeout(() => {
       if (action === 'POP') {
         history.goBack();
@@ -53,6 +79,7 @@ export const RouterPrompt: FC<IRouterPromptProps> = props => {
   };
 
   useEffect(() => {
+    console.log(123);
     setIsBlock(when);
     window.addEventListener('beforeunload', beforeLeave);
     // 销毁页面时移除事件

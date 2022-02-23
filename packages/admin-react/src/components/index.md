@@ -1,9 +1,11 @@
 ﻿---
-title: 业务组件
-sidemenu: false
+title: 组件说明
+order: 2
+nav:
+  order: 2
 ---
 
-<!-- @format -->
+## 组件说明
 
 > 此功能由[dumi](https://d.umijs.org/zh-CN/guide/advanced#umi-%E9%A1%B9%E7%9B%AE%E9%9B%86%E6%88%90%E6%A8%A1%E5%BC%8F)提供，dumi 是一个 📖 为组件开发场景而生的文档工具，用过的都说好。
 
@@ -159,35 +161,35 @@ export default () => {
 
 ### NoticeIcon API
 
-| 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| count | 有多少未读通知 | `number` | - |
-| bell | 铃铛的图表 | `ReactNode` | - |
-| onClear | 点击清空数据按钮 | `(tabName: string, tabKey: string) => void` | - |
-| onItemClick | 未读消息列被点击 | `(item: ANT_API.NoticeIconData, tabProps: NoticeIconTabProps) => void` | - |
-| onViewMore | 查看更多的按钮点击 | `(tabProps: NoticeIconTabProps, e: MouseEvent) => void` | - |
-| onTabChange | 通知 Tab 的切换 | `(tabTile: string) => void;` | - |
-| popupVisible | 通知显示是否展示 | `boolean` | - |
-| onPopupVisibleChange | 通知信息显示隐藏的回调函数 | `(visible: boolean) => void` | - |
-| clearText | 清空按钮的文字 | `string` | - |
-| viewMoreText | 查看更多的按钮文字 | `string` | - |
-| clearClose | 展示清空按钮 | `boolean` | - |
-| emptyImage | 列表为空时的兜底展示 | `ReactNode` | - |
+| 参数                 | 说明                       | 类型                                                                   | 默认值 |
+| -------------------- | -------------------------- | ---------------------------------------------------------------------- | ------ |
+| count                | 有多少未读通知             | `number`                                                               | -      |
+| bell                 | 铃铛的图表                 | `ReactNode`                                                            | -      |
+| onClear              | 点击清空数据按钮           | `(tabName: string, tabKey: string) => void`                            | -      |
+| onItemClick          | 未读消息列被点击           | `(item: ANT_API.NoticeIconData, tabProps: NoticeIconTabProps) => void` | -      |
+| onViewMore           | 查看更多的按钮点击         | `(tabProps: NoticeIconTabProps, e: MouseEvent) => void`                | -      |
+| onTabChange          | 通知 Tab 的切换            | `(tabTile: string) => void;`                                           | -      |
+| popupVisible         | 通知显示是否展示           | `boolean`                                                              | -      |
+| onPopupVisibleChange | 通知信息显示隐藏的回调函数 | `(visible: boolean) => void`                                           | -      |
+| clearText            | 清空按钮的文字             | `string`                                                               | -      |
+| viewMoreText         | 查看更多的按钮文字         | `string`                                                               | -      |
+| clearClose           | 展示清空按钮               | `boolean`                                                              | -      |
+| emptyImage           | 列表为空时的兜底展示       | `ReactNode`                                                            | -      |
 
 ### NoticeIcon.Tab API
 
-| 参数         | 说明               | 类型                                 | 默认值 |
-| ------------ | ------------------ | ------------------------------------ | ------ |
-| count        | 有多少未读通知     | `number`                             | -      |
-| title        | 通知 Tab 的标题    | `ReactNode`                          | -      |
-| showClear    | 展示清除按钮       | `boolean`                            | `true` |
-| showViewMore | 展示加载更         | `boolean`                            | `true` |
-| tabKey       | Tab 的唯一 key     | `string`                             | -      |
+| 参数         | 说明               | 类型                                     | 默认值 |
+| ------------ | ------------------ | ---------------------------------------- | ------ |
+| count        | 有多少未读通知     | `number`                                 | -      |
+| title        | 通知 Tab 的标题    | `ReactNode`                              | -      |
+| showClear    | 展示清除按钮       | `boolean`                                | `true` |
+| showViewMore | 展示加载更         | `boolean`                                | `true` |
+| tabKey       | Tab 的唯一 key     | `string`                                 | -      |
 | onClick      | 子项的单击事件     | `(item: ANT_API.NoticeIconData) => void` | -      |
-| onClear      | 清楚按钮的点击     | `()=>void`                           | -      |
-| emptyText    | 为空的时候测试     | `()=>void`                           | -      |
-| viewMoreText | 查看更多的按钮文字 | `string`                             | -      |
-| onViewMore   | 查看更多的按钮点击 | `( e: MouseEvent) => void`           | -      |
+| onClear      | 清楚按钮的点击     | `()=>void`                               | -      |
+| emptyText    | 为空的时候测试     | `()=>void`                               | -      |
+| viewMoreText | 查看更多的按钮文字 | `string`                                 | -      |
+| onViewMore   | 查看更多的按钮点击 | `( e: MouseEvent) => void`               | -      |
 | list         | 通知信息的列表     | `ANT_API.NoticeIconData`                 | -      |
 
 ### NoticeIconData

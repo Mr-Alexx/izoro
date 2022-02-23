@@ -86,6 +86,9 @@ ol {
 .danger {
   color: @error-color;
 }
+.info {
+  color: #ccc;
+}
 
 .modal-form {
   .ant-space-align-center {
@@ -141,10 +144,10 @@ ol {
     }
   }
   .ant-pro-table-list-toolbar-container {
+    box-sizing: border-box;
     // padding: 20px 0;
     height: 56px;
     line-height: 56px;
-    box-sizing: border-box;
   }
   .ant-table-wrapper {
     margin-top: 20px;
@@ -157,8 +160,14 @@ ol {
   }
 }
 
+.ant-card.mt-20 {
+  margin-top: 20px;
+}
 .mt-20 {
   margin-top: 20px;
+}
+.ant-card.mb-20 {
+  margin-bottom: 20px;
 }
 .mb-20 {
   margin-bottom: 20px;
@@ -172,15 +181,15 @@ ol {
 
 .full-screen-modal {
   .ant-modal {
-    width: 100%;
-    transform-origin: 1439.5px 182px;
-    height: 100%;
     top: 0;
-    transform: none;
-    margin: 0;
-    transform-origin: unset;
-    padding-bottom: 0;
+    width: 100%;
     max-width: unset;
+    height: 100%;
+    margin: 0;
+    padding-bottom: 0;
+    transform: none;
+    transform-origin: 1439.5px 182px;
+    transform-origin: unset;
 
     .ant-modal-body {
       padding: 0;
@@ -199,22 +208,23 @@ ol {
   .ant-affix {
     box-shadow: @shadow-1-down;
   }
-  
+
   .ant-anchor-wrapper {
-    background-color: #fff;
+    margin-left: 3px;
     padding-left: 20px;
-    margin-left: -10px;
+    background-color: #fff;
   }
   .ant-anchor {
-    width: 100%;
     display: flex;
+    width: 100%;
     .ant-anchor-link {
       padding: 0;
-      &+.ant-anchor-link {
+      & + .ant-anchor-link {
         margin-left: 20px;
       }
     }
-    .ant-anchor-ink { // 移除左侧线
+    .ant-anchor-ink {
+      // 移除左侧线
       display: none;
     }
     .ant-anchor-link-title {
@@ -226,14 +236,304 @@ ol {
     }
   }
 }
+
 .ant-page-header {
-  &.has-anchor-tabs {
-    padding-bottom: 50px;
+  .ant-page-header-heading {
+    margin-top: 0;
   }
 }
 
-.action {
-  +.action {
-    margin-left: 10px;
+// ant table sticky时底部滚动条样式
+.ant-table-sticky-scroll {
+  .ant-table-sticky-scroll-bar {
+    height: 8px;
+    border-radius: 4px;
+  }
+  // bottom: calc(100% - 48px - 48px) !important;
+  // z-index: 4;
+}
+
+.ant-descriptions-item-label {
+  color: #666 !important;
+}
+// 修改Protable中查询表单的表单项上下间距
+.ant-pro-table-search-query-filter {
+  .ant-form-item {
+    margin-bottom: 15px;
+  }
+}
+
+.mobile-breadcrumb {
+  font-size: 11px;
+  a,
+  span {
+    color: #fff;
+  }
+}
+.ant-layout-header.ant-pro-fixed-header .ant-pro-global-header {
+  @media screen and (max-width: 768px) {
+    color: #fff;
+    background-color: @primary-color !important;
+
+    .ant-pro-global-header-logo {
+      // margin-right: 10px;
+      display: none;
+    }
+    .ant-pro-global-header-collapsed-button {
+      margin-right: 10px;
+      margin-left: 0;
+    }
+  }
+}
+
+.tox .tox-dialog-wrap__backdrop {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+//修改proform表单label字体大小
+.ant-form-item-label > label {
+  font-size: 13px;
+}
+
+.flex {
+  display: flex;
+}
+.align-items {
+  &--center {
+    align-items: center;
+  }
+  &--baseline {
+    align-items: baseline;
+  }
+}
+
+.ant-pro-form-group {
+  .ant-pro-form-group-container,
+  .ant-space-item {
+    width: 100%;
+  }
+}
+
+.form-no-margin {
+  [class*='pro-form-number'],
+  .ant-form-item {
+    margin-bottom: 0;
+  }
+}
+
+// codemirror
+// .CodeMirror-vscrollbar {
+//   display: none;
+// }
+// .CodeMirror-scroll {
+//   .CodeMirror-sizer {
+//     overflow-y: auto;
+//     margin: 0;
+//     min-width: unset;
+//     min-height: unset;
+//     height: 150px;
+//   }
+//   .CodeMirror-gutters {
+//     display: none;
+//   }
+// }
+//Drawer按钮放在左上角
+.myDrawer {
+  .ant-drawer-close {
+    position: relative;
+    display: inline-block;
+    margin-right: 12px;
+    padding: 0;
+    color: #00000073;
+    font-weight: 700;
+    font-size: 16px;
+    font-style: normal;
+    line-height: 1;
+    text-align: center;
+    text-transform: none;
+    text-decoration: none;
+    background: 0 0;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    transition: color 0.3s;
+    text-rendering: auto;
+  }
+  @media screen and (min-width: 300px) {
+    .ant-drawer-content-wrapper {
+      width: 100% !important;
+    }
+  }
+  @media screen and (min-width: 1050px) {
+    .ant-drawer-content-wrapper {
+      width: 1100px !important;
+    }
+  }
+
+  .ant-drawer-close {
+    position: relative;
+    display: inline-block;
+    margin-right: 12px;
+    padding: 0;
+    color: #00000073;
+    font-weight: 700;
+    font-size: 16px;
+    font-style: normal;
+    line-height: 1;
+    text-align: center;
+    text-transform: none;
+    text-decoration: none;
+    background: 0 0;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    transition: color 0.3s;
+    text-rendering: auto;
+  }
+  .ant-drawer-header-title {
+    height: 32px;
+  }
+}
+
+//查看弹框中的title样式
+.viewTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 0;
+  .viewLeft {
+    color: #101010;
+    font-weight: 600;
+    font-size: 14px;
+  }
+}
+//apptable左右两边默认有内边距
+.viewAppTable {
+  .ant-card-body {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+.viewDrawerPaddingTop {
+  .ant-drawer-body {
+    padding-top: 0px;
+  }
+}
+.drawer-anchor-tabs {
+  // 固定到顶部的样式
+  // .ant-affix {
+  //   box-shadow: @shadow-1-down;
+  // }
+
+  .ant-anchor-wrapper {
+    background-color: #fff;
+  }
+  .ant-anchor {
+    display: flex;
+    width: 100%;
+    .ant-anchor-link {
+      padding: 0;
+      & + .ant-anchor-link {
+        margin-left: 20px;
+      }
+    }
+    .ant-anchor-ink {
+      // 移除左侧线
+      display: none;
+    }
+    .ant-anchor-link-title {
+      padding: 12px 0;
+      border-bottom: 2px solid transparent;
+      &.ant-anchor-link-title-active {
+        border-bottom-color: @primary-color;
+      }
+    }
+  }
+}
+
+// digit-range
+.digit-range {
+  display: flex;
+
+  &__split {
+    padding: 0 5px;
+  }
+  &__start,
+  &__end {
+    flex: 1;
+  }
+}
+
+// 去掉table 的checkbox动画
+// .ant-table-cell .ant-checkbox-checked .ant-checkbox-inner::after {
+//   transition: none !important;
+// }
+
+// .ant-table-cell .ant-checkbox-checked::after {
+//   animation: none !important;
+// }
+
+// proFormDigitRange 样式
+.ant-form-item-control-input-content {
+  .ant-input-group.ant-input-group-compact {
+    // 输入框
+    > .ant-input-number {
+      margin-right: unset;
+      margin-left: unset;
+      border-left: 1px solid rgb(217, 217, 217) !important;
+      border-radius: 2px;
+    }
+    // 分隔符
+    > .ant-input.ant-input-disabled {
+      border: none;
+    }
+  }
+}
+
+// app.tsx 错误处理 error notification
+.error-notification {
+  &__content {
+    span {
+      word-break: break-all;
+    }
+  }
+  .ant-notification-notice-icon {
+    margin-left: 0;
+  }
+  .ant-notification-notice-message {
+    margin-left: 34px;
+  }
+  .ant-notification-notice-description {
+    margin-left: 0;
+    font-size: 12px;
+  }
+  .ant-notification-notice-btn {
+    margin-top: 5px;
+  }
+}
+
+// 修复ProFormSkuTable 换行问题
+.sku-table-form-item {
+}
+
+// padding
+.pt-20 {
+  margin-top: 20px;
+}
+.pb-20 {
+  margin-bottom: 20px;
+}
+
+// margin
+.mt-20 {
+  margin-top: 20px;
+}
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.table-no-padding {
+  .ant-card-body {
+    padding: 0;
   }
 }

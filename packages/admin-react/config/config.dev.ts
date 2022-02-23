@@ -2,6 +2,9 @@
 import { defineConfig } from 'umi';
 
 export default defineConfig({
+  define: {
+    PRODUCT_SERVER: false,
+  },
   plugins: [
     // https://github.com/zthxxx/react-dev-inspector
     'react-dev-inspector/plugins/umi/react-inspector',
@@ -12,7 +15,7 @@ export default defineConfig({
     babelPlugins: [],
     babelOptions: {},
   },
-  webpack5: {
-    // lazyCompilation: {},
-  },
+  // webpack5: {
+  //   // lazyCompilation: {},
+  // },
 });

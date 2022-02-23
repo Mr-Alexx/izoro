@@ -4,10 +4,10 @@ const Settings: LayoutSettings & {
   pwa?: boolean;
   logo?: string;
 } = {
-  title: '运营管理系统',
+  title: 'TEAMSURE',
   pwa: false,
   logo: '/images/logo.png',
-  iconfontUrl: '//at.alicdn.com/t/font_2360339_ujvbu8gnuv.js', // 菜单要使用iconfont，此处必加
+  iconfontUrl: '//at.alicdn.com/t/font_2360339_bbx1obfgcww.js', // 菜单要使用iconfont，此处必加
   // navTheme: 'dark',
   // 拂晓蓝
   // primaryColor: '#1890ff',

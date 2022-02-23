@@ -1,0 +1,50 @@
+.app-page-container {
+  &--left,
+  &--center,
+  &--right {
+    :global(.ant-pro-footer-bar .ant-pro-footer-bar-left) {
+      flex: 0;
+      text-align: left;
+    }
+    :global(.ant-pro-footer-bar .ant-pro-footer-bar-right) {
+      flex: 1;
+    }
+  }
+  &--left {
+    :global(.ant-pro-footer-bar .ant-pro-footer-bar-right) {
+      text-align: left;
+    }
+  }
+  &--center {
+    :global(.ant-pro-footer-bar .ant-pro-footer-bar-right) {
+      text-align: center;
+    }
+  }
+  &--right {
+    :global(.ant-pro-footer-bar .ant-pro-footer-bar-right) {
+      text-align: right;
+    }
+  }
+
+  :global(.ant-page-header) {
+    padding-bottom: 12px;
+  }
+
+  :global(.ant-pro-page-container-children-content) {
+    margin: 20px 20px 0;
+  }
+}
+
+//底部工具栏
+:global(.ant-pro-footer-bar) {
+  padding: 10px 24px;
+}
+:global(.ant-table-tbody .ant-image-img) {
+  object-fit: contain;
+}
+
+.has-anchor-tabs {
+  :global(.ant-page-header) {
+    padding-bottom: 50px;
+  }
+}

@@ -1,101 +1,92 @@
+/**
+ * @description 菜单搜索
+ */
 import { SearchOutlined } from '@ant-design/icons';
-import { AutoComplete, Input } from 'antd';
-import useMergedState from 'rc-util/es/hooks/useMergedState';
-import type { AutoCompleteProps } from 'antd/es/auto-complete';
-import React, { useRef } from 'react';
+import { Col, Row } from 'antd';
+import { Select, Tooltip } from 'antd';
 
-import classNames from 'classnames';
+import routes from '../../../config/routes';
+import formatRoutes from './formatRoutes';
+import { useHistory } from 'react-router';
+import { useState } from 'react';
+import { ModalForm } from '@ant-design/pro-form';
+import { memo } from 'react';
 import styles from './index.less';
+import type { BaseOptionType } from 'antd/lib/select';
 
 export type HeaderSearchProps = {
-  onSearch?: (value?: string) => void;
-  onChange?: (value?: string) => void;
-  onVisibleChange?: (b: boolean) => void;
   className?: string;
-  placeholder?: string;
-  options: AutoCompleteProps['options'];
-  defaultVisible?: boolean;
   visible?: boolean;
-  defaultValue?: string;
   value?: string;
 };
 
-const HeaderSearch: React.FC<HeaderSearchProps> = (props) => {
-  const {
-    className,
-    defaultValue,
-    onVisibleChange,
-    placeholder,
-    visible,
-    defaultVisible,
-    ...restProps
-  } = props;
+const SearchSelect = memo(() => {
+  const history = useHistory();
+  const [value, setValue] = useState<string>();
+  let timer: any = null;
 
-  const inputRef = useRef<Input | null>(null);
-
-  const [value, setValue] = useMergedState<string | undefined>(defaultValue, {
-    value: props.value,
-    onChange: props.onChange,
-  });
-
-  const [searchMode, setSearchMode] = useMergedState(defaultVisible ?? false, {
-    value: props.visible,
-    onChange: onVisibleChange,
-  });
-
-  const inputClass = classNames(styles.input, {
-    [styles.show]: searchMode,
-  });
   return (
-    <div
-      className={classNames(className, styles.headerSearch)}
-      onClick={() => {
-        setSearchMode(true);
-        if (searchMode && inputRef.current) {
-          inputRef.current.focus();
+    <Select
+      style={{ width: 180 }}
+      dropdownMatchSelectWidth={360}
+      dropdownClassName={styles.searchSelect}
+      key="small"
+      showSearch
+      allowClear
+      showArrow={false}
+      placeholder="菜单快速搜索"
+      value={value}
+      onSelect={selectedVal => {
+        history.push(selectedVal as string);
+        if (timer) {
+          clearTimeout(timer);
+        } else {
+          timer = setTimeout(() => {
+            setValue(undefined);
+          });
         }
       }}
-      onTransitionEnd={({ propertyName }) => {
-        if (propertyName === 'width' && !searchMode) {
-          if (onVisibleChange) {
-            onVisibleChange(searchMode);
-          }
-        }
+      onChange={(selectedVal: string) => {
+        setValue(selectedVal);
       }}
-    >
-      <SearchOutlined
-        key="Icon"
-        style={{
-          cursor: 'pointer',
-        }}
-      />
-      <AutoComplete
-        key="AutoComplete"
-        className={inputClass}
-        value={value}
-        options={restProps.options}
-        onChange={setValue}
-      >
-        <Input
-          size="small"
-          ref={inputRef}
-          defaultValue={defaultValue}
-          aria-label={placeholder}
-          placeholder={placeholder}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              if (restProps.onSearch) {
-                restProps.onSearch(value);
-              }
-            }
-          }}
-          onBlur={() => {
-            setSearchMode(false);
-          }}
-        />
-      </AutoComplete>
-    </div>
+      options={formatRoutes(routes)}
+      filterOption={(inputValue: string, option?: BaseOptionType) => {
+        const reg = new RegExp(inputValue, 'ig');
+        return option?.label?.match(reg);
+      }}
+    />
   );
-};
+});
+
+const HeaderSearch = memo((props: HeaderSearchProps) => {
+  const { className } = props;
+  const [searchMode, setSearchMode] = useState<boolean>(false);
+
+  return (
+    <Row>
+      {/* pc直接显示搜索框 */}
+      <Col md={24} sm={0}>
+        <SearchSelect />
+      </Col>
+      {/* 移动端弹窗显示 */}
+      <Col md={0} sm={24}>
+        <div className={className}>
+          <Tooltip title="菜单搜索">
+            <SearchOutlined
+              key="Icon"
+              style={{
+                cursor: 'pointer',
+              }}
+              onClick={() => setSearchMode(true)}
+            />
+          </Tooltip>
+          <ModalForm title="菜单搜索" submitter={false} visible={searchMode} onVisibleChange={setSearchMode}>
+            <SearchSelect />
+          </ModalForm>
+        </div>
+      </Col>
+    </Row>
+  );
+});
 
 export default HeaderSearch;

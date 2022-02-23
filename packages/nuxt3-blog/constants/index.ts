@@ -1,1 +1,0 @@
-export type COLOR_TYPE = 'primary' | 'success' | 'error' | 'warning'

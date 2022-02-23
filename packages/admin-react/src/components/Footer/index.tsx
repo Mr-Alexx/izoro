@@ -2,7 +2,7 @@ import { DefaultFooter } from '@ant-design/pro-layout';
 
 export default () => (
   <DefaultFooter
-    copyright={`2021-${new Date().getFullYear()} 潜所有`}
+    copyright={`2014-${new Date().getFullYear()} 广东天拓海汇科技有限公司所有`}
     links={[
       {
         key: 'test',

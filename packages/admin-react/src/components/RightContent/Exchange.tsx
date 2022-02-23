@@ -8,19 +8,19 @@ import { Dropdown, Menu, Tooltip } from 'antd';
 import styles from './index.less';
 
 type MenuItem = {
-  id: number; // id
   currency: string; // 货币名称
   symbol: string; // 货币符号
   name: string; // 中文名
   flag: string; // 旗
-  rate: number; // 汇率
+  rate: number | string; // 汇率
 };
 
-const Exchange: FC<{ list: MenuItem[] }> = ({ list }) => {
+const Exchange: FC<{ list: MenuItem[]; className?: any }> = ({ list, className }) => {
   const [visible, setVisible] = useState<boolean>(false);
 
   return (
     <Dropdown
+      className={className}
       placement="bottomRight"
       visible={visible}
       trigger={['click']}

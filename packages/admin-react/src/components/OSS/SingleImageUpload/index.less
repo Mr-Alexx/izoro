@@ -1,0 +1,79 @@
+@import '~antd/es/style/themes/default.less';
+.singleImageUpload {
+  box-sizing: border-box;
+  :global(.ant-upload.ant-upload-btn) {
+    position: relative;
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+  }
+
+  :global(.ant-upload-drag-container) {
+    width: 100%;
+  }
+
+  .uploadItem {
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+
+    &:after {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      bottom: 10px;
+      left: 10px;
+      z-index: 1;
+      background-color: #000;
+      opacity: 0;
+      transition: 0.15s;
+      content: '';
+    }
+    &:hover {
+      &:after {
+        opacity: 0.4;
+      }
+
+      .uploadItemActions {
+        display: block;
+      }
+    }
+
+    .uploadItemActions {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 2;
+      display: none;
+      width: 100%;
+      color: #fff;
+      transform: translateX(-50%) translateY(-50%);
+
+      :global(.anticon) {
+        margin: 0 5px;
+      }
+    }
+  }
+  .uploadItemImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .uploadTips {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    .uploadTipsLabel {
+      font-size: 12px;
+    }
+  }
+}

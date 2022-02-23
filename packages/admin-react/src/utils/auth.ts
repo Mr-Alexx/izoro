@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 
-const TokenKey = 'cms-admin-token';
+const TokenKey = 'OperationSystemToken';
 type Options = {
   expires?: number | Date;
 };

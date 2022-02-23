@@ -101,7 +101,7 @@ const TableToolBar: React.FC<{ columns?: ColumnItem[]; options?: ToolBarOptions 
         <Row gutter={20}>
           {columns?.map(item => (
             <Col key={item.dataIndex} span={12}>
-              <ProFormText initialValue={item?.tips} label={item.title} name={item.dataIndex}></ProFormText>
+              <ProFormText initialValue={item?.tips} label={item.title} name={item.dataIndex} />
             </Col>
           ))}
         </Row>

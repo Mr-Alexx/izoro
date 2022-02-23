@@ -19,7 +19,7 @@ const getNoticeData = (notices: ANT_API.NoticeIconItem[]): Record<string, ANT_AP
     return {};
   }
 
-  const newNotices = notices.map((notice) => {
+  const newNotices = notices.map(notice => {
     const newNotice = { ...notice };
 
     if (newNotice.datetime) {
@@ -42,8 +42,7 @@ const getNoticeData = (notices: ANT_API.NoticeIconItem[]): Record<string, ANT_AP
           color={color}
           style={{
             marginRight: 0,
-          }}
-        >
+          }}>
           {newNotice.extra}
         </Tag>
       ) as any;
@@ -56,7 +55,7 @@ const getNoticeData = (notices: ANT_API.NoticeIconItem[]): Record<string, ANT_AP
 
 const getUnreadData = (noticeData: Record<string, ANT_API.NoticeIconItem[]>) => {
   const unreadMsg: Record<string, number> = {};
-  Object.keys(noticeData).forEach((key) => {
+  Object.keys(noticeData).forEach(key => {
     const value = noticeData[key];
 
     if (!unreadMsg[key]) {
@@ -64,7 +63,7 @@ const getUnreadData = (noticeData: Record<string, ANT_API.NoticeIconItem[]>) => 
     }
 
     if (Array.isArray(value)) {
-      unreadMsg[key] = value.filter((item) => !item.read).length;
+      unreadMsg[key] = value.filter(item => !item.read).length;
     }
   });
   return unreadMsg;
@@ -74,16 +73,21 @@ const NoticeIconView = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
   const [notices, setNotices] = useState<ANT_API.NoticeIconItem[]>([]);
-  
+
   useEffect(() => {
     getNotices().then(({ data }) => {
       // 修改重定向到login页时
       // 组件已销毁，但是状态还在设置的问题
       if (window.location.href.indexOf('user/login') > -1) {
-        return
+        return;
       }
-      setNotices(data || [])
+      setNotices(data || []);
     });
+
+    // 修复异步获取notices时，页面切出去赋值的问题（内存泄露）
+    return () => {
+      setNotices([]);
+    };
   }, []);
 
   const noticeData = getNoticeData(notices);
@@ -91,7 +95,7 @@ const NoticeIconView = () => {
 
   const changeReadState = (id: string) => {
     setNotices(
-      notices.map((item) => {
+      notices.map(item => {
         const notice = { ...item };
         if (notice.id === id) {
           notice.read = true;
@@ -103,7 +107,7 @@ const NoticeIconView = () => {
 
   const clearReadState = (title: string, key: string) => {
     setNotices(
-      notices.map((item) => {
+      notices.map(item => {
         const notice = { ...item };
         if (notice.type === key) {
           notice.read = true;
@@ -118,7 +122,7 @@ const NoticeIconView = () => {
     <NoticeIcon
       className={styles.action}
       count={currentUser && currentUser.unreadCount}
-      onItemClick={(item) => {
+      onItemClick={item => {
         changeReadState(item.id!);
       }}
       onClear={(title: string, key: string) => clearReadState(title, key)}
@@ -126,8 +130,7 @@ const NoticeIconView = () => {
       clearText="清空"
       viewMoreText="查看更多"
       onViewMore={() => message.info('Click on view more')}
-      clearClose
-    >
+      clearClose>
       <NoticeIcon.Tab
         tabKey="notification"
         count={unreadMsg.notification}

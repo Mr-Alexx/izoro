@@ -8,7 +8,9 @@
 import type { PageContainerProps } from '@ant-design/pro-layout';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Affix, Anchor } from 'antd';
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
+import styles from './index.less';
+import classNames from 'classnames';
 
 type AnchorItem =
   | string
@@ -22,10 +24,18 @@ type AppPageContainerProps = PageContainerProps & {
     list: AnchorItem[];
   };
   back?: boolean;
+  footerAlign?: 'left' | 'center' | 'right';
+  footerToolBar?: {
+    visible?: boolean;
+    total?: number;
+    onCancel?: () => void;
+    extra?: React.ReactNode;
+    content?: React.ReactNode | ReactNode[];
+  };
 };
 
 const AppPageContainer: FC<AppPageContainerProps> = props => {
-  const { anchor, extra, back } = props;
+  const { anchor, extra, back, children, footerAlign } = props;
   let { onBack } = props;
 
   // 锚点不记录到url上，不对返回有影响
@@ -64,11 +74,28 @@ const AppPageContainer: FC<AppPageContainerProps> = props => {
       </>
     );
   }
-  if (back) {
+
+  const newBack = back === false ? false : true;
+  if (newBack) {
     onBack = () => window.history.go(-1);
   }
 
-  return <PageContainer {...props} extra={extraContent} onBack={onBack}></PageContainer>;
+  return (
+    <PageContainer
+      // classNames={[
+      //   footerAlign ? styles[`app-page-container--${footerAlign}`] : '',
+      //   anchor?.list && anchor?.list?.length > 0 ? styles['has-anchor-tabs'] : '',
+      // ]}
+      className={classNames(styles['app-page-container'], {
+        [styles[`app-page-container--${footerAlign}`]]: !!footerAlign,
+        [styles['has-anchor-tabs']]: anchor?.list && anchor?.list?.length > 0,
+      })}
+      {...props}
+      extra={extraContent}
+      onBack={onBack}>
+      {children}
+    </PageContainer>
+  );
 };
 
 export default AppPageContainer;

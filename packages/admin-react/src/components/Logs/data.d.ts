@@ -19,6 +19,14 @@ export type LogsItem = {
 };
 
 export type LogsProps = {
+  /**
+   * @description 前端路由
+   */
+  route: string;
+  /**
+   * @description 详情id
+   */
+  id: number | undefined;
   className?: string;
   style?: Record<string, any> | undefined;
 };

@@ -1,0 +1,165 @@
+@import '~antd/es/style/themes/default.less';
+
+@width: 100px;
+@height: @width;
+@padding: 8px;
+
+.dragContainer {
+  > span {
+    display: block;
+    width: 100%;
+  }
+  :global(.ant-upload-drag) {
+    box-sizing: border-box;
+    min-height: 150px;
+  }
+  :global(.ant-upload-btn) {
+    padding: 10px 10px 25px 10px !important;
+  }
+  :global(.ant-upload-drag-container) {
+    display: flex !important;
+  }
+  :global(.ant-upload-list-item-info) {
+    &:before {
+      left: 0;
+    }
+  }
+  :global(.ant-upload-list-picture-card-container) {
+    width: @width;
+    height: @height;
+    margin: 0 @padding @padding 0;
+  }
+}
+
+.sortableItem {
+  width: @width;
+  height: @height;
+  margin: 4px;
+  cursor: grab;
+}
+
+// .listContainer {
+//   position: relative;
+// }
+.imgList {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+.imgItem {
+  position: relative;
+  width: @width;
+  height: @height;
+  margin: 0 @padding @padding 0;
+  padding: @padding;
+  vertical-align: top;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.uploadItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: @width;
+  height: @height;
+  margin: 4px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 2px;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: @primary-color;
+  }
+
+  :global(.anticon) {
+    font-size: 36px;
+  }
+}
+
+.uploadTips {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-58%);
+}
+
+.maxTips {
+  position: absolute;
+  bottom: 7px;
+  left: 0;
+  width: 100%;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* 拖动的时候的样式 */
+:global(.SortableHelper ) {
+  box-shadow: rgba(0, 0, 0, 0.075) 0 1px 6px, rgba(0, 0, 0, 0.075) 0 1px 4px;
+  background-color: @primary-color;
+}
+
+.imageItem {
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: @padding;
+  position: relative;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+
+  &:after {
+    position: absolute;
+    top: @padding;
+    right: @padding;
+    bottom: @padding;
+    left: @padding;
+    z-index: 1;
+    background-color: #000;
+    opacity: 0;
+    transition: 0.15s;
+    content: '';
+  }
+  &:hover {
+    &:after {
+      opacity: 0.4;
+    }
+
+    .imageItemActions {
+      display: block;
+    }
+  }
+
+  .imageItemActions {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    display: none;
+    width: 100%;
+    color: #fff;
+    transform: translateX(-50%) translateY(-50%);
+
+    :global(.anticon) {
+      margin: 0 5px;
+      font-size: 16px;
+    }
+  }
+
+  .imageItemImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}

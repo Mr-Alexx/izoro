@@ -2,13 +2,21 @@
 import type { ActionType, ColumnsState, ListToolBarProps, ProTableProps } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type { ReactNode } from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { ParamsType } from '@ant-design/pro-provider';
 import styles from './index.less';
 import type { SearchConfig } from '@ant-design/pro-table/lib/components/Form/FormRender';
 import type { ToolBarOptions } from '@/components/TableToolBar';
 import TableToolBar from '@/components/TableToolBar';
 import type { OptionConfig } from '@ant-design/pro-table/lib/components/ToolBar';
+import { RouteContext } from '@ant-design/pro-layout';
+import type { TablePaginationConfig } from 'antd';
+import { Button, Dropdown, Menu, Space } from 'antd';
+import classNames from 'classnames';
+
+// @ts-ignore
+import shortid from 'shortid';
+// const shortid = require('shortid');
 
 // 改造proTable的类型，增加一些配置
 type SearchConfigExtra = SearchConfig & {
@@ -23,51 +31,69 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
     search?: SearchConfigExtra | false; // 由于pro component文档没有补全这两个参数，这里封装的时候补全了
     options?: OptionConfigExtra | false; // 增加自定义工具栏配置
     toolbar?: ListToolBarProps & {
-      position?: 'top'; // 当表格有tab和工具栏时，设置为top时，将tab和工具栏上下位置互换
+      position?: 'top' | 'bottom'; // 当表格有tab和工具栏时，设置为top时，将tab和工具栏上下位置互换
+    };
+    footerToolBar?: {
+      onCancel?: () => void;
+      extra?: React.ReactNode;
+      content?: ReactNode[]; // React.ReactNode |
     };
   },
 ) => {
   const {
+    actionRef: propActionRef,
     rowKey,
     columns,
     sticky,
     options,
     pagination,
     search,
+    columnsState,
     columnsStateMap,
     toolbar,
     toolBarRender,
+    // tableAlertRender,
+    // tableAlertOptionRender,
+    footerToolBar,
+    rowSelection,
     onColumnsStateChange,
+    scroll,
+    request,
   } = props;
+  const defaultActionRef = useRef<ActionType>();
+  const actionRef = propActionRef || defaultActionRef;
+
   // 合并 pagination 默认配置与用户设置
-  let newPagination;
+  let newPagination: false | TablePaginationConfig | undefined;
   if (pagination === false) {
     newPagination = pagination;
   } else {
     newPagination = {
       showSizeChanger: true,
-      pageSize: 50,
+      pageSize: 30,
       showQuickJumper: true,
-      position: ['bottomRight'], // 'topLeft' | 'topCenter' | 'topRight' | 'bottomLeft' | 'bottomCenter' | 'bottomRight';
+      position: ['bottomLeft'], // 'topLeft' | 'topCenter' | 'topRight' | 'bottomLeft' | 'bottomCenter' | 'bottomRight';
+      pageSizeOptions: ['10', '20', '30', '40', '50', '100', '200'],
       ...pagination,
     };
   }
 
   // 合并 search 默认配置与用户设置
-  let newSearch;
+  let newSearch: false | SearchConfig | undefined;
   if (search === false) {
     newSearch = search;
   } else {
     newSearch = {
       syncToUrl: true, // 搜索的时候
       syncToInitialValues: false, // 是否重置到初始设置的值
+      defaultColsNumber: 12, // 默认显示列数，按照默认一行4个来说，可以显示3行
       // @ts-ignore
       ...search,
     };
   }
 
   // 合并 options 默认配置与用户设置
-  let newOptions;
+  let newOptions: false | OptionConfig | undefined;
   if (options === false) {
     newOptions = options;
   } else {
@@ -81,84 +107,202 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
     };
   }
 
+  // 统一toolbar配置
+  // @ts-ignore
+  let newToolBarRender;
+  if (toolBarRender === false) {
+    newToolBarRender = false;
+  } else {
+    newToolBarRender = (
+      action: ActionType | undefined,
+      rows: {
+        selectedRowKeys?: (string | number)[];
+        selectedRows?: T[];
+      },
+    ) => {
+      let tools: ReactNode[];
+      if (typeof toolBarRender === 'function') {
+        tools = toolBarRender(action, rows);
+      } else {
+        tools = [''];
+      }
+      const toolsOption: ToolBarOptions = {};
+      if (options) {
+        // @ts-ignore
+        const { download, mark } = options;
+        if (download) {
+          toolsOption.download = download;
+        }
+        if (mark) {
+          toolsOption.mark = mark;
+        }
+      }
+      if (Object.keys(toolsOption).length > 0) {
+        return [
+          ...tools,
+          <TableToolBar
+            options={toolsOption}
+            columns={columns?.map(v => ({ title: v.title as string, dataIndex: v.dataIndex as string }))}
+          />,
+        ];
+      }
+      return tools;
+    };
+  }
+
+  const position: string = toolbar?.position || 'top';
+
   // 自定义列统一设置
-  const [newColumnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>({});
-  const changeColumnsStateMap = (map: Record<string, ColumnsState>) => {
-    if (onColumnsStateChange) {
-      onColumnsStateChange(map);
-      return;
-    }
-    // 即时响应
-    setColumnsStateMap(map);
-    // 存储更新，采用debounce，防止触发多个请求
-    // saveCustomColumns();
-  };
-  useEffect(() => {
-    // 初始化自定义列
-    if (columnsStateMap) {
-      setColumnsStateMap(columnsStateMap);
-    }
-    // getPageSettings('role').then((data: Record<string, any>) => {
-    //   setColumnsStateMap(data);
-    // });
-  }, []);
+  // const [newColumnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>({});
+  // const changeColumnsStateMap = (map: Record<string, ColumnsState>) => {
+  //   if (onColumnsStateChange) {
+  //     onColumnsStateChange(map);
+  //     return;
+  //   }
+  //   // 即时响应
+  //   setColumnsStateMap(map);
+  //   // 存储更新，采用debounce，防止触发多个请求
+  //   // saveCustomColumns();
+  // };
+  // useEffect(() => {
+  //   // 初始化自定义列
+  //   if (columnsStateMap) {
+  //     setColumnsStateMap(columnsStateMap);
+  //   }
+  //   // getPageSettings('role').then((data: Record<string, any>) => {
+  //   //   setColumnsStateMap(data);
+  //   // });
+  // }, []);
 
   return (
-    <ProTable<T, U, ValueType>
-      // 自定义tab和工具栏上下位置
-      className={toolbar?.position ? styles[`app-table-toolbar--${toolbar?.position}`] : ''}
-      {...props}
-      rowKey={rowKey || 'id'}
-      sticky={sticky === undefined ? true : sticky}
-      // @ts-ignore
-      pagination={newPagination}
-      search={newSearch}
-      toolbar={toolbar}
-      options={newOptions}
-      // 自定义列设置
-      columnsStateMap={newColumnsStateMap}
-      onColumnsStateChange={changeColumnsStateMap}
-      // 自定义工具栏
-      // @ts-ignore
-      toolBarRender={(
-        action: ActionType | undefined,
-        rows: {
-          selectedRowKeys?: (string | number)[];
-          selectedRows?: T[];
-        },
-      ) => {
-        if (toolBarRender === false) {
-          return null;
-        }
-        let tools: ReactNode[];
-        if (typeof toolBarRender === 'function') {
-          tools = toolBarRender(action, rows);
-        } else {
-          tools = [];
-        }
-        const toolsOption: ToolBarOptions = {};
-        if (options) {
-          // @ts-ignore
-          const { download, mark } = options;
-          if (download) {
-            toolsOption.download = download;
-          }
-          if (mark) {
-            toolsOption.mark = mark;
-          }
-        }
-        if (Object.keys(toolsOption).length > 0) {
-          return [
-            ...tools,
-            <TableToolBar
-              options={toolsOption}
-              columns={columns?.map(v => ({ title: v.title as string, dataIndex: v.dataIndex as string }))}
-            />,
-          ];
-        }
-        return tools;
+    <RouteContext.Consumer>
+      {({ isMobile, collapsed }) => {
+        return (
+          <ProTable<T, U, ValueType>
+            actionRef={actionRef}
+            // 自定义tab和工具栏上下位置
+            className={classNames(
+              position ? styles[`app-table-toolbar--${position}`] : '',
+              styles['app-table'],
+              collapsed ? styles['app-table--collapsed'] : '',
+            )}
+            style={{ marginBottom: rowSelection ? 48 : 0 }}
+            {...props}
+            rowKey={rowKey || 'id'}
+            sticky={
+              sticky === undefined
+                ? {
+                    offsetHeader: 48,
+                    offsetScroll: rowSelection ? 48 : 0,
+                  }
+                : sticky
+            }
+            scroll={scroll ?? { x: 1300 }}
+            pagination={newPagination}
+            search={newSearch}
+            toolbar={toolbar}
+            options={newOptions}
+            // 自定义列设置
+            // columnsStateMap={newColumnsStateMap}
+            // onColumnsStateChange={changeColumnsStateMap}
+            // 自定义多选提示
+            // tableAlertRender={tableAlertRender || false}
+            tableAlertOptionRender={({ selectedRowKeys }) => {
+              const selectedLenth = selectedRowKeys.length;
+              return (
+                <div className={styles['row-selection-action-content']}>
+                  <a
+                    style={{ marginRight: 15 }}
+                    onClick={
+                      // @ts-ignore
+                      actionRef?.current?.clearSelected
+                    }>
+                    取消选择
+                  </a>
+                  <div style={{ display: selectedLenth > 0 ? '' : 'none' }}>
+                    {!isMobile && (
+                      <Space direction="horizontal" size={5}>
+                        {footerToolBar?.content}
+                      </Space>
+                    )}
+
+                    {isMobile && Array.isArray(footerToolBar?.content) && (
+                      <Dropdown
+                        overlay={() => (
+                          <Menu>
+                            {footerToolBar?.content?.map(item => (
+                              <Menu.Item key={`${shortid.generate()}`}>{item}</Menu.Item>
+                            ))}
+                          </Menu>
+                        )}
+                        trigger={['click']}
+                        placement="topCenter">
+                        <Button>更多操作</Button>
+                      </Dropdown>
+                    )}
+                  </div>
+                </div>
+              );
+            }}
+            rowSelection={
+              rowSelection
+                ? {
+                    ...rowSelection,
+                    alwaysShowAlert: true,
+                  }
+                : false
+            }
+            // 自定义工具栏
+            // @ts-ignore
+            toolBarRender={newToolBarRender}
+            // 封装请求，增加排序配置，格式化响应
+            request={
+              request
+                ? async (params, sorter, filter) => {
+                    // 格式化排序未 字段名 desc/asc,字段名 desc/asc
+                    let order: string | undefined;
+                    const sorterArr = Object.entries(sorter);
+                    if (sorterArr.length > 0) {
+                      order = sorterArr.map(item => `${item[0]} ${item[1] === 'descend' ? 'desc' : 'asc'}`).join(',');
+                    }
+                    try {
+                      const data = await request(
+                        {
+                          ...params,
+                          order,
+                        },
+                        sorter,
+                        filter,
+                      );
+                      if (!data) {
+                        throw new Error();
+                      }
+                      return {
+                        total: data.total,
+                        data: data.list || data.data,
+                      };
+                    } catch (err) {
+                      return {
+                        total: 0,
+                        data: [],
+                      };
+                    }
+                  }
+                : undefined
+            }
+            // 自定义列 配置 https://procomponents.ant.design/components/table/#columnsstatetype
+            columnsState={{
+              // onChange: value => console.log('[a]', value),
+              // 持久化的key，保持唯一性，默认使用页面的url
+              // 有个问题：页面内使用多个Table时，需要自定义key
+              persistenceKey: columnsState?.persistenceKey || location.pathname,
+              // 持久化到localStorage
+              persistenceType: columnsState?.persistenceType || 'localStorage',
+            }}
+          />
+        );
       }}
-    />
+    </RouteContext.Consumer>
   );
 };
 

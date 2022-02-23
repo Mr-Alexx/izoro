@@ -1,0 +1,63 @@
+.detail-drawer {
+  :global {
+    // 弹窗内容宽度
+    .ant-drawer-content-wrapper {
+      width: 1200px !important;
+
+      @media screen and(max-width: 1199px) {
+        width: 980px !important;
+      }
+      @media screen and(max-width: 980px) {
+        width: 700px !important;
+      }
+      @media screen and(max-width: 768px) {
+        width: 100% !important;
+      }
+    }
+    .ant-drawer-body {
+      padding: 15px;
+      background-color: #f6f6f6;
+    }
+    .ant-descriptions-bordered {
+      .ant-descriptions-item-label {
+        padding-right: 0;
+        padding-left: 0;
+        text-align: center;
+      }
+    }
+  }
+  &.has-anchors {
+    :global {
+      .ant-drawer-close {
+        margin-top: -10px;
+        padding: 5px 5px 5px 0;
+        font-size: 22px;
+      }
+      .ant-drawer-header {
+        padding-bottom: 0; // 28px;
+      }
+      // .drawer-anchor-tabs {
+      //   position: absolute;
+      //   bottom: 0;
+      // }
+      .drawer-anchor-tabs .ant-tabs {
+        line-height: 1;
+      }
+      .drawer-anchor-tabs .ant-tabs-tab {
+        padding: 10px 0;
+        font-weight: 400;
+        font-size: 14px;
+      }
+      .ant-tabs-nav {
+        margin-bottom: 0;
+        background: none;
+        &:before {
+          display: none;
+        }
+      }
+      .ant-tabs-tab + .ant-tabs-tab {
+        margin-left: 20px;
+      }
+    }
+  }
+}
