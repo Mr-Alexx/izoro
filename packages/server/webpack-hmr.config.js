@@ -1,0 +1,26 @@
+/**
+ * @description 热重载
+ * @see https://docs.nestjs.cn/8/recipes?id=%e7%83%ad%e9%87%8d%e8%bd%bd
+ */
+const nodeExternals = require('webpack-node-externals');
+const { RunScriptWebpackPlugin } = require('run-script-webpack-plugin');
+
+module.exports = function (options, webpack) {
+  return {
+    ...options,
+    entry: ['webpack/hot/poll?100', options.entry],
+    externals: [
+      nodeExternals({
+        allowlist: ['webpack/hot/poll?100'],
+      }),
+    ],
+    plugins: [
+      ...options.plugins,
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.WatchIgnorePlugin({
+        paths: [/\.js$/, /\.d\.ts$/],
+      }),
+      new RunScriptWebpackPlugin({ name: options.output.filename }),
+    ],
+  };
+};

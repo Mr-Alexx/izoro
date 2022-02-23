@@ -8,6 +8,7 @@ import { Article } from './article.entity';
 import * as FlakeId from 'flakeid'; // module.export 模块，需要使用该引用模式
 import _ from '@/utils';
 import { CacheService } from '../cache/cache.service';
+import { ArticleEditDto } from './article.dto';
 
 @Injectable()
 export class ArticleService {
@@ -156,7 +157,7 @@ export class ArticleService {
     }
   }
 
-  async update(id: string, article: Article): Promise<any> {
+  async update(id: string, article: ArticleEditDto): Promise<any> {
     const oldArticle = await this.articleRepository.findOne(id);
     if (!oldArticle) {
       throw new HttpException('该文章不存在，无法更新！', HttpStatus.NOT_FOUND);

@@ -20,7 +20,7 @@ import { PublishStatus } from '@/interfaces/status.interface';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { Article } from './article.entity';
 import { Permission } from '@/decorators/permission.decorator';
-import { ArticleQueryDto } from './article.dto';
+import { ArticleCreateDto, ArticleQueryDto, ArticleEditDto } from './article.dto';
 
 // @Crud({
 //   model: Article // Article采用增删改查接口模式
@@ -51,22 +51,21 @@ export class ArticleController {
     return this.articleService.findById(id);
   }
 
-  /**
-   * @description 创建
-   */
+  @ApiOperation({ description: '创建文章' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Permission('article:add')
   @UseGuards(JwtAuthGuard)
-  async create(@Body() article: Partial<Article>): Promise<any> {
+  async create(@Body() article: ArticleCreateDto): Promise<any> {
     return await this.articleService.create(article);
   }
 
+  @ApiOperation({ description: '编辑文章' })
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   @Permission('article:edit')
   @UseGuards(JwtAuthGuard)
-  async update(@Param('id') id: string, @Body() article: Article): Promise<any> {
+  async update(@Param('id') id: string, @Body() article: ArticleEditDto): Promise<any> {
     return await this.articleService.update(id, article);
   }
 

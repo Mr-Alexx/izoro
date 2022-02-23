@@ -1,3 +1,5 @@
+declare const module: any;
+
 import config from '@/config/app.config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -98,12 +100,24 @@ async function bootstrap() {
     new ClassSerializerInterceptor(app.get(Reflector)), // 要使entity内的@Exclude生效，需加这个
   );
 
-  const options = new DocumentBuilder().addBearerAuth().build();
+  const options = new DocumentBuilder()
+    .addSecurity('basic', {
+      type: 'http',
+      scheme: 'basic',
+    })
+    .addBearerAuth()
+    .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/doc', app, document);
 
   await app.listen(config.PORT, config.HOST);
   console.log(`App is listen on http://localhost:${config.PORT}`);
   console.log(`Document listen on http://localhost:5000 or http://localhost:${config.PORT}/doc`);
+
+  // 热重载模块
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 bootstrap();
