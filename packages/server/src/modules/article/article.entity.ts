@@ -40,7 +40,7 @@ export class Article {
   summary: string;
 
   @Column({ type: 'mediumtext', default: null, charset: 'utf8mb4', comment: '文章markdown' })
-  content: string;
+  markdown: string;
 
   @Column({ type: 'mediumtext', default: null, charset: 'utf8mb4', comment: '基于markdown生成的html' })
   html: string;

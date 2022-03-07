@@ -81,9 +81,9 @@ export class ArticleCreateDto {
 
   // 原始markdown内容
   @ApiProperty({ description: '文章原始内容', example: '# 标题1 xxx', default: null })
-  content: string;
+  markdown: string;
 
-  // 转化为html的内容，依据content自动生成
+  // 转化为html的内容，依据markdown自动生成
   @ApiProperty({ description: '文章转化为html内容', example: '<div>标题1</div>' })
   html: string;
 
