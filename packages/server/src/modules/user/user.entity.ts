@@ -11,7 +11,7 @@ import {
   ManyToMany,
   BeforeUpdate,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { Exclude } from 'class-transformer';
 import { Role } from '../role/role.entity';
 
