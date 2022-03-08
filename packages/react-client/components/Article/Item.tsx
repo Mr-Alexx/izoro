@@ -11,6 +11,13 @@ const ArticleItem: FC<{
       <div>
         <Link href={`/${dataSource.category_name}`}>{dataSource.category_name}</Link>
         <span>{dataSource.publish_at}</span>
+        {dataSource.tags?.map(item => {
+          return (
+            <span key={item.id}>
+              <Link href={`/tag/${item.name}`}>{item.name}</Link>·
+            </span>
+          );
+        })}
       </div>
 
       {/* 内容块 */}

@@ -1,4 +1,8 @@
 declare namespace ArticleApi {
+  type Tag = {
+    id: number;
+    name: string;
+  };
   type ArticleItem = {
     /** 文章id */
     id: string | number;
@@ -18,7 +22,9 @@ declare namespace ArticleApi {
     likes?: number;
     /** 评论次数 */
     comments?: number;
-  }
+    /** 标签名 */
+    tags?: Tag[];
+  };
 
   type ArticleDetail = ArticleItem & {
     /** markdown */
@@ -39,5 +45,5 @@ declare namespace ArticleApi {
     created_at: string;
     /** 更新时间 */
     updated_at: string;
-  }
+  };
 }
