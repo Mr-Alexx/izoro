@@ -1,12 +1,12 @@
 import GlobalContext from '@/context/global.context';
 import { useContext } from 'react';
-import { Helmet } from 'react-helmet';
+import Head from 'next/head';
 
 const AppHead = () => {
   const { settings } = useContext(GlobalContext);
 
   return (
-    <Helmet>
+    <Head>
       <title>{settings.title}</title>
 
       <meta name="title" content={settings.title} />
@@ -16,7 +16,7 @@ const AppHead = () => {
 
       <link rel="shortcut icon" href={settings.favicon} />
       {/* ... */}
-    </Helmet>
+    </Head>
   );
 };
 

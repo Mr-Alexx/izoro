@@ -2,19 +2,18 @@ import Head from 'next/head';
 import Layout, { siteTitle } from '../components/layout';
 import type { GetServerSidePropsContext } from 'next';
 import { get } from '@/utils/request';
+import ArticleList from '@/components/Article/List';
 
 export default function Home({ data }) {
   console.log('data', data);
   return (
     <Layout home>
-      <Head>
-        <title>{siteTitle}</title>
-      </Head>
-      <ul>
-        {data?.map?.(item => {
-          <li key={item.id}>{item.title}</li>;
-        })}
-      </ul>
+      <div>
+        <div>
+          <ArticleList dataSource={data} />
+        </div>
+        <div>右侧</div>
+      </div>
     </Layout>
   );
 }
