@@ -34,7 +34,7 @@ const ArticleItem: FC<{
 
           {/* 封面图 */}
           <div>
-            <IzImage src={dataSource.cover ?? '/'} alt={dataSource.title} width={100} height={100} />
+            <IzImage src={dataSource.cover} alt={dataSource.title} width={100} height={100} />
           </div>
         </div>
       </a>
