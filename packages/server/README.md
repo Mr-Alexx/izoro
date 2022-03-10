@@ -127,3 +127,7 @@ ENTITY：数据实体，用于与数据库表映射
 [参考文章](https://zhuanlan.zhihu.com/p/80574300)
 Eslint: 代码质量检查工具
 Prettier: 代码格式检查工具
+
+## 学习文档
+
+[dto 学习](https://iiong.com/nest-js-parameter-check-and-custom-return-data-format/)

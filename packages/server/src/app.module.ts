@@ -26,7 +26,7 @@ import { CacheModule } from './modules/cache/cache.module';
 // import { TasksService } from './schedule/tasks.service';
 import { ScheduleModule as TaskModule } from '@/modules/schedule/schedule.module';
 import { TagController } from './modules/tag/tag.controller';
-
+import { SettingModule } from './modules/setting/setting.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -58,6 +58,7 @@ import { TagController } from './modules/tag/tag.controller';
     // ScheduleModule.forRoot(),
     // TaskModule,
     RentModule,
+    SettingModule,
   ],
   // providers: [TasksService],
 })

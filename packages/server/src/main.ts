@@ -25,8 +25,8 @@ async function bootstrap() {
   // api访问速率限制
   adapter.register(fastifyRateLimit, {
     // 限制单ip单位时间访问频率
-    timeWindow: 1000 * 60, // 单位时间ms
-    max: 500, // 单位时间内最多访问次数
+    timeWindow: 1000 * 5, // 单位时间ms
+    max: 20, // 单位时间内最多访问次数
     errorResponseBuilder(req, ctx) {
       const error = {
         code: 429,
@@ -89,10 +89,10 @@ async function bootstrap() {
 
   app.enableCors(); // 允许跨域
 
-  app.use((req, res, next) => {
-    console.log('dsfsdf');
-    next();
-  });
+  // app.use((req, res, next) => {
+  //   console.log('dsfsdf');
+  //   next();
+  // });
   app.useGlobalFilters(new HttpExceptionFilter()); // 自定义接口异常详情
   app.useGlobalPipes(new ValidationPipe()); // 数据验证器
   app.useGlobalInterceptors(

@@ -13,20 +13,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const url = ctx.getRequest().url; // 请求路由地址
     // 获取错误码，默认服务器错误码（500）
-    let code = HttpStatus.INTERNAL_SERVER_ERROR;
+    let errorCode = HttpStatus.INTERNAL_SERVER_ERROR;
     if (exception) {
-      code = exception?.getStatus?.() || code;
+      errorCode = exception?.getStatus?.() || errorCode;
     }
     const err = {
-      code,
-      msg: exception.message,
+      errorCode,
+      errorMessage: exception.message,
       success: false,
       _t: new Date().getTime(),
     };
 
     // 返回错误响应
     const response = ctx.getResponse();
-    response.code(code).send(err);
+    response.code(errorCode).send(err);
 
     errorLogger.error(url, err);
   }
