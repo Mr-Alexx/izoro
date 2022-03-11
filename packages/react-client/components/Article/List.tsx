@@ -4,6 +4,7 @@
  */
 import type { FC } from 'react';
 import ArticleItem from './Item';
+import styles from './index.module.scss';
 
 const ArticleList: FC<{
   dataSource?: ArticleApi.ArticleItem[];
@@ -13,7 +14,7 @@ const ArticleList: FC<{
   }
 
   return (
-    <ul>
+    <ul className={styles['article-list']}>
       {dataSource?.map(item => {
         return <ArticleItem key={item.id} dataSource={item} />;
       })}

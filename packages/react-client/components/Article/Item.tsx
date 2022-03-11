@@ -7,37 +7,44 @@ const ArticleItem: FC<{
   dataSource: ArticleApi.ArticleItem;
 }> = ({ dataSource }) => {
   return (
-    <li>
-      <a href={`/post/${dataSource.id}`} target="_blank" title={dataSource.title} rel="noreferrer">
-        {/* 日期、分类等 */}
-        <div>
-          {/* <Link href={`/${dataSource.category_name}`}>{dataSource.category_name}</Link> */}
-          <span>{dataSource.publish_at}</span>
-          {dataSource.tags?.map(item => {
-            return (
-              <span key={item.id}>
-                <Link href={`/tag/${item.name}`}>{item.name}</Link>·
-              </span>
-            );
-          })}
-        </div>
+    <li onClick={() => window.open(`/post/${dataSource.id}`, '_blank')}>
+      {/* 日期、分类等 */}
+      <div>
+        {/* <Link href={`/${dataSource.category_name}`}>{dataSource.category_name}</Link> */}
+        <span>{dataSource.publish_at}</span>
+        {dataSource.tags?.map(item => {
+          return (
+            <span key={item.id}>
+              <Link key={item.id} href={`/tag/${item.name}`}>
+                <a>{item.name}</a>
+              </Link>
+              ·
+            </span>
+          );
+        })}
+      </div>
 
-        {/* 内容块 */}
+      {/* 内容块 */}
+      <div>
         <div>
+          {/* 标题 */}
           <div>
-            {/* 标题 */}
-            <div>{dataSource.title}</div>
-
-            {/* 总结 */}
-            <p>{dataSource.summary}</p>
+            <Link href={`/post/${dataSource.id}`}>
+              <a target="_blank" title={dataSource.title}>
+                {dataSource.title}
+              </a>
+            </Link>
           </div>
 
-          {/* 封面图 */}
-          <div>
-            <IzImage src={dataSource.cover} alt={dataSource.title} width={100} height={100} />
-          </div>
+          {/* 总结 */}
+          <p>{dataSource.summary}</p>
         </div>
-      </a>
+
+        {/* 封面图 */}
+        <div>
+          <IzImage src={dataSource.cover} alt={dataSource.title} width={100} height={100} />
+        </div>
+      </div>
     </li>
   );
 };
