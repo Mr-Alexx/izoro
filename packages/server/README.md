@@ -131,3 +131,7 @@ Prettier: 代码格式检查工具
 ## 学习文档
 
 [dto 学习](https://iiong.com/nest-js-parameter-check-and-custom-return-data-format/)
+
+## brew mysql 启动
+
+`mysql.server start`
