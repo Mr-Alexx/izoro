@@ -3,17 +3,18 @@ import Layout, { siteTitle } from '../components/layout';
 import type { GetServerSidePropsContext } from 'next';
 import { get } from '@/utils/request';
 import ArticleList from '@/components/Article/List';
+import { useEffect } from 'react';
+import Wrapper from '@/components/Wrapper';
 
 export default function Home({ data }) {
-  console.log('data', data);
+  useEffect(() => {
+    console.log('data', data);
+  }, []);
   return (
     <Layout home>
-      <div>
-        <div>
-          <ArticleList dataSource={data} />
-        </div>
-        <div>右侧</div>
-      </div>
+      <Wrapper aside={<div>右侧</div>}>
+        <ArticleList dataSource={data} />
+      </Wrapper>
     </Layout>
   );
 }
@@ -21,13 +22,14 @@ export default function Home({ data }) {
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   try {
     const data = await get('/article');
-    // console.log(data.list, data.total);
     return {
       props: {
         data: data.list,
       },
     };
-  } catch (err) {}
+  } catch (err) {
+    // console.error(12, err);
+  }
 };
 
 // export const getStaticProps: GetStaticProps = async context => {

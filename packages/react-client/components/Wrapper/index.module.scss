@@ -1,0 +1,16 @@
+.wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+
+  &__content {
+    flex: 1;
+  }
+  &__aside {
+    position: sticky;
+    top: 50;
+    width: 220px;
+    margin-left: 20px;
+  }
+}

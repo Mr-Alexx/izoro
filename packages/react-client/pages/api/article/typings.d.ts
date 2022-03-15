@@ -15,7 +15,10 @@ declare namespace ArticleApi {
     /** 发布时间 */
     publish_at: string;
     /** 分类 */
-    category_name: string;
+    category?: {
+      id: number;
+      name: string;
+    };
     /** 查看次数 */
     views: number;
     /** 点赞次数 */
