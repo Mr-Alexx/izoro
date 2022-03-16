@@ -1,3 +1,4 @@
+import { formatTime } from '@/utils';
 import Link from 'next/link';
 import type { FC } from 'react';
 import { IzImage } from '../izImage';
@@ -16,7 +17,7 @@ const ArticleItem: FC<{
             {dataSource.category.name}
           </a>
         </Link>
-        <span>{dataSource.publish_at}</span>
+        <span>{formatTime(dataSource.publish_at)}</span>
         {dataSource.tags?.map(item => {
           return (
             <span key={item.id} className={styles['tag']}>

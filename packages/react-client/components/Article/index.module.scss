@@ -1,5 +1,4 @@
 .article-list {
-  background-color: #cccc;
 }
 
 .article-item {
@@ -12,7 +11,11 @@
     right: 10px;
     left: 10px;
     height: 1px;
-    background-color: #ccc;
+    background-color: #e5e5e5;
     content: '';
+  }
+
+  &__info {
+    display: flex;
   }
 }
