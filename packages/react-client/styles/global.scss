@@ -1,3 +1,5 @@
+@import './var.scss';
+
 html,
 body {
   margin: 0;
@@ -6,6 +8,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
     Helvetica Neue, sans-serif;
   line-height: 1.6;
+  background-color: #f7f7f7;
 }
 
 * {
@@ -43,4 +46,12 @@ h6 {
 
 ul {
   list-style: none;
+}
+
+.link {
+  color: $text-color-primary;
+
+  &:hover {
+    color: $color-primary !important;
+  }
 }

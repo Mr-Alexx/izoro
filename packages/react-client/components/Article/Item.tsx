@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { FC } from 'react';
 import { IzImage } from '../izImage';
 import styles from './index.module.scss';
+import classNames from 'classnames';
 
 const ArticleItem: FC<{
   /** 数据项 */
@@ -13,11 +14,13 @@ const ArticleItem: FC<{
       {/* 日期、分类等 */}
       <div className={styles['article-item__info']}>
         <Link href={`/${dataSource.category.name}`}>
-          <a className={styles['category']} target="_blank" title={dataSource.category.name}>
+          <a className={classNames(styles['category'], 'link')} target="_blank" title={dataSource.category.name}>
             {dataSource.category.name}
           </a>
         </Link>
+        <i />
         <span>{formatTime(dataSource.publish_at)}</span>
+        {dataSource.tags?.length > 0 && <i />}
         {dataSource.tags?.map(item => {
           return (
             <span key={item.id} className={styles['tag']}>
@@ -38,7 +41,7 @@ const ArticleItem: FC<{
           {/* 标题 */}
           <div className={styles['title']}>
             <Link href={`/post/${dataSource.id}`}>
-              <a target="_blank" title={dataSource.title}>
+              <a target="_blank" title={dataSource.title} className="link">
                 {dataSource.title}
               </a>
             </Link>
@@ -50,7 +53,7 @@ const ArticleItem: FC<{
 
         {/* 封面图 */}
         <div className={styles['content-right']}>
-          <IzImage src={dataSource.cover} alt={dataSource.title} width={100} height={100} />
+          <IzImage src={dataSource.cover} alt={dataSource.title} width={120} height={80} />
         </div>
       </div>
     </li>

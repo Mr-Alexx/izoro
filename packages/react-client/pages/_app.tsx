@@ -1,7 +1,7 @@
 import type { GetServerSidePropsContext } from 'next';
 import type { AppProps } from 'next/app';
 import { FC } from 'react';
-import '../styles/global.css';
+import '../styles/global.scss';
 import { get } from '@/utils/request';
 import AppHead from '@/components/Head';
 
