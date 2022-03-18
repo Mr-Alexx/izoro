@@ -55,3 +55,30 @@ ul {
     color: $color-primary !important;
   }
 }
+
+// 文本溢出...
+.ellipsis {
+  &,
+  &--l2,
+  &--l3 {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &--l2,
+  &--l3 {
+    -webkit-box-orient: vertical;
+    box-orient: vertical;
+  }
+
+  &--l2 {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  &--l3 {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
