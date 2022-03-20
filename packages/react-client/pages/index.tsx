@@ -1,5 +1,3 @@
-import Head from 'next/head';
-import Layout, { siteTitle } from '../components/layout';
 import type { GetServerSidePropsContext } from 'next';
 import { get } from '@/utils/request';
 import ArticleList from '@/components/Article/List';
@@ -11,11 +9,9 @@ export default function Home({ data }) {
     console.log('data', data);
   }, []);
   return (
-    <Layout home>
-      <Wrapper aside={<div>右侧</div>}>
-        <ArticleList dataSource={data} />
-      </Wrapper>
-    </Layout>
+    <Wrapper aside={<div>右侧</div>}>
+      <ArticleList dataSource={data} />
+    </Wrapper>
   );
 }
 

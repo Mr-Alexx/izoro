@@ -4,14 +4,15 @@ import { FC } from 'react';
 import '../styles/global.scss';
 import { get } from '@/utils/request';
 import AppHead from '@/components/Head';
+import Layout from '@/layouts/DefaultLayout';
 
 const App: FC<AppProps> = props => {
   const { Component, pageProps } = props;
   return (
-    <div>
+    <Layout>
       <AppHead />
       <Component {...pageProps} />
-    </div>
+    </Layout>
   );
 };
 

@@ -1,8 +1,10 @@
+@import '@/styles/var.scss';
+
 .wrapper {
   display: flex;
   width: 100%;
-  max-width: 980px;
-  margin: 0 auto;
+  max-width: $width-container;
+  margin: 15px auto;
 
   &__content {
     flex: 1;
