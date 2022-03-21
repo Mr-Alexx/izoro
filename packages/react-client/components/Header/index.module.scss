@@ -90,7 +90,7 @@ $height: 50px;
     padding: 0 10px;
     line-height: 3px;
     border-radius: 2px;
-    transition: border-color, width 0.15s ease-in-out;
+    transition: all 0.25s;
 
     &:focus {
       width: 240px;
