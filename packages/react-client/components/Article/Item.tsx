@@ -1,7 +1,7 @@
 import { formatTime } from '@/utils';
 import Link from 'next/link';
 import type { FC } from 'react';
-import { IzImage } from '../izImage';
+import { IzImage } from '../IzImage';
 import styles from './index.module.scss';
 import classNames from 'classnames';
 

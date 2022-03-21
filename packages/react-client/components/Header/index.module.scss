@@ -85,15 +85,17 @@ $height: 50px;
   }
 
   &__input {
-    width: 180px;
+    width: 200px;
     height: $input-height;
     padding: 0 10px;
+    color: $text-color-light;
+    font-size: 14px;
     line-height: 3px;
-    border-radius: 2px;
-    transition: all 0.25s;
+    border-radius: $border-radius-base;
+    transition: $transition-primary;
 
     &:focus {
-      width: 240px;
+      width: 320px;
       border-color: $color-primary-border;
       box-shadow: 0 0 0 2px $color-primary-outline;
     }
@@ -108,7 +110,13 @@ $height: 50px;
     color: #666;
     line-height: 28px;
     background-color: #f2f3f4;
+    border-radius: $border-radius-base;
     cursor: pointer;
+    transition: $transition-primary;
     // width:
+
+    &:active {
+      background-color: #eaf2ff;
+    }
   }
 }

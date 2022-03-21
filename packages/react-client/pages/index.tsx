@@ -3,6 +3,7 @@ import { get } from '@/utils/request';
 import ArticleList from '@/components/Article/List';
 import { useEffect } from 'react';
 import Wrapper from '@/components/Wrapper';
+import Pagination from '@/components/IzPagination';
 
 export default function Home({ data }) {
   useEffect(() => {
@@ -11,6 +12,7 @@ export default function Home({ data }) {
   return (
     <Wrapper aside={<div>右侧</div>}>
       <ArticleList dataSource={data} />
+      <Pagination />
     </Wrapper>
   );
 }
