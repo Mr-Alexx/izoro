@@ -1,0 +1,34 @@
+@import '../var.scss';
+
+.iz-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px auto;
+  color: $text-color-light;
+
+  font-size: $font-size-large;
+  > div + div {
+    margin-left: 15px;
+  }
+
+  &__prev,
+  &__next {
+    user-select: none;
+
+    &:hover {
+      color: $color-primary;
+      cursor: pointer;
+    }
+  }
+
+  &__jumper {
+    .jumper-input {
+      margin: 0 5px;
+      .iz-input {
+        width: 50px;
+        text-align: center;
+      }
+    }
+  }
+}

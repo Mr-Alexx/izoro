@@ -1,7 +1,7 @@
 import { formatTime } from '@/utils';
 import Link from 'next/link';
 import type { FC } from 'react';
-import { IzImage } from '../IzImage';
+import Image from '../Image';
 import styles from './index.module.scss';
 import classNames from 'classnames';
 
@@ -53,7 +53,7 @@ const ArticleItem: FC<{
 
         {/* 封面图 */}
         <div className={styles['content-right']}>
-          <IzImage src={dataSource.cover} alt={dataSource.title} width={120} height={80} />
+          <Image src={dataSource.cover} alt={dataSource.title} width={120} height={80} />
         </div>
       </div>
     </li>

@@ -1,0 +1,42 @@
+@import '../var.scss';
+
+$input-height: 30px;
+
+.iz-input-wrapper {
+  position: relative;
+  display: inline-block;
+  height: $input-height;
+  margin-top: 7px;
+
+  &:hover {
+    .iz-input {
+      border-color: $color-primary-border;
+    }
+  }
+
+  .iz-input {
+    width: 150px;
+    height: $input-height;
+    padding: 0 10px;
+    color: $text-color-light;
+    font-size: 14px;
+    line-height: 3px;
+    border-radius: $border-radius-base;
+    transition: $transition-primary;
+
+    /* 移除type=number得默认样式 */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+    } /* chrome */
+
+    input[type='number'] {
+      -moz-appearance: textfield; /* firefox */
+    }
+
+    &:focus {
+      border-color: $color-primary-border;
+      box-shadow: 0 0 0 2px $color-primary-outline;
+    }
+  }
+}

@@ -69,7 +69,7 @@ export const request = async (url: string, options: RequestOptions = {}) => {
     });
 };
 
-export const get = (url: string, params?: Params, options?: RequestOptions) =>
+export const get = (url: string, params?: Record<string, any>, options?: RequestOptions) =>
   request(url, {
     ...options,
     method: 'GET',
