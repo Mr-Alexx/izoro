@@ -1,0 +1,35 @@
+@import '../var.scss';
+
+$height: 18px;
+$bg: rgba(193, 192, 191, 0.21);
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.iz-skeleton {
+  .iz-skeleton-title,
+  .iz-skeleton-paragraph > li {
+    width: 100%;
+    height: $height;
+    margin-top: 16px;
+    background: $bg;
+    border-radius: 2px;
+  }
+
+  .iz-skeleton-paragraph {
+    margin-top: 24px;
+  }
+
+  .iz-skeleton-title,
+  .iz-skeleton-paragraph > li {
+    background: linear-gradient(90deg, $bg 25%, rgba(128, 129, 130, 0.25) 37%, $bg 65%);
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.3s ease infinite;
+  }
+}
