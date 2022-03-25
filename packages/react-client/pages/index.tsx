@@ -5,10 +5,14 @@ import { useEffect, useState } from 'react';
 import Wrapper from '@/components/Wrapper';
 import Pagination from '@/components/Pagination';
 import { useRouter } from 'next/router';
+import Skeleton from '@/components/Skeleton';
 
-export default function Home({ data: initialData }) {
+export default function Home({ initialData }) {
   const router = useRouter();
-  const [data, setData] = useState(initialData);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<Api.ListRes>(initialData);
+  console.log(router.query);
+
   // useEffect(() => {
   //   if (!router.query.page) {
   //     return;
@@ -17,28 +21,36 @@ export default function Home({ data: initialData }) {
   //     console.log('res', res);
   //   });
   // }, [router.query.page]);
+
+  const request = async page => {
+    setLoading(true);
+    router.push({ query: { page } });
+    get('/article', { page: parseInt(page), limit: 12 })
+      .then(res => {
+        console.log('res', res);
+        setData(res);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   return (
     <Wrapper aside={<div>右侧</div>}>
-      <ArticleList dataSource={data} />
-      <Pagination
-        onChange={page => {
-          router.push({ query: { page } });
-          get('/article', { page: parseInt(router.query.page) }).then(res => {
-            console.log('res', res);
-            // setData(res.list);
-          });
-        }}
-      />
+      <Skeleton loading={loading} paragraph={{ rows: 16 }}>
+        <ArticleList dataSource={data.list} />
+      </Skeleton>
+      <Pagination total={data.total} onChange={request} />
     </Wrapper>
   );
 }
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   try {
-    const data = await get('/article');
+    const data = await get('/article', { page: 1, limit: 12 });
     return {
       props: {
-        data: data.list,
+        initialData: data,
       },
     };
   } catch (err) {

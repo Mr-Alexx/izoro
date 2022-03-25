@@ -6,23 +6,28 @@
   justify-content: center;
   margin: 15px auto;
   color: $text-color-light;
-
   font-size: $font-size-large;
-  > div + div {
-    margin-left: 15px;
-  }
 
   &__prev,
   &__next {
+    font-size: inherit;
+    background-color: unset;
     user-select: none;
 
     &:hover {
       color: $color-primary;
       cursor: pointer;
     }
+
+    &.is-disabled {
+      color: $text-color-lighter !important;
+      cursor: not-allowed !important;
+    }
   }
 
   &__jumper {
+    margin: 0 15px;
+
     .jumper-input {
       margin: 0 5px;
       .iz-input {
