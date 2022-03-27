@@ -1,0 +1,14 @@
+:root {
+  --color-primary: #007fff;
+  --color-primary-border: #1890ff;
+  --color-primary-outline: rgba(24, 144, 255, 0.2);
+
+  --text-color-primary: #333;
+  --text-color-dark: #000;
+  --text-color-light: #4e5969;
+  --text-color-lighter: #909090;
+
+  --bg-body: #f7f1f1;
+  --bg-main: #e0dcdc;
+  --bg-wrapper: #ffffff;
+}

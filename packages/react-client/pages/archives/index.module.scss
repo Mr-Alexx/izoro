@@ -1,0 +1,75 @@
+@import '@/styles/var.scss';
+
+.archives-wrapper {
+  padding: $space-main;
+  background-color: $bg-wrapper;
+}
+
+.year-wrapper {
+  & + .year-wrapper {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #f7f7f7;
+  }
+}
+
+.month-wrapper {
+  padding-left: 20px;
+}
+
+.article-wrapper {
+  padding: 10px 0 10px 20px;
+}
+
+.year-item {
+  margin-bottom: 10px;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.month-item {
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.article-item {
+  position: relative;
+  padding-left: 20px;
+  font-weight: 400;
+  font-size: $font-size-large;
+  line-height: 28px;
+
+  &:before {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    margin-top: -2px;
+    background-color: $text-color-lighter;
+    border-radius: 50%;
+    content: '';
+  }
+
+  > span {
+    color: $text-color-light;
+    font-size: $font-size-mini;
+  }
+  > em {
+    margin-left: 10px;
+    color: $text-color-primary;
+    font-style: normal;
+  }
+
+  &:hover {
+    text-decoration: none;
+
+    &:before {
+      background-color: $color-primary;
+    }
+    > span,
+    > em {
+      color: $color-primary;
+    }
+  }
+}

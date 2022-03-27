@@ -1,3 +1,4 @@
+@import './var.css';
 @import './var.scss';
 
 html,
@@ -8,7 +9,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
     Helvetica Neue, sans-serif;
   line-height: 1.6;
-  background-color: #f7f7f7;
+  background-color: $bg-body;
 }
 
 * {

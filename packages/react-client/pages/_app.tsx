@@ -9,7 +9,7 @@ import Layout from '@/layouts/DefaultLayout';
 
 const App: FC<AppProps> = props => {
   const { Component, pageProps } = props;
-  return <Component {...pageProps} />;
+  // return <Component {...pageProps} />;
   return (
     <Layout>
       <AppHead />
