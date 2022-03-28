@@ -1,0 +1,361 @@
+$monospace-font: Menlo, Monaco, Consolas, 'Courier New', monospace;
+$line-space: 16px;
+$baseTxtColor: #cacaca;
+$titleColor: #fff;
+$strongColor: #fe9900;
+$codeColor: #000;
+$codeBgColor: #fe9900;
+$blockquoteBgColor: #f0fdff;
+$aColor: #007fff;
+
+@mixin headTitle($padb: 4px, $fontSize: 24px, $mtop: 36px) {
+  margin-top: $mtop;
+  margin-bottom: 10px;
+  padding-bottom: $padb;
+  font-size: $fontSize;
+  line-height: 1.5;
+}
+
+@mixin headTextShadow {
+  color: $titleColor;
+}
+
+@mixin blockquoteColor {
+  color: #c7c7c7;
+  background-color: rgba(255, 199, 116, 0.1);
+  border-left: 4px solid $codeBgColor;
+}
+
+.main-area {
+  background-color: #2f2f2f;
+}
+
+.markdown-body {
+  overflow-x: hidden;
+  color: $baseTxtColor;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.75;
+  word-break: break-word;
+  background-color: #2f2f2f;
+
+  h1 {
+    @include headTitle(4px, 30px);
+  }
+
+  h2 {
+    @include headTitle(10px, 24px);
+    border-bottom: 1px solid #ececec;
+
+    &::before {
+      margin: 0 4px;
+      padding: 0 6px;
+      color: $codeColor;
+      background-color: $codeBgColor;
+      border-radius: 6px;
+      content: 'P#';
+    }
+  }
+
+  h3 {
+    position: relative;
+    @include headTitle(0, 20px, 30px);
+
+    &::before {
+      padding-right: 6px;
+      color: $strongColor;
+      content: '»';
+    }
+  }
+
+  h4 {
+    @include headTitle(0, 16px, 24px);
+  }
+
+  h5 {
+    @include headTitle(0, 14px, 18px);
+  }
+
+  h6 {
+    @include headTitle(0, 12px, 12px);
+  }
+
+  p {
+    margin-top: $line-space;
+    margin-bottom: $line-space;
+    line-height: inherit;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  hr {
+    position: relative;
+    box-sizing: content-box;
+    margin-top: 32px;
+    margin-bottom: 32px;
+    overflow: visible;
+    border-top: 1px solid #b67617;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+
+    &::after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: inline-block;
+      width: 60px;
+      height: 24px;
+      margin: auto;
+      padding: 0 10px;
+      color: $strongColor;
+      text-align: center;
+      background-color: #2f2f2f;
+      content: 'juejin.im';
+    }
+  }
+
+  code {
+    padding: 0.065em 0.4em;
+    overflow-x: auto;
+    color: $codeColor;
+    font-size: 0.87em;
+    font-family: $monospace-font;
+    word-break: break-word;
+    background-color: $codeBgColor;
+    border-radius: 4px;
+  }
+
+  pre {
+    position: relative;
+    overflow: auto;
+    font-family: $monospace-font;
+    line-height: 1.75;
+
+    > code {
+      display: block;
+      margin: 0;
+      padding: 16px 12px;
+      overflow-x: auto;
+      color: rgb(216, 216, 216);
+      font-size: 12px;
+      word-break: normal;
+      background: #f8f8f8;
+      background: #000;
+
+      &::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: #6d5736;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: $strongColor;
+        border-radius: 10px;
+      }
+    }
+  }
+
+  a {
+    position: relative;
+    color: $codeBgColor;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 199, 116, 0.5);
+
+    &:hover {
+      color: $codeBgColor;
+      border-bottom-color: $codeBgColor;
+    }
+
+    &:active {
+      color: $codeBgColor;
+    }
+
+    &::after {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 199, 116, 0.5);
+      transform: translate3d(0, 0, 0);
+      opacity: 0;
+      transition: top 0.3s, opacity 0.3s;
+      content: '';
+    }
+
+    &:hover::after {
+      top: 0;
+      border-bottom-color: $codeBgColor;
+      opacity: 1;
+    }
+  }
+
+  table {
+    display: inline-block !important;
+    width: auto;
+    max-width: 100%;
+    overflow: auto;
+    font-size: 12px;
+    border: solid 1px $strongColor;
+  }
+
+  thead {
+    color: #000;
+    font-size: 14px;
+    text-align: left;
+    background: $strongColor;
+  }
+
+  tr:nth-child(2n) {
+    background-color: #6d5736;
+  }
+
+  tr:hover {
+    background-color: #947443;
+  }
+
+  th,
+  td {
+    padding: 12px 8px;
+    line-height: 24px;
+  }
+
+  td {
+    min-width: 120px;
+  }
+
+  blockquote {
+    @include blockquoteColor;
+    margin: 22px 0;
+    padding: 1px 20px;
+
+    &::after {
+      display: block;
+      content: '';
+    }
+
+    & > p {
+      margin: 10px 0;
+    }
+
+    & > b,
+    & > strong {
+      color: $strongColor;
+    }
+  }
+
+  b,
+  strong {
+    // color: $strongColor;
+    color: $codeBgColor;
+  }
+
+  i,
+  em {
+    color: #ffd28e;
+  }
+
+  del {
+    color: #ccc;
+  }
+
+  ol,
+  ul {
+    padding-left: 28px;
+
+    li {
+      margin-bottom: 0;
+      list-style: inherit;
+
+      & .task-list-item {
+        list-style: none;
+
+        ul,
+        ol {
+          margin-top: 0;
+        }
+      }
+    }
+
+    ul,
+    ol {
+      margin-top: 4px;
+    }
+  }
+
+  ol li {
+    padding-left: 6px;
+  }
+
+  // details & summary
+  details {
+    & > summary {
+    }
+
+    & > p {
+    }
+  }
+
+  // selection style
+  h1::selection,
+  h2::selection,
+  h3::selection,
+  h4::selection,
+  h5::selection,
+  h6::selection {
+    color: $titleColor;
+    background-color: rgba(255, 227, 185, 0.25);
+  }
+
+  p::selection {
+    color: rgb(194, 132, 50);
+  }
+
+  a::selection,
+  b::selection,
+  strong::selection,
+  i::selection,
+  em::selection,
+  del::selection {
+    color: #000;
+    background-color: rgba(254, 152, 0, 0.7);
+  }
+
+  code::selection {
+    background-color: rgba(254, 152, 0, 0.7);
+  }
+
+  pre {
+    > code::selection {
+      background-color: rgba(160, 200, 255, 0.25);
+    }
+  }
+
+  ol,
+  ul {
+    ::selection {
+      background-color: rgba(160, 200, 255, 0.15);
+    }
+  }
+
+  @media (max-width: 720px) {
+    h1 {
+      font-size: 24px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    h3 {
+      font-size: 18px;
+    }
+  }
+}
