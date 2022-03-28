@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import Wrapper from '@/components/Wrapper';
 import Layout from '@/layouts/DefaultLayout';
 import styles from './index.module.scss';
+import { createMessage } from '@/components/Message';
 
 export default function Post({ postData }) {
   /** 给code元素加上头部： 代码伸缩、代码语言、复制按钮 信息 */
@@ -31,7 +32,7 @@ export default function Post({ postData }) {
             <i class="split-divider"></i>
             <span class="copy-code-button">
               <i class="iconfont icon-copy"></i>
-              COPY
+              复制代码
             </span>
           </div>
         `;
@@ -50,23 +51,39 @@ export default function Post({ postData }) {
       this.setAttribute('class', `hljs language-js ${classNames.includes('is-collapsed') ? '' : 'is-collapsed'}`);
     }
 
-    /** 代码复制逻辑 */
+    /** 代码复制逻辑 - 经测试，拷贝功能耗时 < 10ms，故不作重复点击处理 */
     function copyHanlder(e) {
       if (!/(copy-code-button)|(iconfont icon-copy)/gi.test(e.target.className)) {
         return;
       }
+      // 拷贝当前元素及所有子孙元素
+      const cloneNode = this.cloneNode(true);
+      // 去掉代码框加入的头部内容
+      cloneNode.removeChild(cloneNode.querySelector('.code-header'));
+      // 真实复制的内容就是去掉头部后的内容
+      const innerText = cloneNode.innerText;
 
-      const inerText = this.innerHtml;
+      // 保留复制样式需要用textarea而不是input
+      const input = document.createElement('textarea');
+      input.value = innerText;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      createMessage()('复制成功！');
     }
 
     window.addEventListener('load', addCodeHeaderInfo);
 
+    // 移除所有绑定的事件
     return () => {
       window.removeEventListener('load', addCodeHeaderInfo);
       const codeDoms = document.querySelectorAll('code.hljs');
       codeDoms.forEach(item => {
-        item.removeEventListener('click', collapseHanlder);
-        item.removeEventListener('click', copyHanlder);
+        if (item) {
+          item.removeEventListener('click', collapseHanlder);
+          item.removeEventListener('click', copyHanlder);
+        }
       });
     };
   }, []);
@@ -86,7 +103,7 @@ export default function Post({ postData }) {
           // href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/atom-one-dark.min.css"
           href="/css/highlight-themes/atom-one-dark.min.css"
         />
-        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js" />
+        <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/highlight.min.js" async />
       </Head>
       <Wrapper aside={<div>x</div>}>
         <article className={styles['article-content']}>
