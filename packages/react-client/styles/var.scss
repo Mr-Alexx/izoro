@@ -21,6 +21,9 @@ $width-container: 998px;
 
 $transition-primary: all 0.25s;
 
-$border-radius-base: 2px;
+$border-radius-base: 2px; // 基础圆角
+$border-radius-code: 4px; // code元素圆角
 
-$space-main: 15px;
+$space-main: 15px; // 主间隔大小
+
+$code-header-height: 38px;
