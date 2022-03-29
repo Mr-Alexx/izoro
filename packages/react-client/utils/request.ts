@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : 'https://www.izoro.top';
+const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : 'http://localhost:3001'; // 'https://www.izoro.top';
 
 export type Response = {
   success: boolean; // if request is success

@@ -3,9 +3,8 @@ import { GetServerSidePropsContext, GetStaticPaths, GetStaticProps } from 'next'
 import { get } from '@/utils/request';
 import { useEffect } from 'react';
 import Wrapper from '@/components/Wrapper';
-import Layout from '@/layouts/DefaultLayout';
 import styles from './index.module.scss';
-import { createMessage } from '@/components/Message';
+import message from '@/components/Message';
 
 export default function Post({ postData }) {
   /** 给code元素加上头部： 代码伸缩、代码语言、复制按钮 信息 */
@@ -70,7 +69,7 @@ export default function Post({ postData }) {
       input.select();
       document.execCommand('copy');
       document.body.removeChild(input);
-      createMessage()('复制成功！');
+      message.success('复制成功！');
     }
 
     window.addEventListener('load', addCodeHeaderInfo);
@@ -103,7 +102,11 @@ export default function Post({ postData }) {
           // href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/atom-one-dark.min.css"
           href="/css/highlight-themes/atom-one-dark.min.css"
         />
-        <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/highlight.min.js" async />
+        <script
+          src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/highlight.min.js"
+          // src="/js/highlight.min.js"
+          async
+        />
       </Head>
       <Wrapper aside={<div>x</div>}>
         <article className={styles['article-content']}>

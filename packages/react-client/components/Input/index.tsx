@@ -1,4 +1,5 @@
-import { DetailedHTMLProps, FC, InputHTMLAttributes, useState } from 'react';
+import { DetailedHTMLProps, InputHTMLAttributes } from 'react';
+import type { FC } from 'react';
 import classNames from 'classnames';
 
 const Input: FC<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>> = props => {

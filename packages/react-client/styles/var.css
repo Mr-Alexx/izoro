@@ -1,5 +1,8 @@
 :root {
   --color-primary: #007fff;
+  --color-success: #52c41a;
+  --color-warning: #faad14;
+  --color-error: #52c41a;
   --color-primary-border: #1890ff;
   --color-primary-outline: rgba(24, 144, 255, 0.2);
 

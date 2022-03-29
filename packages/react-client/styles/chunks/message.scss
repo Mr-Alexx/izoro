@@ -1,0 +1,88 @@
+@import '@/styles/var.scss';
+
+@keyframes loadingCircle {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.iz-icon {
+  display: inline-block;
+  color: inherit;
+  font-style: normal;
+  line-height: 0;
+  text-align: center;
+  text-transform: none;
+  vertical-align: -0.125em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  svg {
+    display: inline-block;
+  }
+}
+
+.iz-message {
+  position: fixed;
+  top: 8px;
+  left: 0;
+  z-index: 1010;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5715;
+  list-style: none;
+  pointer-events: none;
+  font-feature-settings: 'tnum', 'tnum';
+
+  &-notice {
+    padding: 8px;
+    text-align: center;
+
+    &-content {
+      display: inline-block;
+      padding: 10px 16px;
+      background: #fff;
+      border-radius: 2px;
+      box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
+      pointer-events: all;
+    }
+  }
+
+  .iz-icon {
+    position: relative;
+    top: 1px;
+    margin-right: 8px;
+    font-size: 16px;
+  }
+
+  &--info .iz-icon,
+  &--loading .iz-icon {
+    color: $color-primary;
+  }
+
+  &--success .iz-icon {
+    color: $color-success;
+  }
+
+  &--warning .iz-icon {
+    color: $color-warning;
+  }
+
+  &--error .iz-icon {
+    color: $color-warning;
+  }
+}
+
+.iz-icon-spin {
+  &,
+  &:before {
+    display: inline-block;
+    animation: loadingCircle 1s infinite linear;
+  }
+}

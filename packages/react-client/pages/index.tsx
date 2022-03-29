@@ -1,7 +1,10 @@
 import type { GetServerSidePropsContext } from 'next';
 import { get } from '@/utils/request';
 import ArticleList from '@/components/Article/List';
-import { useEffect, useState } from 'react';
+import {
+  // useEffect,
+  useState,
+} from 'react';
 import Wrapper from '@/components/Wrapper';
 import Pagination from '@/components/Pagination';
 import { useRouter } from 'next/router';
@@ -54,7 +57,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
       },
     };
   } catch (err) {
-    // console.error(12, err);
+    console.error(12, err);
   }
 };
 

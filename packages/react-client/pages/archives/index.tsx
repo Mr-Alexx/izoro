@@ -93,7 +93,8 @@ export default function Archives({ initialData }) {
   );
 }
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+// context: GetServerSidePropsContext
+export const getServerSideProps = async () => {
   try {
     return {
       props: {

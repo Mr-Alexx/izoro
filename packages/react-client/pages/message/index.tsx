@@ -1,25 +1,22 @@
-import Skeleton from '@/components/Skeleton';
+// import Skeleton from '@/components/Skeleton';
 import Wrapper from '@/components/Wrapper';
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
+import message from '@/components/Message';
 
 export default function Message() {
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    let timer = setTimeout(() => {
-      setLoading(false);
-    }, 2500);
-    return () => {
-      clearTimeout(timer);
-      timer = null;
-    };
-  }, []);
-
   return (
-    <Wrapper>
-      <Skeleton loading={loading} paragraph={{ rows: 10, width: '100%' }}>
-        测试占位图loading后展示的内容
-      </Skeleton>
+    <Wrapper style={{ paddingTop: 50 }}>
+      <span
+        onClick={() => {
+          // message.info('测试');
+          // message.success('测试2');
+          // message.warning('测试3');
+          // message.error('测试4');
+          message.success('复制成功');
+        }}
+        style={{ color: '#e7e7e7' }}>
+        查看
+      </span>
     </Wrapper>
   );
 }
