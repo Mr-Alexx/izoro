@@ -7,10 +7,10 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import dbConfig from '@/config/db.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-// 全局模块（公用）
+/** 全局模块（公用） */
 // import { DbModule } from '@/common/db/db.module'
 
-// 业务模块
+/** 业务模块 */
 import { ArticleModule } from './modules/article/article.module'; // 文章模块
 import { TagModule } from './modules/tag/tag.module';
 import { UserModule } from './modules/user/user.module';
@@ -20,7 +20,6 @@ import { FileModule } from './modules/file/file.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { RoleModule } from './modules/role/role.module';
 import { CommonModule } from './modules/common/common.module';
-import { RentModule } from './modules/rent/rent.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CacheModule } from './modules/cache/cache.module';
 // import { TasksService } from './schedule/tasks.service';
@@ -57,7 +56,6 @@ import { SettingModule } from './modules/setting/setting.module';
     RoleModule,
     // ScheduleModule.forRoot(),
     // TaskModule,
-    RentModule,
     SettingModule,
   ],
   // providers: [TasksService],
