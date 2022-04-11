@@ -5,7 +5,9 @@ type GlobalContextProps = {
 };
 
 const GlobalContext = createContext<GlobalContextProps>({
-  settings: {},
+  settings: {
+    baiduAnalysisId: 'c5ad548499f502d216048dc032549622',
+  },
 });
 
 export default GlobalContext;
