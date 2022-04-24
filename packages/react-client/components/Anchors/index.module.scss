@@ -1,0 +1,62 @@
+@import '@/styles/var.scss';
+@import '@/styles/mixins.scss';
+
+.anchor-wrapper {
+  background-color: #fff;
+  border-radius: $border-radius-base;
+}
+
+.anchor-title {
+  margin-bottom: 15px;
+  padding: 20px;
+  color: $text-color-dark;
+  font-weight: 500;
+  font-size: 18px;
+
+  @include line-bottom();
+}
+
+.anchor-list {
+  // background-color: #fff;
+  max-height: 500px;
+  overflow-y: auto;
+
+  @include scrollbar();
+}
+
+.anchor-item {
+  position: relative;
+  font-size: 14px;
+  line-height: 22px;
+  cursor: pointer;
+
+  &.is-actived {
+    color: $color-primary;
+
+    &:after {
+      position: absolute;
+      top: 4px;
+      left: 0;
+      width: 4px;
+      height: 16px;
+      margin-top: 7px;
+      background: $color-primary;
+      border-radius: 0 4px 4px 0;
+      content: '';
+    }
+  }
+
+  a {
+    display: block;
+    padding: 8px;
+    color: $text-color-primary;
+    text-decoration: none;
+  }
+
+  &:hover {
+    a {
+      background-color: #f7f8fa;
+      border-radius: 4px;
+    }
+  }
+}

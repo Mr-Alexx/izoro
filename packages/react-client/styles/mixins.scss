@@ -1,0 +1,32 @@
+@mixin line-bottom($line-color: #e5e1e1, $offset: 15px, $line-height: 1px) {
+  @at-root & {
+    position: relative;
+  }
+  &:after {
+    position: absolute;
+    right: $offset;
+    bottom: 0;
+    left: $offset;
+    height: $line-height;
+    background-color: $line-color;
+    content: '';
+  }
+}
+
+@mixin scrollbar() {
+  @at-root {
+    &::-webkit-scrollbar-track {
+      border-radius: 2px;
+      box-shadow: none;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #e4e6eb;
+      border-radius: 2px;
+      outline: none;
+    }
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 80px;
+    }
+  }
+}

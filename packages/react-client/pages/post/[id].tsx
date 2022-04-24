@@ -1,14 +1,17 @@
 import Head from 'next/head';
 import { GetServerSidePropsContext, GetStaticPaths, GetStaticProps } from 'next';
 import { get } from '@/utils/request';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import Wrapper from '@/components/Wrapper';
 import styles from './index.module.scss';
 import message from '@/components/Message';
+import type { AnchorItem } from '@/components/Anchors';
+import Anchors from '@/components/Anchors';
 
 export default function Post({ postData }) {
   /** 给code元素加上头部： 代码伸缩、代码语言、复制按钮 信息 */
   useEffect(() => {
+    console.log('postData', postData);
     /** 代码框加头部逻辑 */
     const addCodeHeaderInfo = () => {
       const codeDoms = document.querySelectorAll('code.hljs');
@@ -87,6 +90,26 @@ export default function Post({ postData }) {
     };
   }, []);
 
+  /** 锚点内容 */
+  const anchors: AnchorItem[] = useMemo(() => {
+    const { html } = postData;
+    if (!html) {
+      return [];
+    }
+    // 匹配h元素
+    const reg = /<(h(1|2|3|4|5|6))[^>]*>(.+)<\/(h(1|2|3|4|5|6))>/gi;
+    const matchHElements = html.match(reg).map((hElementString, index) => {
+      const item: AnchorItem = {};
+
+      hElementString.replace(reg, ($1, $2, $3, $4, $5) => {
+        item.name = $4;
+        item.hType = +$3;
+      });
+      return item;
+    });
+    return matchHElements;
+  }, [postData]);
+
   return (
     <>
       <Head>
@@ -108,7 +131,7 @@ export default function Post({ postData }) {
           async
         />
       </Head>
-      <Wrapper aside={<div>x</div>}>
+      <Wrapper aside={<Anchors dataSource={anchors} />}>
         <article className={styles['article-content']}>
           <h1>{postData.title}</h1>
           <div>{/* <Date dateString={postData.date} /> */}</div>
@@ -128,6 +151,6 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
       },
     };
   } catch (err) {
-    // console.error(12, err);
+    console.error(12, err);
   }
 };
