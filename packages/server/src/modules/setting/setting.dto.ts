@@ -9,7 +9,7 @@ export class SettingUpdateDto {
   @ApiPropertyOptional({ description: 'favicon' })
   favicon: string;
 
-  @ApiProperty({ description: '站点名称' })
+  @ApiPropertyOptional({ description: '站点名称' })
   site_name: string;
 
   @ApiPropertyOptional({ description: 'seo keyword', maxLength: 200 })

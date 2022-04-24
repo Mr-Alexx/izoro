@@ -5,6 +5,7 @@
  * @author 潜
  */
 
+import { ApiPropertyColumn } from '@/decorators/agregate.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
@@ -13,31 +14,31 @@ export class Setting {
   @PrimaryGeneratedColumn({ comment: '标签id，自增主键' })
   id: number;
 
-  @Column({ comment: 'logo' })
+  @ApiPropertyColumn({ comment: 'logo', default: null })
   logo: string;
 
-  @Column({ comment: 'favicon' })
+  @ApiPropertyColumn({ comment: 'favicon', default: null })
   favicon: string;
 
-  @Column({ comment: '站点名称' })
+  @ApiPropertyColumn({ comment: '站点名称' })
   site_name: string;
 
-  @Column({ comment: 'seo关键词' })
+  @ApiPropertyColumn({ comment: 'seo关键词', default: null })
   seo_keyword: string;
 
-  @Column({ comment: 'seo描述' })
+  @ApiPropertyColumn({ comment: 'seo描述', default: null })
   seo_description: string;
 
-  @Column({ comment: '百度统计id' })
+  @ApiPropertyColumn({ comment: '百度统计id', default: null })
   baidu_analysis_id: string;
 
-  @Column({ comment: '谷歌分析id' })
+  @ApiPropertyColumn({ comment: '谷歌分析id', default: null })
   google_analysis_id: string;
 
-  @Column({ comment: 'sentry browser sdk' })
+  @ApiPropertyColumn({ comment: 'sentry browser sdk', default: null })
   sentry_sdk: string;
 
-  @Column({ comment: 'sentry dsn key，初始化sentry用' })
+  @ApiPropertyColumn({ comment: 'sentry dsn key，初始化sentry用', default: null })
   sentry_dsn_key: string;
 
   @CreateDateColumn({
