@@ -9,7 +9,7 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import ProForm, { ProFormText, ProFormSelect, ModalForm } from '@ant-design/pro-form';
-import { getUsers, createUser, editUser, userBindRoles, getRoles } from '@/services/users';
+import { getUsers, createUser, editUser, userBindRoles, getRoles } from '@/services/user';
 import { useState, useRef } from 'react';
 // import { getPageSettings, updatePageSettings } from '@/services/setting';
 // import { debounce } from 'lodash';
@@ -102,7 +102,7 @@ const User: FC = () => {
   const [roleList, setRoleList] = useState<any[]>();
 
   // 当前操作行
-  const [currentRow, setCurrentRow] = useState<USERS_API.UserInfo | undefined>();
+  const [currentRow, setCurrentRow] = useState<UserApi.UserInfo | undefined>();
 
   // 当前操作状态
   const [actionType, setActionType] = useState<number>(ACTIONS.view);
@@ -167,7 +167,7 @@ const User: FC = () => {
   /**
    * @description 编辑/添加账号
    */
-  const submit = async (value: Partial<USERS_API.UserInfo & { role_ids: number[] }>): Promise<boolean> => {
+  const submit = async (value: Partial<UserApi.UserInfo & { role_ids: number[] }>): Promise<boolean> => {
     const params = {
       ...value,
       status: Number(value.status),
@@ -203,7 +203,7 @@ const User: FC = () => {
   /**
    * @description 绑定角色
    */
-  const grantRoles = async (value: USERS_API.UserInfo & { role_ids: number[] }) => {
+  const grantRoles = async (value: UserApi.UserInfo & { role_ids: number[] }) => {
     try {
       await userBindRoles({ user_id: Number(currentRow?.id), role_ids: value.role_ids || [] });
       message.success('绑定角色成功！');
@@ -216,7 +216,7 @@ const User: FC = () => {
   };
 
   // 表头数据（列）
-  const columns: ProColumns<USERS_API.UserInfo>[] = [
+  const columns: ProColumns<UserApi.UserInfo>[] = [
     {
       title: '序号',
       dataIndex: 'index',
@@ -353,7 +353,7 @@ const User: FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<USERS_API.UserInfo, APP.TablePagination>
+      <ProTable<UserApi.UserInfo, APP.TablePagination>
         actionRef={actionRef}
         sticky
         headerTitle="账号列表"
@@ -415,7 +415,8 @@ const User: FC = () => {
           rules={[
             { required: true, message: '账号必填' },
             { min: 4, max: 8, message: '长度介于4 ~ 8个字符' },
-          ]}></ProFormText>
+          ]}
+        />
 
         {actionType === ACTIONS.add && (
           <ProForm.Item

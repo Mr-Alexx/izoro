@@ -12,10 +12,10 @@ import ProForm, { ProFormSelect, ProFormText, ProFormDigit } from '@ant-design/p
 import styles from './index.less';
 import PermissionTable from './components/PermissionTable';
 import { ACTIONS } from '@/constants';
-import { getMenus, createMenu, editMenu } from '@/services/users';
+import { getMenus, createMenu, editMenu } from '@/services/user';
 import { PageContainer } from '@ant-design/pro-layout';
 
-const menuListDataSource: USERS_API.MenuItem[] = [];
+const menuListDataSource: UserApi.MenuItem[] = [];
 
 // 模拟菜单数据
 for (let i = 1; i < 20; i += 1) {
@@ -42,7 +42,7 @@ const MenuList: React.ForwardedRef = (props: MenuListProps) => {
   const { onChange } = props;
   // const [expandedRows, seEexpandedRows] = useState<number[] | undefined>();
 
-  const [currentRow, setCurrentRow] = useState<Partial<USERS_API.MenuItem> | undefined>();
+  const [currentRow, setCurrentRow] = useState<Partial<UserApi.MenuItem> | undefined>();
   const [visible, updateVisible] = useState(false);
   const [actionType, setActionType] = useState<number>(ACTIONS.view);
   const actionRef = useRef<ActionType>();
@@ -68,7 +68,7 @@ const MenuList: React.ForwardedRef = (props: MenuListProps) => {
     return actionType === ACTIONS.view;
   }, [actionType]);
 
-  const handleAction = (type: number, row: Partial<USERS_API.MenuItem> | undefined) => {
+  const handleAction = (type: number, row: Partial<UserApi.MenuItem> | undefined) => {
     setActionType(type);
     setCurrentRow(row);
     updateVisible(true);
@@ -76,7 +76,7 @@ const MenuList: React.ForwardedRef = (props: MenuListProps) => {
   /**
    * @description 新增/编辑菜单
    */
-  const submitMenu = async (value: USERS_API.MenuItem) => {
+  const submitMenu = async (value: UserApi.MenuItem) => {
     try {
       let msg = '新增成功';
       const id = currentRow?.id;
@@ -107,7 +107,7 @@ const MenuList: React.ForwardedRef = (props: MenuListProps) => {
     return true;
   };
 
-  const columns: ProColumns<USERS_API.MenuItem>[] = [
+  const columns: ProColumns<UserApi.MenuItem>[] = [
     {
       title: '菜单名称',
       key: 'name',
@@ -203,7 +203,7 @@ const MenuList: React.ForwardedRef = (props: MenuListProps) => {
 
   return (
     <div>
-      <ProTable<USERS_API.MenuItem>
+      <ProTable<UserApi.MenuItem>
         actionRef={actionRef}
         scroll={{ x: 900 }}
         // expandable={{
@@ -326,9 +326,9 @@ const MenuList: React.ForwardedRef = (props: MenuListProps) => {
 };
 
 const Menu: React.FC = () => {
-  const [currentRow, setCurrentRow] = useState<Partial<USERS_API.MenuItem> | undefined>();
+  const [currentRow, setCurrentRow] = useState<Partial<UserApi.MenuItem> | undefined>();
 
-  const handleMenuRowClick = async (row: USERS_API.MenuItem) => {
+  const handleMenuRowClick = async (row: UserApi.MenuItem) => {
     setCurrentRow(row);
   };
 

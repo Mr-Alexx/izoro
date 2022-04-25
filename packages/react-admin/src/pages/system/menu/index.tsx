@@ -8,7 +8,7 @@ import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import ProForm, { ProFormSelect, ProFormText, ProFormDigit, DrawerForm, ProFormRadio } from '@ant-design/pro-form';
 import { ACTIONS, MENU_ICON_LIST } from '@/constants';
-import { getMenus, createMenu, editMenu, getPermissions, bindPermission } from '@/services/users';
+import { getMenus, createMenu, editMenu, getPermissions, bindPermission } from '@/services/user';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Access, useAccess, useRequest } from 'umi';
 import Iconfont from '@/components/Iconfont';
@@ -17,7 +17,7 @@ import Iconfont from '@/components/Iconfont';
 const Menu: React.ForwardedRef = () => {
   // const [expandedRows, seEexpandedRows] = useState<number[] | undefined>();
 
-  const [currentRow, setCurrentRow] = useState<Partial<USERS_API.MenuItem> | undefined>();
+  const [currentRow, setCurrentRow] = useState<Partial<UserApi.MenuItem> | undefined>();
   const [visible, updateVisible] = useState(false);
   const [actionType, setActionType] = useState<number>(ACTIONS.view);
   const actionRef = useRef<ActionType>();
@@ -56,7 +56,7 @@ const Menu: React.ForwardedRef = () => {
     },
   });
 
-  const handleAction = (type: number, row: Partial<USERS_API.MenuItem> | undefined) => {
+  const handleAction = (type: number, row: Partial<UserApi.MenuItem> | undefined) => {
     setActionType(type);
     setCurrentRow(row);
     setCurrentIcon(row?.icon);
@@ -66,7 +66,7 @@ const Menu: React.ForwardedRef = () => {
   /**
    * @description 新增/编辑菜单
    */
-  const submitMenu = async (value: USERS_API.MenuItem) => {
+  const submitMenu = async (value: UserApi.MenuItem) => {
     try {
       let msg = '新增成功';
       const id = currentRow?.id;
@@ -103,7 +103,7 @@ const Menu: React.ForwardedRef = () => {
     }
   };
 
-  const columns: ProColumns<USERS_API.MenuItem>[] = [
+  const columns: ProColumns<UserApi.MenuItem>[] = [
     {
       title: '菜单名称',
       key: 'name',
@@ -194,7 +194,7 @@ const Menu: React.ForwardedRef = () => {
 
   return (
     <PageContainer>
-      <ProTable<USERS_API.MenuItem>
+      <ProTable<UserApi.MenuItem>
         sticky
         actionRef={actionRef}
         scroll={{ x: 1300 }}

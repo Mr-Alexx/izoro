@@ -1,7 +1,7 @@
 /**
  * @description  users模块接口 参数/结果 类型
  */
-declare namespace USERS_API {
+declare namespace UserApi {
   type LoginParams = {
     account: string; // 账号
     password: string; // 密码

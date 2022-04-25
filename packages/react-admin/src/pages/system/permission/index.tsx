@@ -14,20 +14,20 @@ import ProTable from '@ant-design/pro-table';
 import { useRef, useState } from 'react';
 import type { FormInstance } from 'antd';
 import { Button, message } from 'antd';
-import { createPermission, eidtPermission, getPermissions, createApiRoute, getApiRoutes } from '@/services/users';
+import { createPermission, eidtPermission, getPermissions, createApiRoute, getApiRoutes } from '@/services/user';
 import { ModalForm, ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Access, useAccess } from 'umi';
 
 const PermissionTable: React.FC = () => {
   const [visible, updateVisible] = useState<boolean>(false);
-  const [currentRow, setCurrentRow] = useState<Partial<USERS_API.PermissionItem> | undefined>();
+  const [currentRow, setCurrentRow] = useState<Partial<UserApi.PermissionItem> | undefined>();
   const actionRef = useRef<ActionType>();
   // const [form] = Form.useForm();
   const formRef = useRef<FormInstance>();
   const access = useAccess();
 
-  const columns: ProColumns<USERS_API.PermissionItem>[] = [
+  const columns: ProColumns<UserApi.PermissionItem>[] = [
     {
       title: '序号',
       width: 50,
@@ -94,7 +94,7 @@ const PermissionTable: React.FC = () => {
   /**
    * @description 创建/编辑权限
    */
-  const submit = async (value: USERS_API.EditPermissionParams) => {
+  const submit = async (value: UserApi.EditPermissionParams) => {
     const params = {
       ...value,
       order: Number(value.order),
@@ -106,7 +106,7 @@ const PermissionTable: React.FC = () => {
     try {
       // 1. 通过路由地址创建路由
       // 2. 无论成功或者失败，都过该路由地址查询列表接口（精准匹配），拿到第一条信息的id，保存
-      let data: USERS_API.ApiRouteItem[];
+      let data: UserApi.ApiRouteItem[];
       const res = await getApiRoutes({ route: value.route });
       // eslint-disable-next-line prefer-const
       data = res.data;
@@ -137,7 +137,7 @@ const PermissionTable: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<USERS_API.PermissionItem>
+      <ProTable<UserApi.PermissionItem>
         actionRef={actionRef}
         headerTitle="权限列表"
         columns={columns}

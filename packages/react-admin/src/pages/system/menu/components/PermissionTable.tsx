@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button, Popconfirm, Tooltip, Modal, message, Form, Input } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { AutoComplete } from 'antd';
-import { createPermission, eidtPermission, getApiRoutes, getPermissions } from '@/services/users';
+import { createPermission, eidtPermission, getApiRoutes, getPermissions } from '@/services/user';
 import ProForm, { ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { Select } from 'antd';
 
@@ -22,14 +22,14 @@ const actionList: ActionSelectList[] = [
 
 const PermissionTable: React.FC<PermissionProps> = props => {
   const { menu } = props;
-  const [tableListDataSource, setTableListDataSource] = useState<USERS_API.PermissionItem[]>([]);
+  const [tableListDataSource, setTableListDataSource] = useState<UserApi.PermissionItem[]>([]);
   const [visible, updateVisible] = useState<boolean>(false);
-  const [currentRow, setCurrentRow] = useState<Partial<USERS_API.PermissionItem> | undefined>();
+  const [currentRow, setCurrentRow] = useState<Partial<UserApi.PermissionItem> | undefined>();
   const [routeOptions, setRouteOptions] = useState<Record<string, any>>();
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
 
-  const columns: ProColumns<USERS_API.PermissionItem>[] = [
+  const columns: ProColumns<UserApi.PermissionItem>[] = [
     {
       title: '序号',
       width: 50,
@@ -96,7 +96,7 @@ const PermissionTable: React.FC<PermissionProps> = props => {
   /**
    * @description 创建/编辑权限
    */
-  const submit = async (value: USERS_API.EditPermissionParams) => {
+  const submit = async (value: UserApi.EditPermissionParams) => {
     const params = {
       ...value,
       order: Number(value.order),
@@ -126,7 +126,7 @@ const PermissionTable: React.FC<PermissionProps> = props => {
 
   return (
     <>
-      <ProTable<USERS_API.PermissionItem>
+      <ProTable<UserApi.PermissionItem>
         actionRef={actionRef}
         headerTitle={`所属菜单：${menu?.name || '未选择'}`}
         columns={columns}

@@ -12,7 +12,7 @@ interface Props {
   confirmLoading?: boolean;
   onOk: (data: any[]) => Promise<void>;
   onClose?: () => void;
-  request: (data: USERS_API.RoleMenuParams) => Promise<USERS_API.MenuItem[]>;
+  request: (data: UserApi.RoleMenuParams) => Promise<UserApi.MenuItem[]>;
 }
 
 const MenuTree: FC<Props> = (props: Props) => {
@@ -20,7 +20,7 @@ const MenuTree: FC<Props> = (props: Props) => {
 
   /* ========== 状态管理 ========== */
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<USERS_API.MenuItem[]>([]);
+  const [data, setData] = useState<UserApi.MenuItem[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
   // const [checkedIds, setCheckedIds] = useState<Record<number, boolean>>({});
 
@@ -90,7 +90,7 @@ const MenuTree: FC<Props> = (props: Props) => {
   /**
    * @description 全选与反选
    */
-  const toggleSelectedAll = (list: USERS_API.MenuItem[], checked: number) => {
+  const toggleSelectedAll = (list: UserApi.MenuItem[], checked: number) => {
     list.forEach(item => {
       item.checked = checked;
       if (item.permissions) {
@@ -175,7 +175,7 @@ const MenuTree: FC<Props> = (props: Props) => {
       }>
       {/* defaultExpandAllRows不展开问题，参考 https://github.com/ant-design/ant-design/issues/4145 */}
       {loading ? (
-        <Spin spinning={loading}></Spin>
+        <Spin spinning={loading} />
       ) : (
         <Table
           columns={columns}
@@ -203,13 +203,14 @@ const MenuTree: FC<Props> = (props: Props) => {
                 return;
               }
               // 子权限选中与反选
-              row.permissions.forEach((item: USERS_API.MenuItem) => {
+              row.permissions.forEach((item: UserApi.MenuItem) => {
                 // eslint-disable-next-line
                 item.checked = Number(selected);
               });
               setData([...data]);
             },
-          }}></Table>
+          }}
+        />
       )}
     </Drawer>
   );

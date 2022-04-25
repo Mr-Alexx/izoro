@@ -10,5 +10,5 @@ export type ActionSelectList = {
 
 export type MenuListProps = {
   // onAction: (action?: number, row?: Partial<MenuListItem> | undefined) => void;
-  onChange: (row: USERS_API.MenuItem) => void;
+  onChange: (row: UserApi.MenuItem) => void;
 };

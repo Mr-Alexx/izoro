@@ -5,12 +5,12 @@
  * */
 
 // 将权限菜单扁平化为一维对象数组
-const formatTreeData2Data = (data?: USERS_API.MenuItem[]): USERS_API.MenuItem[] => {
+const formatTreeData2Data = (data?: UserApi.MenuItem[]): UserApi.MenuItem[] => {
   if (!data) {
     return [];
   }
-  const res: USERS_API.MenuItem[] = [];
-  data.forEach((item: USERS_API.MenuItem) => {
+  const res: UserApi.MenuItem[] = [];
+  data.forEach((item: UserApi.MenuItem) => {
     if (item.children) {
       res.push({
         ...item,
@@ -24,11 +24,11 @@ const formatTreeData2Data = (data?: USERS_API.MenuItem[]): USERS_API.MenuItem[] 
   return res;
 };
 
-export default function access(initialState: { currentUser?: (USERS_API.UserInfo & ANT_API.CurrentUser) | undefined }) {
+export default function access(initialState: { currentUser?: (UserApi.UserInfo & ANT_API.CurrentUser) | undefined }) {
   const { currentUser } = initialState || {};
   // 将权限数组转化为对象，查找速度快
   const permissionObj: Record<string, string> = {};
-  (currentUser?.permissions || []).forEach((item: USERS_API.PermissionItem) => {
+  (currentUser?.permissions || []).forEach((item: UserApi.PermissionItem) => {
     permissionObj[item.code] = item.route_name;
   });
 

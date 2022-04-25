@@ -5,14 +5,14 @@ declare namespace API {
   // 列表查询通用参数
   type ListQueryParams = {
     current?: number; // 默认antd的配置，需要做转换 => page
-    pageSize?: number; // 默认antd的配置，需要做转换 => page_num
+    pageSize?: number; // 默认antd的配置，需要做转换 => limit
   };
   // 通用列表结果类型
-  type ListRes = {
+  type ListRes<ListData = any[]> = {
     total: number; // 总条数
-    page: number; // 页码
-    page_num: number; // 每页条数
-    data: any[];
+    page?: number; // 页码
+    limit?: number; // 每页条数
+    data: ListData;
   };
 
   // 通用结果

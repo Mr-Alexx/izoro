@@ -14,7 +14,7 @@ import { ProFormSelect } from '@ant-design/pro-form';
 // import { getPageSettings, updatePageSettings } from '@/services/setting';
 // import { debounce } from 'lodash';
 import MenuTree from './components/MenuTree';
-import { getRoles, createRole, editRole, grantRole, getRoleMenu } from '@/services/users';
+import { getRoles, createRole, editRole, grantRole, getRoleMenu } from '@/services/user';
 import { ACTIONS } from '@/constants';
 import { Access, useAccess } from 'umi';
 
@@ -24,7 +24,7 @@ import { Access, useAccess } from 'umi';
  */
 const User: FC = () => {
   /* ========== 状态管理 ========== */
-  const [currentRow, setCurrentRow] = useState<Partial<USERS_API.RoleInfo> | undefined>(); // 当前操作行
+  const [currentRow, setCurrentRow] = useState<Partial<UserApi.RoleInfo> | undefined>(); // 当前操作行
   const [actionType, setActionType] = useState<number>(ACTIONS.view); // 当前操作状态
   const [modalVisible, updateModalVisible] = useState<boolean>(false); // 查看/编辑/新增表单弹窗
   const [modalTitle, setModalTitle] = useState<string>('查看角色'); // 表单弹窗标题
@@ -61,9 +61,9 @@ const User: FC = () => {
   /**
    * @description 查看/编辑/新增角色
    * @param {string} type
-   * @param {Partial<USERS_API.RoleInfo>} row
+   * @param {Partial<UserApi.RoleInfo>} row
    */
-  const handleModalOpen = (type: number, row: Partial<USERS_API.RoleInfo>) => {
+  const handleModalOpen = (type: number, row: Partial<UserApi.RoleInfo>) => {
     const title =
       type === ACTIONS.view ? `查看角色 - ${row.name}` : type === ACTIONS.edit ? `编辑角色 - ${row.name}` : '新增角色';
 
@@ -85,17 +85,17 @@ const User: FC = () => {
   };
   /**
    * @description 打开授权菜单
-   * @param { USERS_API.RoleInfo } row
+   * @param { UserApi.RoleInfo } row
    */
-  const openDrawer = (row: USERS_API.RoleInfo): void => {
+  const openDrawer = (row: UserApi.RoleInfo): void => {
     setCurrentRow(row);
     setActionType(10);
     toggleDrawerVisible(true);
   };
   const formatData = (
-    data: USERS_API.MenuItem[],
-    permissionInfo: USERS_API.MenuPermissionInfo,
-  ): USERS_API.MenuPermissionInfo => {
+    data: UserApi.MenuItem[],
+    permissionInfo: UserApi.MenuPermissionInfo,
+  ): UserApi.MenuPermissionInfo => {
     data.forEach(item => {
       if (!item.checked) {
         return;
@@ -119,11 +119,11 @@ const User: FC = () => {
   /**
    * @description 菜单授权确认
    */
-  const editPermissions = async (data: USERS_API.MenuItem[]): Promise<void> => {
+  const editPermissions = async (data: UserApi.MenuItem[]): Promise<void> => {
     // console.log(data);
     toggleDrawerConfirmLoading(true);
     // 将数据格式化成授权接口参数形式
-    const formatParams: USERS_API.MenuPermissionInfo = [];
+    const formatParams: UserApi.MenuPermissionInfo = [];
     const permissionInfo = formatData(data, formatParams);
 
     try {
@@ -144,7 +144,7 @@ const User: FC = () => {
   /**
    * @description 新增/编辑角色
    */
-  const submit = async (value: Partial<USERS_API.RoleInfo>) => {
+  const submit = async (value: Partial<UserApi.RoleInfo>) => {
     if (actionType === ACTIONS.view) {
       return true;
     }
@@ -182,7 +182,7 @@ const User: FC = () => {
   // }, []);
 
   /* ========== 表头配置 ========== */
-  const columns: ProColumns<USERS_API.RoleInfo>[] = [
+  const columns: ProColumns<UserApi.RoleInfo>[] = [
     {
       title: '序号',
       dataIndex: 'index',
@@ -258,7 +258,7 @@ const User: FC = () => {
   return (
     <>
       <PageContainer>
-        <ProTable<USERS_API.RoleInfo, TableListPagination>
+        <ProTable<UserApi.RoleInfo, TableListPagination>
           actionRef={actionRef}
           sticky
           headerTitle="角色列表"
@@ -334,7 +334,8 @@ const User: FC = () => {
           visible={drawerVisible}
           onClose={closeDrawer}
           onOk={editPermissions}
-          request={getRoleMenu}></MenuTree>
+          request={getRoleMenu}
+        />
       )}
     </>
   );

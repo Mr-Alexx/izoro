@@ -5,7 +5,7 @@ import ProForm, { ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
 import { Link, history, useModel } from 'umi';
 import Footer from '@/components/Footer';
 import styles from './index.less';
-import { login } from '@/services/users';
+import { login } from '@/services/user';
 import { updateToken } from '@/utils/auth';
 
 const LoginMessage: React.FC<{
@@ -47,7 +47,7 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (values: USERS_API.LoginParams): Promise<void> => {
+  const handleSubmit = async (values: UserApi.LoginParams): Promise<void> => {
     setSubmitting(true);
     try {
       // 登录
@@ -105,7 +105,7 @@ const Login: React.FC = () => {
               },
             }}
             onFinish={async values => {
-              handleSubmit(values as USERS_API.LoginParams);
+              handleSubmit(values as UserApi.LoginParams);
             }}>
             {errorMsg && <LoginMessage content={errorMsg} />}
             <>

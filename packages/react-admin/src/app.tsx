@@ -1,20 +1,31 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { PageLoading } from '@ant-design/pro-layout';
-import { Breadcrumb, Button, message, notification } from 'antd';
+import type { MenuDataItem, RouteContextType, Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { PageLoading, RouteContext } from '@ant-design/pro-layout';
+import { BackTop, Breadcrumb, notification, message, Button } from 'antd';
 import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
 import { Link } from 'umi';
 import { history } from 'umi';
 import RightContent from '@/components/RightContent';
 import type { RequestOptionsInit, ResponseError } from 'umi-request';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import Settings from '../config/defaultSettings';
-import { getUserDetail, refreshToken } from './services/users/index';
+import { getUser, refreshToken } from './services/user/index';
 import { updateToken, getCookie, getToken } from '@/utils/auth';
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { getMatchMenu } from '@umijs/route-utils';
+import copy from 'copy-to-clipboard';
+// @ts-ignore
+import shortid from 'shortid';
 
 const loginPath = '/user/login';
 const ignoreErrorRoutesReg = /\/users\/route\/create/gi;
+
+/**
+ * @description 处理重定向逻辑
+ * 如果是登录页本身，不再作重定向
+ */
+const handleRedirect = (): void => {
+  if (window.location.pathname === loginPath) {
+    return;
+  }
+  history.replace(`${loginPath}?redirect=${window.location.pathname}${window.location.search ?? ''}`);
+};
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -25,43 +36,37 @@ export const initialStateConfig = {
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState(): Promise<{
+  searchVal?: string;
   settings?: Partial<LayoutSettings>;
-  currentUser?: USERS_API.UserInfo & ANT_API.CurrentUser;
-  fetchUserInfo?: () => Promise<(USERS_API.UserInfo & ANT_API.CurrentUser) | undefined>;
+  currentUser?: UserApi.UserInfo;
+  fetchUserInfo?: () => Promise<UserApi.UserInfo | undefined>;
   global?: APP.initialStateGlobal;
 }> {
   const fetchUserInfo = async () => {
+    if (!getToken()) {
+      return undefined;
+    }
     try {
-      const currentUser = await getUserDetail(); // {};
-      const defaultData = await queryCurrentUser();
-
+      const userData = await getUser();
       return {
-        ...defaultData,
-        ...currentUser,
+        ...userData,
       };
-    } catch (error) {
-      history.push(loginPath);
+    } catch (err) {
+      console.error(err);
+      handleRedirect();
     }
     return undefined;
   };
-  // 如果是登录页面，不执行
-  if (history.location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo();
-    return {
-      fetchUserInfo,
-      currentUser,
-      settings: {},
-      global: {},
-    };
-  }
+  const currentUser = await fetchUserInfo();
   return {
     fetchUserInfo,
+    currentUser,
     settings: {},
     global: {},
   };
 }
 
-const formatMenus = (list: USERS_API.MenuItem[] | undefined, newList: USERS_API.MenuItem[]): USERS_API.MenuItem[] => {
+const formatMenus = (list: UserApi.MenuItem[] | undefined, newList: UserApi.MenuItem[]): UserApi.MenuItem[] => {
   if (!list) {
     return [];
   }
@@ -79,21 +84,34 @@ const formatMenus = (list: USERS_API.MenuItem[] | undefined, newList: USERS_API.
   return newList;
 };
 
+// antd 配置
+// export const antd = {
+//   componentSize: 'small',
+// };
+
 // https://umijs.org/zh-CN/plugins/plugin-layout
 // @ts-ignore
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
+    // 添加回到顶部
+    childrenRender: dom => (
+      <>
+        {dom}
+        <BackTop visibilityHeight={200} style={{ right: 0 }} />
+      </>
+    ),
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
-    // waterMarkProps: { // 水印
-    //   content: initialState?.currentUser?.name,
+    // 水印
+    // waterMarkProps: {
+    //   content: 'Harvest',
+    //   fontSize: 10,
     // },
     // footerRender: () => <Footer />, // 内容区页脚
     onPageChange: () => {
-      const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
+      if (!initialState?.currentUser) {
+        handleRedirect();
       }
       // 权限判断：判断是否具有该页面的权限，没有则跳到403页
     },
@@ -102,68 +120,45 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // unAccessible: <div>unAccessible</div>,
     // ...initialState?.settings
     ...Settings,
-    collapsedButtonRender: false, // 取消默认的折叠菜单按钮显示（默认在sidebar底部）
-    breadcrumbRender: false, // 不显示面包屑
+    // collapsedButtonRender: false, // 取消默认的折叠菜单按钮显示（默认在sidebar底部）
+    // breadcrumbRender: false, // 不显示面包屑
+    breadcrumbRender: route => {
+      // 将数据绑定到 RouteContext组件
+      // https://github.com/ant-design/pro-components/issues/1989
+      return route;
+    },
+    breadcrumbProps: {
+      itemRender: () => null,
+    },
     // 自定义折叠菜单和面包屑
     // https://github.com/ant-design/ant-design-pro/issues/8242
     collapsed: initialState?.global?.collapsed,
-    headerContentRender: params => {
-      const { menuData } = params;
-      const path = window.location.pathname;
-      const matchMenu = getMatchMenu(path, menuData as any[]);
-      const menuLenth = matchMenu.length;
-
+    headerContentRender: () => {
       return (
         <div>
-          <span
-            onClick={() => {
-              // 点击自定义的按钮，修改initialState中的collapsed
-              setInitialState({
-                ...initialState,
-                global: {
-                  collapsed: !initialState?.global?.collapsed,
-                },
-              });
-            }}
-            style={{
-              cursor: 'pointer',
-              fontSize: '16px',
-              paddingLeft: 0,
-              display: 'inline-block',
-              height: '100%',
-              paddingRight: 20,
-            }}>
-            {initialState?.global?.collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          </span>
-
           {/* 面包屑 */}
-          <Breadcrumb style={{ display: 'inline-block' }}>
-            {/* <Breadcrumb.Item>
-              <Link to="/">首页</Link>
-            </Breadcrumb.Item> */}
-            {matchMenu.map((item, i) => (
-              <Breadcrumb.Item key={item.path}>
-                {(item.path || item.redirect) && i !== menuLenth - 1 ? (
-                  <Link to={item.path || item.redirect} target={item.target}>
-                    {item.name}
-                  </Link>
-                ) : (
-                  <>{item.name}</>
-                )}
-              </Breadcrumb.Item>
-            ))}
-          </Breadcrumb>
+          <RouteContext.Consumer>
+            {(value: RouteContextType) => {
+              const { isMobile, breadcrumb } = value;
+
+              return (
+                <Breadcrumb className={isMobile ? 'mobile-breadcrumb' : ''} style={{ display: 'inline-block' }}>
+                  {breadcrumb?.routes?.map((item, i) => (
+                    <Breadcrumb.Item key={item.path}>
+                      {i === Number(breadcrumb?.routes?.length) - 1 ? (
+                        <span>{item.breadcrumbName}</span>
+                      ) : (
+                        <Link to={item.path || item.path}>{item.breadcrumbName}</Link>
+                      )}
+                    </Breadcrumb.Item>
+                  ))}
+                </Breadcrumb>
+              );
+            }}
+          </RouteContext.Consumer>
         </div>
       );
     },
-    // 服务器返回的动态菜单
-    // menuDataRender: () => {
-    //   const menuPermissions = initialState?.currentUser?.menuPermissions;
-    //   // 前端过滤掉用户没有权限的菜单，后端是完整返回了
-    //   const formatList = formatMenus(menuPermissions, []);
-    //   // console.log(formatList);
-    //   return formatList;
-    // },
   };
 };
 
@@ -186,51 +181,6 @@ const codeMessage = {
   504: '网关超时。',
 };
 
-// @ts-ignore
-interface Error extends ResponseError {
-  message?: string;
-  code?: number;
-  traceId?: number | string;
-  host?: string;
-}
-/** 异常处理程序
- * @see https://beta-pro.ant.design/docs/request-cn
- */
-const errorHandler = (error: Error) => {
-  const { response, request, message } = error;
-  // 以下接口不做提示处理，需要自己在catch内做处理
-  if (ignoreErrorRoutesReg.test(request.url)) {
-    return;
-  }
-
-  // 需要排除获取用户信息接口的提示
-  if (response && response.status) {
-    const errorText = message || codeMessage[response.status] || response.statusText;
-    const { status } = response;
-    const { url } = request;
-
-    if (url.includes('/users/find') && status === 401) {
-      notification.warning({
-        message: '登录状态过期或未登录',
-        description: '请重新进行登录！',
-      });
-    } else {
-      notification.error({
-        message: `请求错误 ${status}: ${url}`,
-        description: errorText,
-      });
-    }
-  }
-
-  if (!response) {
-    notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
-    });
-  }
-  throw error;
-};
-
 /**
  * @description 重刷token
  */
@@ -239,7 +189,7 @@ const refreshAccessToken = async () => {
     const data = await refreshToken();
     updateToken(data);
   } catch (err) {
-    console.error('重新token失败', err);
+    console.error('重刷token失败', err);
   }
 };
 
@@ -255,8 +205,8 @@ const tokenRefreshInterceptor = (url: string, options: RequestOptionsInit) => {
   }
   // 判断token时候过期
   if (!getToken()) {
-    // token已过期
-    history.push(loginPath);
+    // token过期
+    handleRedirect();
   } else {
     const accessExpire = Number(getCookie('accessExpire'));
     const refreshAfter = Number(getCookie('refreshAfter'));
@@ -279,13 +229,14 @@ const tokenRefreshInterceptor = (url: string, options: RequestOptionsInit) => {
  * 挂载token
  */
 const requestInterceptor = (url: string, options: RequestOptionsInit) => {
+  // console.log('[options]: ', options);
   // 对于列表查询参数转换
   // current => page, pageSize => page_num
   const data: Record<string, any> = options.method === 'get' ? options.params : options.data;
 
   if (data?.current && data?.pageSize) {
     data.page = data?.current;
-    data.limit = data?.pageSize;
+    data.page_num = data?.pageSize;
     if (data?.status === undefined) {
       delete data?.status;
     } else {
@@ -303,6 +254,7 @@ const requestInterceptor = (url: string, options: RequestOptionsInit) => {
       ...options,
       headers: {
         Authorization: `Bearer ${getToken()}`,
+        ...options?.headers,
       },
       interceptors: true,
     },
@@ -314,11 +266,17 @@ const requestInterceptor = (url: string, options: RequestOptionsInit) => {
  */
 const responseInterceptor = async (response: Response) => {
   let res: any;
+  // 如果要获取请求/响应头的自定义内容
+  // 需要后台设置 Access-Control-Expose-Headers，浏览器才能获取自定义头
+  // see https://github.com/umijs/umi/issues/2793
+  // see https://blog.csdn.net/cpongo3/article/details/88531939
+  // 响应头配置：Access-Control-Expose-Headers: <header-name>, <header-name>,
+  // console.log('x-trace-id', response.headers.get('X-Trace-Id'));
   try {
     res = await response.clone().json();
   } catch (err) {
-    // console.error(err);
-    res = { code: 1 };
+    const errorText = await response.text();
+    res = { code: response.status, msg: errorText };
   }
 
   const code = res?.code;
@@ -327,33 +285,124 @@ const responseInterceptor = async (response: Response) => {
     return response;
   }
   // 后台接口设计
-  // 响应 { code: number, msg?: string, data: any, success: boolean }
-
-  if (res.success === true) {
+  // 响应 { code: number, msg: string, response: any }
+  // code：0 成功
+  // code：1 失败，需要显示提示信息
+  // code：2 失败，不显示提示信息
+  if (res.code === 0) {
     // 对于查询列表
     // 格式响应list字段为data字段，适配antd pro-table的request配置
-    if (res.data?.list && res.data?.total !== undefined) {
-      res.data.data = res.data.list;
-      delete res.data.list;
-    }
+    // if (res.response?.list && res.response?.total !== undefined) {
+    //   res.response.data = res.response.list || [];
+    //   delete res.response.list;
+    // }
     // 重刷token测试设置
     // if (res.response?.accessToken) {
     //   res.response.accessExpire = (new Date().getTime() + 1 * 60 * 1000) / 1000;
     //   res.response.refreshAfter = (new Date().getTime() + 0.5 * 60 * 1000) / 1000;
     // }
-    return res.data;
+    return res.response;
   }
-
   // https://beta-pro.ant.design/docs/request-cn
   // 为了适配antd pro的错误设计
   // 需要格式化错误响应
-  // eslint-disable-next-line
   return Promise.reject({
-    code,
+    code: res.code,
     message: res.msg,
-    // traceId: 'xx',
     response,
   });
+};
+
+// @ts-ignore
+interface Error extends ResponseError {
+  message?: string;
+  code?: number;
+  traceId?: number | string;
+  host?: string;
+}
+/** 异常处理程序
+ * @see https://pro.ant.design/zh-CN/docs/request/
+ */
+const errorHandler = (error: Error) => {
+  // console.error('error', error);
+  const { response, request, message: errorMessage, code } = error;
+  // 以下接口不做提示处理，需要自己在catch内做处理
+  if (ignoreErrorRoutesReg.test(request?.url ?? '')) {
+    return;
+  }
+
+  // 状态码code为2时，或者如果接口设置了忽略错误处理，则不提示
+  if (code === 2 || request.options.skipErrorHandler) {
+    console.error(error);
+    throw error;
+  }
+
+  // 需要排除获取用户信息接口的提示
+  if (response && response.status) {
+    const errorText = errorMessage || codeMessage[response.status] || response.statusText;
+    const { status } = response;
+    const { url, options } = request;
+    const { method, params, data, requestType, headers } = options;
+
+    if (url.includes('/users/find') && status === 401) {
+      notification.warning({
+        message: '登录状态过期或未登录',
+        description: '请重新进行登录！',
+      });
+    } else {
+      const key = shortid.generate();
+      const btn = (
+        <Button
+          type="primary"
+          size="small"
+          onClick={() => {
+            copy(
+              JSON.stringify({
+                请求地址: url,
+                错误信息: error.message,
+                请求方法: method,
+                请求参数: method === 'GET' ? params : data,
+                请求类型: requestType,
+                // @ts-ignore
+                TOKEN: headers?.Authorization,
+                响应状态码: status,
+              }),
+            );
+            message.success('复制成功');
+            notification.close(key);
+          }}>
+          复制错误信息
+        </Button>
+      );
+      notification.error({
+        className: 'error-notification',
+        message: `请求错误，状态码 ${status}`,
+        key,
+        btn,
+        // duration: 0,
+        description: (
+          <ul className="error-notification__content">
+            <li>
+              <span style={{ color: '#ff7a45' }}>请求地址: </span>
+              <span>{url}</span>
+            </li>
+            <li>
+              <span style={{ color: '#ff4d4f' }}>错误信息: </span>
+              <span dangerouslySetInnerHTML={{ __html: errorText }} />
+            </li>
+          </ul>
+        ),
+      });
+    }
+  }
+
+  if (!response) {
+    notification.error({
+      description: '您的网络发生异常，无法连接服务器',
+      message: '网络异常',
+    });
+  }
+  throw error;
 };
 
 // https://umijs.org/zh-CN/plugins/plugin-request
@@ -361,6 +410,17 @@ export const request: RequestConfig = {
   // prefix: '/app', // http://10.10.30.251:8888
   timeout: 120 * 1000,
   errorHandler,
+  // getResponse: true,
+  errorConfig: {
+    adaptor: resData => {
+      // console.log(resData);
+      return {
+        ...resData,
+        success: resData?.ok,
+        errorMessage: resData?.message,
+      };
+    },
+  },
   requestType: 'json',
   requestInterceptors: [tokenRefreshInterceptor, requestInterceptor],
   responseInterceptors: [responseInterceptor],

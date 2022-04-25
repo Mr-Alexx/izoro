@@ -8,7 +8,7 @@ import type { ColumnsState, ProColumns, ActionType } from '@ant-design/pro-table
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import ProForm, { ProFormText } from '@ant-design/pro-form';
-import { getApiRoutes, createApiRoute, editApiRoute } from '@/services/users';
+import { getApiRoutes, createApiRoute, editApiRoute } from '@/services/user';
 import { useState, useRef } from 'react';
 import { ProFormSelect } from '@ant-design/pro-form';
 import { ACTIONS } from '@/constants';
@@ -19,7 +19,7 @@ import { ACTIONS } from '@/constants';
  */
 const ApiRouteTable: FC = () => {
   // 当前操作行
-  const [currentRow, setCurrentRow] = useState<USERS_API.ApiRouteItem | undefined>();
+  const [currentRow, setCurrentRow] = useState<UserApi.ApiRouteItem | undefined>();
 
   // 当前操作状态
   const [actionType, setActionType] = useState<number>(ACTIONS.view);
@@ -53,7 +53,7 @@ const ApiRouteTable: FC = () => {
   /**
    * @description 编辑/添加接口
    */
-  const submit = async (value: Partial<USERS_API.ApiRouteItem>): Promise<boolean> => {
+  const submit = async (value: Partial<UserApi.ApiRouteItem>): Promise<boolean> => {
     const params = {
       ...value,
       status: Number(value.status),
@@ -84,7 +84,7 @@ const ApiRouteTable: FC = () => {
   };
 
   // 表头数据（列）
-  const columns: ProColumns<USERS_API.ApiRouteItem>[] = [
+  const columns: ProColumns<UserApi.ApiRouteItem>[] = [
     {
       title: 'ID',
       dataIndex: 'id',
@@ -142,7 +142,7 @@ const ApiRouteTable: FC = () => {
 
   return (
     <div>
-      <ProTable<USERS_API.ApiRouteItem, APP.TablePagination>
+      <ProTable<UserApi.ApiRouteItem, APP.TablePagination>
         actionRef={actionRef}
         sticky
         headerTitle="API路由管理"
