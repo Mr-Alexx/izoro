@@ -7,13 +7,13 @@ export class UserQueryDto {
     description: '用户状态',
     example: UserStatus.active,
   })
-  readonly publish_status?: UserStatus;
+  readonly status: UserStatus;
 
   @ApiPropertyOptional({
     description: '用户名，模糊搜索',
     example: 'qian',
   })
-  readonly account?: string;
+  readonly account: string;
 
   @ApiProperty({
     description: '每页条数',
@@ -62,5 +62,5 @@ export class UserCreateDto {
 // 编辑参数
 export class UserEditDto extends UserCreateDto {
   @ApiProperty({ description: '用户id' })
-  readonly id?: number;
+  readonly id: number;
 }

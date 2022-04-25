@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { RoleService } from '../role/role.service';
 import { User } from './user.entity';
-import { UserEditDto } from './user.dto';
+import { UserEditDto, UserQueryDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -75,7 +75,7 @@ export class UserService {
    * @param { Object } query
    * 复杂查询：https://www.jianshu.com/p/0fcf45030dd4
    */
-  async findAll(query: Record<string, any>): Promise<any> {
+  async findAll(query: UserQueryDto): Promise<App.ListRes<User[]>> {
     const { status, account } = query;
     let { page, limit } = query;
     page = page || 1;
@@ -84,16 +84,7 @@ export class UserService {
     try {
       const userQuery = this.userRepository
         .createQueryBuilder('user')
-        .select([
-          'user.id',
-          'user.avatar',
-          'user.account',
-          'user.nickname',
-          'user.status',
-          'user.created_at',
-          'user.email',
-          'user.phone_number',
-        ])
+        .select()
         .innerJoin('user.roles', 'role')
         .addSelect(['role.id', 'role.name'])
         .orderBy('user.id', 'ASC')
