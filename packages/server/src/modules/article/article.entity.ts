@@ -19,6 +19,7 @@ import {
 } from 'typeorm';
 import { Tag } from '../tag/tag.entity';
 import { Category } from '../category/category.entity';
+import { ApiPropertyColumn } from '@/decorators/agregate.decorator';
 
 // 给添加的数据加入时间戳
 @Entity()
@@ -26,32 +27,32 @@ export class Article {
   @PrimaryColumn({ comment: 'id（snowflake）', type: 'bigint' })
   id: string; // bigint保存 https://stackoverflow.com/questions/59927625/how-to-store-big-int-in-nest-js-using-typeorm
 
-  @Column({ default: null, comment: '文章封面图' })
+  @ApiPropertyColumn({ default: null, comment: '文章封面图' })
   // @IsString()
   cover: string;
 
   // @IsNotEmpty({ message: '文章标题不能为空！' })
   // @IsString({ message: '文章标题类型必须为字符串！' })
   // @Length(1, 200)
-  @Column({ comment: '文章标题' })
+  @ApiPropertyColumn({ comment: '文章标题' })
   title: string;
 
-  @Column({ type: 'text', default: null, comment: '文章摘要' })
+  @ApiPropertyColumn({ type: 'text', default: null, comment: '文章摘要' })
   summary: string;
 
-  @Column({ type: 'mediumtext', default: null, charset: 'utf8mb4', comment: '文章markdown' })
+  @ApiPropertyColumn({ type: 'mediumtext', default: null, charset: 'utf8mb4', comment: '文章markdown' })
   markdown: string;
 
-  @Column({ type: 'mediumtext', default: null, charset: 'utf8mb4', comment: '基于markdown生成的html' })
+  @ApiPropertyColumn({ type: 'mediumtext', default: null, charset: 'utf8mb4', comment: '基于markdown生成的html' })
   html: string;
 
-  @Column({ length: 100, comment: 'markdown主题', default: 'juejin' })
+  @ApiPropertyColumn({ length: 100, comment: 'markdown主题', default: 'juejin' })
   theme: string;
 
-  @Column({ length: 100, comment: '代码高亮主题', default: '' })
+  @ApiPropertyColumn({ length: 100, comment: '代码高亮主题', default: '' })
   highlight: string;
 
-  @Column({
+  @ApiPropertyColumn({
     type: 'enum',
     enum: PublishStatus,
     default: PublishStatus.draft,
@@ -59,13 +60,13 @@ export class Article {
   })
   status: PublishStatus;
 
-  @Column({ comment: '查看人数', default: 0 })
+  @ApiPropertyColumn({ comment: '查看人数', default: 0 })
   views: number;
 
-  @Column({ comment: '密码', default: null })
+  @ApiPropertyColumn({ comment: '密码', default: null })
   password: string;
 
-  @Column({
+  @ApiPropertyColumn({
     type: 'enum',
     enum: PublicStatus,
     default: PublicStatus.public,
@@ -73,10 +74,10 @@ export class Article {
   })
   public_status: PublicStatus;
 
-  @Column({ comment: 'seo关键字', default: null })
+  @ApiPropertyColumn({ comment: 'seo关键字', default: null })
   seo_keywords: string;
 
-  @Column({ comment: 'seo描述', default: null })
+  @ApiPropertyColumn({ comment: 'seo描述', default: null })
   seo_description: string;
 
   @CreateDateColumn({
@@ -86,7 +87,7 @@ export class Article {
   })
   created_at: Date;
 
-  @Column({
+  @ApiPropertyColumn({
     type: 'datetime',
     comment: '发布时间',
     name: 'publish_at',
@@ -102,11 +103,13 @@ export class Article {
   updated_at: Date;
 
   // 标签--关联标签表
+  @ApiProperty({ description: '关联标签组' })
   @ManyToMany(() => Tag, tag => tag.articles, { cascade: true })
   @JoinTable()
   tags: Array<Tag>;
 
   // 分类--关联分类表 使用ApiProperty注释会引起循环引用的问题
+  @ApiProperty({ description: '关联分类' })
   @ManyToOne(() => Category, category => category.articles, { cascade: true })
   @JoinTable()
   category: Category;
