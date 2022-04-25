@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Category } from './category.entity';
+import { CategoryCreateDto, CategoryEditDto } from './category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -14,11 +15,7 @@ export class CategoryService {
    * @desc 查找分类列表
    * @return { array } 树形结构
    */
-  async findAll(query: { page: number; limit: number }): Promise<any> {
-    let { page, limit } = query;
-    page = page || 1;
-    limit = limit || 20;
-
+  async findAll(): Promise<any> {
     const [list, total] = await this.categoryReposity.findAndCount();
     return {
       list,
@@ -29,7 +26,7 @@ export class CategoryService {
   /**
    * @desc 创建分类
    */
-  async create(category: Partial<Category>): Promise<any> {
+  async create(category: CategoryCreateDto): Promise<any> {
     let { pid } = category;
     pid = pid || 0;
     const existCategory = await this.categoryReposity.find({
@@ -53,7 +50,7 @@ export class CategoryService {
   /**
    * @desc 更新分类信息
    */
-  async updateById(category: Partial<Category>): Promise<any> {
+  async updateById(category: CategoryEditDto): Promise<any> {
     const { id } = category;
     const oldCategory = await this.categoryReposity.findOne({ where: { id } });
     const updateCategory = await this.categoryReposity.merge(oldCategory, category);

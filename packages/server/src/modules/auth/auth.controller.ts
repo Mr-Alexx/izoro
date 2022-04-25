@@ -1,6 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from '../user/user.entity';
+import { LoginDto } from './auth.dto';
 import { AuthService } from './auth.service';
 
 @ApiTags('Auth')
@@ -14,7 +15,7 @@ export class AuthController {
    */
   @ApiOperation({ summary: '用户登录' })
   @Post('login')
-  async login(@Body() user: Partial<User>): Promise<any> {
+  async login(@Body() user: LoginDto): Promise<any> {
     const token = await this.authService.login(user);
     return {
       accessExpire: new Date(new Date().getTime() + 3600 * 24), // token过期时间

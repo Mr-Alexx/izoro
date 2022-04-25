@@ -6,8 +6,9 @@
 
 import { MenuNodeTypes, MenuStatus } from '@/interfaces/status.interface';
 import { IsNumber, IsString } from 'class-validator';
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Role } from '../role/role.entity';
+import { ApiPropertyColumn } from '@/decorators/agregate.decorator';
 
 @Entity()
 export class Menu {
@@ -15,67 +16,67 @@ export class Menu {
   id: number;
 
   @IsString()
-  @Column({ comment: '菜单名称' })
+  @ApiPropertyColumn({ comment: '菜单名称' })
   name: string;
 
   @IsString()
-  @Column({ comment: '菜单标识' })
+  @ApiPropertyColumn({ comment: '菜单标识' })
   menu_code: string;
 
-  @Column({ comment: '菜单描述', default: null })
+  @ApiPropertyColumn({ comment: '菜单描述', default: null })
   description: string;
 
   @IsNumber()
-  @Column({ comment: '父id', default: 0 })
+  @ApiPropertyColumn({ comment: '父id', default: 0 })
   pid: number;
 
-  @Column({ comment: '节点类型，1目录 2页面 3按钮', default: MenuNodeTypes.directory })
+  @ApiPropertyColumn({ comment: '节点类型，1目录 2页面 3按钮', default: MenuNodeTypes.directory })
   node_type: MenuNodeTypes;
 
-  @Column({ comment: '图标', default: null })
+  @ApiPropertyColumn({ comment: '图标', default: null })
   icon: string;
 
-  @Column({ comment: '排序', default: 1 })
+  @ApiPropertyColumn({ comment: '排序', default: 1 })
   @IsNumber()
   sort: number;
 
-  @Column({ comment: '页面路径', default: null })
+  @ApiPropertyColumn({ comment: '页面路径', default: null })
   url: string;
 
-  @Column({ comment: '组件路径', default: null })
+  @ApiPropertyColumn({ comment: '组件路径', default: null })
   component: string;
 
-  @Column({ comment: '重定向', default: null })
+  @ApiPropertyColumn({ comment: '重定向', default: null })
   redirect: string;
 
-  @Column({ comment: '是否隐藏', default: false })
+  @ApiPropertyColumn({ comment: '是否隐藏', default: false })
   hidden: boolean;
 
-  @Column({ comment: '是否缓存', default: false })
+  @ApiPropertyColumn({ comment: '是否缓存', default: false })
   cache: boolean;
 
-  @Column({ comment: '是否显示在面包屑', default: true })
+  @ApiPropertyColumn({ comment: '是否显示在面包屑', default: true })
   breadcrumb: boolean;
 
-  @Column({ comment: '是否固定菜单', default: false })
+  @ApiPropertyColumn({ comment: '是否固定菜单', default: false })
   affix: boolean;
 
-  @Column({ comment: '菜单树层级，以便于查询指定层级的菜单', default: 1 })
+  @ApiPropertyColumn({ comment: '菜单树层级，以便于查询指定层级的菜单', default: 1 })
   level: number;
 
-  @Column({
+  @ApiPropertyColumn({
     comment: '树id的路径，主要用于存放从根节点到当前树的父节点的路径，逗号分隔，想要找父节点会特别快',
     default: null,
   })
   path: string;
 
-  @Column({ comment: '状态，-1删除 0禁用 1正常', default: MenuStatus.normal })
+  @ApiPropertyColumn({ comment: '状态，-1删除 0禁用 1正常', default: MenuStatus.normal })
   status: MenuStatus;
 
   @ManyToMany(() => Role, role => role.menus, { cascade: true })
   roles: Array<Role>;
 
-  @Column({
+  @ApiPropertyColumn({
     comment: '绑定的权限列表，所有权限在 @/guards/interfaces/permission.interfaces.ts 内定义',
     type: 'simple-array',
   })

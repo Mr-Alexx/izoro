@@ -11,7 +11,9 @@ import { Category } from './category.entity';
 import { CategoryService } from './category.service';
 import { Permission } from '@/decorators/permission.decorator';
 import { PermissionGuard } from '@/guards/permission.guard';
+import { CategoryCreateDto, CategoryEditDto } from './category.dto';
 
+@UseGuards(PermissionGuard)
 @ApiTags('Category')
 @Controller('category')
 export class CategoryController {
@@ -19,32 +21,29 @@ export class CategoryController {
 
   @ApiOperation({ summary: '分类列表' })
   @Get()
-  findAll(@Query() query: { page: number; limit: number }): Promise<any> {
-    return this.categoryService.findAll(query);
+  findAll(): Promise<any> {
+    return this.categoryService.findAll();
   }
 
   @ApiOperation({ summary: '新增分类' })
   @Post()
-  @UseGuards(PermissionGuard)
   @Permission('category:add')
   @UseGuards(JwtAuthGuard)
-  create(@Body() category: Partial<Category>): Promise<any> {
+  create(@Body() category: CategoryCreateDto): Promise<any> {
     return this.categoryService.create(category);
   }
 
   @ApiOperation({ summary: '更新分类' })
   @Put()
-  @UseGuards(PermissionGuard)
   @Permission('category:edit')
   @UseGuards(JwtAuthGuard)
-  updateById(@Body() category: Partial<Category>): Promise<any> {
+  updateById(@Body() category: CategoryEditDto): Promise<any> {
     return this.categoryService.updateById(category);
   }
 
   @ApiOperation({ summary: '删除分类' })
   @Delete()
-  @UseGuards(PermissionGuard)
-  @Permission('category:add')
+  @Permission('category:del')
   @UseGuards(JwtAuthGuard)
   delete(@Body('ids') ids: number[]): Promise<any> {
     return this.categoryService.delete(ids);

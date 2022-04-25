@@ -15,11 +15,13 @@ import {
 } from '@nestjs/common';
 import { ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
-import { User } from './user.entity';
 import { UserService } from './user.service';
 import { Permission } from '@/decorators/permission.decorator';
 import { PermissionGuard } from '@/guards/permission.guard';
+import { UserCreateDto, UserQueryDto, UserEditDto } from './user.dto';
 
+@UseGuards(PermissionGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('user')
 @ApiTags('User')
 export class UserController {
@@ -28,8 +30,8 @@ export class UserController {
   @ApiOperation({ summary: '创建用户' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard)
-  async register(@Body() user: Partial<User>): Promise<any> {
+  @Permission('user:add')
+  async register(@Body() user: UserCreateDto): Promise<any> {
     return this.userService.create(user);
   }
 
@@ -38,12 +40,8 @@ export class UserController {
    */
   @ApiOperation({ summary: '用户列表' })
   @Get()
-  @ApiQuery({ name: 'page', description: '页码' })
-  @ApiQuery({ name: 'limit', description: '每页条数' })
-  @UseGuards(PermissionGuard)
   @Permission('user:list')
-  @UseGuards(JwtAuthGuard)
-  async findAll(@Query() query: Record<string, any>): Promise<any> {
+  async findAll(@Query() query: UserQueryDto): Promise<any> {
     return await this.userService.findAll(query);
   }
 
@@ -53,31 +51,24 @@ export class UserController {
   @ApiOperation({ summary: '用户个人信息' })
   @Get('info')
   @ApiHeader({ name: 'Authorization', description: 'bearer token' })
-  @UseGuards(PermissionGuard)
   @Permission('user:detail')
-  @UseGuards(JwtAuthGuard)
   GetInfo(@Request() req: Record<string, any>): Promise<any> {
     return this.userService.findById(req.user.id);
   }
 
   @ApiOperation({ summary: '更新用户信息' })
-  @ApiParam({ name: 'id', description: '用户id' })
-  @UseGuards(PermissionGuard)
   @Permission('user:edit')
-  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async updateUser(@Param('id') id: number, @Body() user: Partial<User>): Promise<any> {
+  async updateUser(@Body() user: UserEditDto): Promise<any> {
     if (Object.keys(user).length === 0) {
       throw new HttpException('请填写要修改的用户信息！', HttpStatus.BAD_REQUEST);
     }
-    return this.userService.updateById(id, user);
+    return this.userService.updateById(user);
   }
 
   @ApiOperation({ summary: '删除用户' })
   @ApiParam({ name: 'id', description: '用户id' })
-  @UseGuards(PermissionGuard)
   @Permission('user:del')
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: number): Promise<any> {
     return this.userService.deleteById(id);

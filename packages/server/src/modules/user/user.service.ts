@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { RoleService } from '../role/role.service';
 import { User } from './user.entity';
+import { UserEditDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -114,9 +115,9 @@ export class UserService {
     return this.userRepository.findOne(id);
   }
 
-  async updateById(id: number, user: Partial<User>): Promise<User> {
+  async updateById(user: UserEditDto): Promise<User> {
     try {
-      const oldUser = await this.findById(id);
+      const oldUser = await this.findById(user.id);
       const roles = await this.roleService.findByIds(user.roles);
       const updatedUser = await this.userRepository.merge(oldUser, {
         ...user,

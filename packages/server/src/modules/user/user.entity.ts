@@ -14,6 +14,7 @@ import {
 import * as bcrypt from 'bcryptjs';
 import { Exclude } from 'class-transformer';
 import { Role } from '../role/role.entity';
+import { ApiPropertyColumn } from '@/decorators/agregate.decorator';
 
 const SALT_OR_ROUNDS = 10;
 
@@ -39,40 +40,34 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty({ description: '账号' })
   @IsNotEmpty()
   @IsString()
-  @Column({ length: 100, comment: '账号' })
+  @ApiPropertyColumn({ length: 100, comment: '账号' })
   account: string;
 
-  @ApiProperty({ description: '密码' })
   @IsNotEmpty()
   @IsString()
   @Exclude()
-  @Column({ length: 100, comment: '密码' })
+  @ApiPropertyColumn({ length: 100, comment: '密码' })
   password: string;
 
   // 角色，多对多
   @ManyToMany(() => Role, role => role.users, { cascade: true })
   roles: Array<Role>;
 
-  @ApiProperty({ required: false, description: '昵称' })
-  @Column({ length: 100, comment: '昵称', default: null })
+  @ApiPropertyColumn({ length: 100, comment: '昵称', default: null })
   nickname: string;
 
-  @ApiProperty({ required: false, description: '头像' })
-  @Column({ length: 255, comment: '头像', default: null })
+  @ApiPropertyColumn({ length: 255, comment: '头像', default: null })
   avatar: string;
 
-  @ApiProperty({ required: false, description: '邮箱' })
-  @Column({ comment: '邮箱', default: null })
+  @ApiPropertyColumn({ comment: '邮箱', default: null })
   email: string;
 
-  @ApiProperty({ required: false, description: '电话号码' })
-  @Column({ comment: '手机号码', default: null })
+  @ApiPropertyColumn({ comment: '手机号码', default: null })
   phone_number: string;
 
-  @Column({
+  @ApiPropertyColumn({
     type: 'enum',
     enum: UserStatus,
     default: UserStatus.active,

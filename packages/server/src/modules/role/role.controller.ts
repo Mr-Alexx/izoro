@@ -23,7 +23,11 @@ import { Role } from './role.entity';
 import { RoleService } from './role.service';
 import { PermissionGuard } from '@/guards/permission.guard';
 import { Permission } from '@/decorators/permission.decorator';
+import { RoleCreateDto, RoleDeleteDto, RoleQueryDto } from './role.dto';
+import { RoleEditDto } from './role.dto';
 
+@UseGuards(PermissionGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('role')
 @ApiTags('role')
 export class RoleController {
@@ -31,13 +35,11 @@ export class RoleController {
 
   @ApiOperation({ summary: '角色列表' })
   @Get()
-  @UseGuards(JwtAuthGuard)
-  async findAll(@Query() query: Record<string, any>): Promise<any> {
+  async findAll(@Query() query: RoleQueryDto): Promise<any> {
     return this.roleService.findAll(query);
   }
 
   @ApiOperation({ summary: '获取指定角色' })
-  @UseGuards(JwtAuthGuard)
   async findByIds(@Query('ids') ids: any[]): Promise<any> {
     return this.roleService.findByIds(ids);
   }
@@ -45,30 +47,26 @@ export class RoleController {
   @ApiOperation({ summary: '创建角色' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard)
-  async create(@Body() role: Partial<Role>): Promise<number> {
+  async create(@Body() role: RoleCreateDto): Promise<number> {
     return this.roleService.create(role);
   }
 
   @ApiOperation({ summary: '更新角色' })
-  @Patch(':id')
-  @UseGuards(PermissionGuard)
+  @Patch()
   @Permission('role:edit')
-  @UseGuards(JwtAuthGuard)
-  async update(@Param('id') id: number, @Body() role: Partial<Role>): Promise<any> {
-    return this.roleService.updateById(id, role);
+  async update(@Body() role: RoleEditDto): Promise<any> {
+    return this.roleService.updateById(role);
   }
 
   @ApiOperation({ summary: '删除角色' })
-  @Delete(':id')
-  @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') id: number): Promise<string> {
-    return this.roleService.deleteById(id);
+  @Delete()
+  async delete(@Body() body: RoleDeleteDto): Promise<string> {
+    const { ids } = body;
+    return this.roleService.deleteById(ids);
   }
 
   @ApiOperation({ summary: '角色授权' })
   @Patch('authorize')
-  @UseGuards(JwtAuthGuard)
   async authorize(@Body() data: Record<string, any>): Promise<string> {
     // 授权
     return this.roleService.authorize(data);

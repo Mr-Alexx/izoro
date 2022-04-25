@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
+import { TagCreateDto, TagDeleteDto, TagEditDto } from './tag.dto';
 import { Tag } from './tag.entity';
 
 @Injectable()
@@ -14,11 +15,7 @@ export class TagService {
    * @desc 查找标签列表
    * @return { array }
    */
-  async findAll(query: Record<string, any>): Promise<any> {
-    let { page, limit } = query;
-    page = page || 1;
-    limit = limit || 20;
-
+  async findAll(): Promise<any> {
     const [list, total] = await this.tagReposity.findAndCount();
     return {
       list,
@@ -29,7 +26,7 @@ export class TagService {
   /**
    * @desc 创建标签
    */
-  async create(tag: Partial<Tag>): Promise<null> {
+  async create(tag: TagCreateDto): Promise<null> {
     const { name } = tag;
     const existTag = await this.tagReposity.find({ where: { name } });
 
@@ -44,7 +41,7 @@ export class TagService {
   /**
    * @desc 更新标签信息
    */
-  async updateById(tag: Record<string, any>): Promise<null> {
+  async updateById(tag: TagEditDto): Promise<null> {
     const { id } = tag;
     const oldTag = await this.tagReposity.findOne({ where: { id } });
     const updateTag = await this.tagReposity.merge(oldTag, tag);

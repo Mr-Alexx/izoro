@@ -10,6 +10,8 @@ import { Like, Repository } from 'typeorm';
 import { Role } from './role.entity';
 import _ from '@/utils';
 import { MenuService } from '../menu/menu.service';
+import { RoleDeleteDto, RoleEditDto } from './role.dto';
+import { RoleQueryDto } from './role.dto';
 
 @Injectable()
 export class RoleService {
@@ -19,7 +21,7 @@ export class RoleService {
     private readonly menuService: MenuService,
   ) {}
 
-  async findAll(query: Record<string, any>): Promise<any> {
+  async findAll(query: RoleQueryDto): Promise<any> {
     const { status, name } = query;
     let { page, limit } = query;
     page = page || 1;
@@ -65,25 +67,25 @@ export class RoleService {
     }
   }
 
-  async updateById(id: number, role: Partial<Role>): Promise<Role> {
-    if (!id) {
-      throw new HttpException('role id 必须有！', HttpStatus.BAD_REQUEST);
+  async updateById(role: RoleEditDto): Promise<Role> {
+    if (!role.id) {
+      throw new HttpException('非法传值，角色id不存在！', HttpStatus.BAD_REQUEST);
     }
-    const oldRole = await this.roleRepository.findOne(id);
+    const oldRole = await this.roleRepository.findOne(role.id);
     if (!oldRole) {
-      throw new HttpException('找不到对应id的role！', HttpStatus.NOT_FOUND);
+      throw new HttpException('找不到对应的角色！', HttpStatus.NOT_FOUND);
     }
 
     const newRole = await this.roleRepository.merge(oldRole, role);
     return this.roleRepository.save(newRole);
   }
 
-  async deleteById(id: number): Promise<string> {
-    if (!id) {
-      throw new HttpException('role id 必须有！', HttpStatus.BAD_REQUEST);
+  async deleteById(ids: number[]): Promise<string> {
+    if (!Array.isArray(ids) || ids.length === 0) {
+      throw new HttpException('非法传值，必须传入角色id数组', HttpStatus.BAD_REQUEST);
     }
 
-    await this.roleRepository.delete(id);
+    await this.roleRepository.delete(ids);
     return `删除成功！`;
   }
 

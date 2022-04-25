@@ -6,16 +6,16 @@
  */
 
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Article } from '../article/article.entity';
+import { ApiPropertyColumn } from '@/decorators/agregate.decorator';
 
 @Entity()
 export class Tag {
   @PrimaryGeneratedColumn({ comment: '标签id，自增主键' })
   id: number;
 
-  @ApiProperty({ description: '标签名称', example: 'js' })
-  @Column()
+  @ApiPropertyColumn({ comment: '标签名称', example: 'js' })
   name: string;
 
   @ApiProperty({ description: '关联文章id', example: 123 })

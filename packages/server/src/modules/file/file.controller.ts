@@ -14,6 +14,8 @@ import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { Permission } from '@/decorators/permission.decorator';
 import { PermissionGuard } from '@/guards/permission.guard';
 
+@UseGuards(PermissionGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('file')
 @ApiTags('file')
 export class FileController {
@@ -22,9 +24,7 @@ export class FileController {
   @Post('upload')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor)
-  @UseGuards(PermissionGuard)
   @Permission('file:upload')
-  @UseGuards(JwtAuthGuard)
   async upload(@UploadFile() file: MultipartFile): Promise<any> {
     return await this.fileService.upload(file);
   }
