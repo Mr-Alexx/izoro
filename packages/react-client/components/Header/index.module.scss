@@ -1,12 +1,10 @@
 @import '@/styles/var.scss';
 
-$height: 50px;
-
 .app-header {
   position: sticky;
   top: 0;
   z-index: 99;
-  height: $height;
+  height: $header-height;
   padding: 0 15px;
   background-color: #fff;
   border-bottom: 1px solid #f5f5f5;
@@ -26,7 +24,7 @@ $height: 50px;
   .nav-list {
     display: flex;
     font-size: 15px;
-    line-height: $height;
+    line-height: $header-height;
 
     .nav-item {
       > a {

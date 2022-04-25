@@ -7,6 +7,7 @@ import styles from './index.module.scss';
 import message from '@/components/Message';
 import type { AnchorItem } from '@/components/Anchors';
 import Anchors from '@/components/Anchors';
+import { getArticle } from '@/api';
 
 export default function Post({ postData }) {
   /** 给code元素加上头部： 代码伸缩、代码语言、复制按钮 信息 */
@@ -143,14 +144,17 @@ export default function Post({ postData }) {
 }
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  let postData = null;
+  let errorMsg = null;
   try {
-    const postData = await get(`/article/${context.params.id}`);
-    return {
-      props: {
-        postData,
-      },
-    };
+    postData = await getArticle(context.params.id as string);
   } catch (err) {
-    console.error(12, err);
+    errorMsg = err.message;
   }
+  return {
+    props: {
+      postData,
+      errorMsg,
+    },
+  };
 };

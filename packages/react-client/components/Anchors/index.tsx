@@ -1,21 +1,40 @@
 /**
  * 锚点组件
- * @usage
  */
 import styles from './index.module.scss';
+import variables from '@/styles/var.module.scss';
+import type { CSSProperties } from 'react';
 
 export type AnchorItem = {
+  /** 锚点名称 */
   name?: string;
+  /** h元素类型，如 h1 则 hType为1 */
   hType?: number;
 };
 
-const Anchors = (props: { dataSource?: AnchorItem[] }) => {
-  const { dataSource } = props;
+const Anchors = (props: {
+  dataSource?: AnchorItem[];
+  sticky:
+    | false
+    | {
+        offsetTop: number | string;
+      };
+}) => {
+  const { dataSource, sticky } = props;
   if (!dataSource) {
     return null;
   }
+
+  const anchorStyles =
+    sticky === false
+      ? null
+      : ({
+          position: 'sticky',
+          top: sticky?.offsetTop || parseInt(variables.headerHeight) + 15,
+          zIndex: 10,
+        } as CSSProperties);
   return (
-    <div className={styles['anchor-wrapper']}>
+    <div className={styles['anchor-wrapper']} style={anchorStyles}>
       <div className={styles['anchor-title']}>目录</div>
       <ul className={styles['anchor-list']}>
         {dataSource.map((item: AnchorItem, index: number) => (

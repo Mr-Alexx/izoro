@@ -9,11 +9,12 @@ import Wrapper from '@/components/Wrapper';
 import Pagination from '@/components/Pagination';
 import { useRouter } from 'next/router';
 import Skeleton from '@/components/Skeleton';
+import { getArticles } from '@/api';
 
 export default function Home({ initialData }) {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<Api.ListRes>(initialData);
+  const [data, setData] = useState<Api.ListRes<Api.ArticleItem[]>>(initialData);
   console.log(router.query);
 
   // useEffect(() => {
@@ -49,16 +50,19 @@ export default function Home({ initialData }) {
 }
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  let data = null;
+  let errorMsg = null;
   try {
-    const data = await get('/article', { page: 1, limit: 12 });
-    return {
-      props: {
-        initialData: data,
-      },
-    };
+    data = await getArticles({ page: 1, limit: 12 });
   } catch (err) {
-    console.error(12, err);
+    errorMsg = err.message;
   }
+  return {
+    props: {
+      initialData: data,
+      errorMsg,
+    },
+  };
 };
 
 // export const getStaticProps: GetStaticProps = async context => {
