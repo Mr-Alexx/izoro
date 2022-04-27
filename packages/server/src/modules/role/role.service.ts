@@ -10,7 +10,7 @@ import { Like, Repository } from 'typeorm';
 import { Role } from './role.entity';
 import _ from '@/utils';
 import { MenuService } from '../menu/menu.service';
-import { RoleDeleteDto, RoleEditDto } from './role.dto';
+import { RoleCreateDto, RoleDeleteDto, RoleEditDto } from './role.dto';
 import { RoleQueryDto } from './role.dto';
 
 @Injectable()
@@ -48,7 +48,7 @@ export class RoleService {
     return this.roleRepository.findByIds(ids);
   }
 
-  async create(role: Partial<Role>): Promise<number> {
+  async create(role: RoleCreateDto): Promise<number> {
     if (!_.isObject(role)) {
       throw new HttpException('角色必须为一个对象！', HttpStatus.BAD_REQUEST);
     }

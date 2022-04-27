@@ -51,12 +51,8 @@ export class UserCreateDto {
   @ApiPropertyOptional({ description: '手机号码' })
   phone_number: string;
 
-  @ApiProperty({
-    type: 'enum',
-    enum: UserStatus,
-    description: '账号状态：0 禁用，1 启用',
-  })
-  status: UserStatus;
+  @ApiProperty({ description: '账号状态：0 作废，1 冻结，2 正常' })
+  status: number;
 }
 
 // 编辑参数

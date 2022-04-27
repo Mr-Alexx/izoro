@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { RoleStatus } from '@/interfaces/status.interface';
 
 // 查询参数
 export class RoleQueryDto {
@@ -13,7 +12,7 @@ export class RoleQueryDto {
   readonly name: string;
 
   @ApiPropertyOptional({ description: '角色状态状态，0禁用 1启用' })
-  status: RoleStatus;
+  status: number;
 }
 
 // 创建参数
@@ -24,8 +23,8 @@ export class RoleCreateDto {
   @ApiPropertyOptional({ description: '描述' })
   description: string;
 
-  @ApiProperty({ description: '状态，0禁用 1启用' })
-  status: RoleStatus;
+  @ApiProperty({ description: '状态，0 禁用，1 启用' })
+  status: number;
 }
 
 // 编辑参数

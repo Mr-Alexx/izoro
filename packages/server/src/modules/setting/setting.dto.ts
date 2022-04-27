@@ -1,5 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { PublishStatus, PublicStatus } from '@/interfaces/status.interface';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 // 创建参数
 export class SettingUpdateDto {

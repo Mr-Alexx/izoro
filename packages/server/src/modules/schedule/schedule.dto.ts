@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { PublishStatus, PublicStatus, StatusType } from '@/interfaces/status.interface';
 
 // 查询参数
 export class ScheduleQueryDto {
@@ -29,21 +28,11 @@ export class ScheduleCreateDto {
   @ApiProperty({ description: '配置定时任务的时间' })
   cron_time: string;
 
-  @ApiProperty({
-    description: '运行状态（0：未运行，1：运行中）',
-    type: 'enum',
-    enum: StatusType,
-    default: StatusType.disabled,
-  })
-  run_status: StatusType;
+  @ApiProperty({ description: '运行状态（0：未运行，1：运行中）' })
+  run_status: number;
 
-  @ApiProperty({
-    description: '任务状态（0：禁用，1：启用）',
-    type: 'enum',
-    enum: StatusType,
-    default: StatusType.disabled,
-  })
-  status: StatusType;
+  @ApiProperty({ description: '任务状态（0：禁用，1：启用）' })
+  status: number;
 }
 
 // 编辑参数

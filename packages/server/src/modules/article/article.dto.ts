@@ -95,13 +95,8 @@ export class ArticleCreateDto {
 
   // 发布状态
   // @IsIn()
-  @ApiProperty({
-    description: '发布状态：-1 回收，0 草稿，1 已发布',
-    type: 'enum',
-    enum: PublishStatus,
-    default: PublishStatus.draft,
-  })
-  status: PublishStatus;
+  @ApiProperty({ description: '发布状态：-1 回收，0 草稿，1 已发布' })
+  status: number;
 
   // 查看人数
   @ApiPropertyOptional({ description: '查看人数', example: 100 })
@@ -111,13 +106,8 @@ export class ArticleCreateDto {
   password: string;
 
   // 公开状态
-  @ApiProperty({
-    description: '公开状态：0 公开，1 需要密码，2 私密',
-    default: PublicStatus.public,
-    type: 'enum',
-    enum: PublicStatus,
-  })
-  public_status: PublicStatus;
+  @ApiProperty({ description: '公开状态：0 公开，1 需要密码，2 私密' })
+  public_status: number;
 
   // seo关键字
   @ApiPropertyOptional({ description: 'SEO关键字', example: 'google google调试', default: null })

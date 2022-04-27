@@ -1,4 +1,3 @@
-import { MenuNodeTypes, MenuStatus } from '@/interfaces/status.interface';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 // 查询参数
@@ -21,8 +20,8 @@ export class MenuCreateDto {
   @ApiProperty({ description: '父id', default: 0 })
   pid: number;
 
-  @ApiProperty({ description: '节点类型，1目录 2页面 3按钮', default: MenuNodeTypes.directory })
-  node_type: MenuNodeTypes;
+  @ApiProperty({ description: '节点类型，1目录 2页面 3按钮' })
+  node_type: number;
 
   @ApiPropertyOptional({ description: '图标', default: null })
   icon: string;
@@ -54,8 +53,8 @@ export class MenuCreateDto {
   })
   path: string;
 
-  @ApiProperty({ description: '状态，-1删除 0禁用 1正常', default: MenuStatus.normal })
-  status: MenuStatus;
+  @ApiProperty({ description: '状态，-1删除 0禁用 1正常' })
+  status: number;
 
   @ApiPropertyOptional({
     description: '绑定的权限列表，所有权限在 @/constants/permission.constant.ts 内定义',
