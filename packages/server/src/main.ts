@@ -101,11 +101,17 @@ async function bootstrap() {
   );
 
   const options = new DocumentBuilder()
-    .addSecurity('basic', {
-      type: 'http',
-      scheme: 'basic',
-    })
-    .addBearerAuth()
+    // .addSecurity('basic', {
+    //   type: 'http',
+    //   scheme: 'basic',
+    // })
+    // .addBearerAuth({
+    //   type: 'http',
+    //   scheme: 'bearer',
+    //   name: 'Authorization',
+    //   in: 'header',
+    // })
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'jwt')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/doc', app, document);

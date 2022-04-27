@@ -3,11 +3,8 @@ import { UserStatus } from '@/interfaces/status.interface';
 
 // 查询参数
 export class UserQueryDto {
-  @ApiPropertyOptional({
-    description: '用户状态',
-    example: UserStatus.active,
-  })
-  readonly status: UserStatus;
+  @ApiPropertyOptional({ description: '账号状态：0 作废，1 冻结，2 正常' })
+  readonly status: number;
 
   @ApiPropertyOptional({
     description: '用户名，模糊搜索',

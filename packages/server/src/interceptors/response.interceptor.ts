@@ -18,9 +18,9 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
     return next.handle().pipe(
       map((data, msg) => ({
         data,
-        code: HttpStatus.OK,
+        code: 0, // HttpStatus.OK,
         success: true,
-        _t: new Date().getTime(),
+        // _t: new Date().getTime(),
       })),
     );
   }
