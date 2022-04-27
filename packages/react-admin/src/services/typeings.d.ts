@@ -1,7 +1,7 @@
 /**
  * @description 接口通用 参数/结果 类型
  */
-declare namespace API {
+declare namespace Api {
   // 列表查询通用参数
   type ListQueryParams = {
     current?: number; // 默认antd的配置，需要做转换 => page
@@ -39,5 +39,44 @@ declare namespace API {
   // 通用删除参数
   type DeleteParams = {
     id: number | string;
+  };
+
+  type SettingUpdateDto = {
+    /**
+     * logo
+     */
+    logo?: string;
+    /**
+     * favicon
+     */
+    favicon?: string;
+    /**
+     * 站点名称
+     */
+    site_name?: string;
+    /**
+     * seo keyword
+     */
+    seo_keyword?: string;
+    /**
+     * seo description
+     */
+    seo_description?: string;
+    /**
+     * 百度统计id
+     */
+    baidu_analysis_id?: string;
+    /**
+     * 谷歌分析id
+     */
+    google_analysis_id?: string;
+    /**
+     * sentry js sdk
+     */
+    sentry_sdk?: string;
+    /**
+     * sentry dsn key
+     */
+    sentry_dsn_key?: string;
   };
 }

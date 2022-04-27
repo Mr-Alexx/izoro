@@ -1,12 +1,13 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Alert, message } from 'antd';
-import React, { useState } from 'react';
-import ProForm, { ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
-import { Link, history, useModel } from 'umi';
+import React, { useState, useRef, useLayoutEffect } from 'react';
+import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
+import type { ProFormInstance } from '@ant-design/pro-form';
+import { history, useModel } from 'umi';
 import Footer from '@/components/Footer';
 import styles from './index.less';
 import { login } from '@/services/user';
-import { updateToken } from '@/utils/auth';
+import { updateToken, getToken } from '@/utils/auth';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -20,8 +21,8 @@ const LoginMessage: React.FC<{
     showIcon
   />
 );
-/** 此方法会跳转到 redirect 参数所在的位置 */
 
+/** 此方法会跳转到 redirect 参数所在的位置 */
 const goto = () => {
   if (!history) return;
   setTimeout(() => {
@@ -29,15 +30,21 @@ const goto = () => {
     const { redirect } = query as {
       redirect: string;
     };
-    history.push(redirect || '/');
+    history.push(redirect ?? '/');
   }, 10);
 };
 
 const Login: React.FC = () => {
-  const [submitting, setSubmitting] = useState(false);
-  // const [userLoginState, setUserLoginState] = useState<ANT_API.LoginResult>({});
   const [errorMsg, setErrorMsg] = useState<string>('');
   const { initialState, setInitialState } = useModel('@@initialState');
+  const formRef = useRef<ProFormInstance>();
+
+  // 有登录，直接重定向
+  useLayoutEffect(() => {
+    if (initialState?.currentUser && getToken()) {
+      goto();
+    }
+  }, []);
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -47,11 +54,11 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (values: UserApi.LoginParams): Promise<void> => {
-    setSubmitting(true);
+  const handleLogin = async (values: UserApi.LoginDto): Promise<boolean | void> => {
     try {
       // 登录
       const data = await login({ ...values });
+      console.log('data', data);
       if (data?.accessToken) {
         message.success('登录成功！');
         // 设置token信息
@@ -60,53 +67,35 @@ const Login: React.FC = () => {
         goto();
         return;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      setErrorMsg(error.message);
+      setErrorMsg(error?.message);
     }
-
-    setSubmitting(false);
+    return false;
   };
+
+  if (initialState?.currentUser && getToken()) {
+    return null;
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <div className={styles.top}>
-          <div className={styles.header}>
-            <Link to="/">
-              {/* <img alt="logo" className={styles.logo} src="/images/logo.png" /> */}
-              {/* 内容管理系统 */}
-            </Link>
-          </div>
-        </div>
-
         <div
           className={styles.main}
           style={{
             marginTop: 40,
           }}>
-          <ProForm
+          <LoginForm
+            formRef={formRef}
+            logo="/images/logo.png"
+            title="天枢系统"
+            subTitle="TEAMSURE"
             initialValues={{
               autoLogin: true,
-              account: 'qian',
-              password: '123456',
             }}
-            submitter={{
-              searchConfig: {
-                submitText: '登录',
-              },
-              render: (_, dom) => dom.pop(),
-              submitButtonProps: {
-                loading: submitting,
-                size: 'large',
-                style: {
-                  width: '100%',
-                },
-              },
-            }}
-            onFinish={async values => {
-              handleSubmit(values as UserApi.LoginParams);
-            }}>
+            autoFocusFirstInput
+            onFinish={handleLogin}>
             {errorMsg && <LoginMessage content={errorMsg} />}
             <>
               <ProFormText
@@ -119,7 +108,7 @@ const Login: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: '账号是必填项！',
+                    message: '账号必填！',
                   },
                 ]}
               />
@@ -133,7 +122,7 @@ const Login: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: '密码是必填项！',
+                    message: '密码必填！',
                   },
                 ]}
               />
@@ -146,14 +135,8 @@ const Login: React.FC = () => {
               <ProFormCheckbox noStyle name="autoLogin">
                 自动登录
               </ProFormCheckbox>
-              <a
-                style={{
-                  float: 'right',
-                }}>
-                忘记密码 ?
-              </a>
             </div>
-          </ProForm>
+          </LoginForm>
         </div>
       </div>
       <Footer />

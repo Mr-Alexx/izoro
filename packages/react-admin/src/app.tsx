@@ -38,8 +38,8 @@ export const initialStateConfig = {
 export async function getInitialState(): Promise<{
   searchVal?: string;
   settings?: Partial<LayoutSettings>;
-  currentUser?: UserApi.UserInfo;
-  fetchUserInfo?: () => Promise<UserApi.UserInfo | undefined>;
+  currentUser?: UserApi.User;
+  fetchUserInfo?: () => Promise<UserApi.User | undefined>;
   global?: APP.initialStateGlobal;
 }> {
   const fetchUserInfo = async () => {
@@ -301,7 +301,7 @@ const responseInterceptor = async (response: Response) => {
     //   res.response.accessExpire = (new Date().getTime() + 1 * 60 * 1000) / 1000;
     //   res.response.refreshAfter = (new Date().getTime() + 0.5 * 60 * 1000) / 1000;
     // }
-    return res.response;
+    return res.data;
   }
   // https://beta-pro.ant.design/docs/request-cn
   // 为了适配antd pro的错误设计
@@ -422,6 +422,7 @@ export const request: RequestConfig = {
     },
   },
   requestType: 'json',
-  requestInterceptors: [tokenRefreshInterceptor, requestInterceptor],
+  // requestInterceptors: [tokenRefreshInterceptor, requestInterceptor],
+  requestInterceptors: [requestInterceptor],
   responseInterceptors: [responseInterceptor],
 };
