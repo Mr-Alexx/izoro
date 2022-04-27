@@ -19,6 +19,7 @@ import { UserService } from './user.service';
 import { Permission } from '@/decorators/permission.decorator';
 import { PermissionGuard } from '@/guards/permission.guard';
 import { UserCreateDto, UserQueryDto, UserEditDto } from './user.dto';
+import { PERMISSIONS } from '@/constants/permission.constant';
 
 @UseGuards(PermissionGuard)
 @UseGuards(JwtAuthGuard)
@@ -30,7 +31,7 @@ export class UserController {
   @ApiOperation({ summary: '创建用户' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @Permission('user:add')
+  @Permission(PERMISSIONS.创建用户)
   async register(@Body() user: UserCreateDto): Promise<any> {
     return this.userService.create(user);
   }
@@ -40,7 +41,7 @@ export class UserController {
    */
   @ApiOperation({ summary: '用户列表' })
   @Get()
-  @Permission('user:list')
+  @Permission(PERMISSIONS.用户列表)
   async findAll(@Query() query: UserQueryDto): Promise<any> {
     return await this.userService.findAll(query);
   }
@@ -51,14 +52,14 @@ export class UserController {
   @ApiOperation({ summary: '用户个人信息' })
   @Get('info')
   @ApiHeader({ name: 'Authorization', description: 'bearer token' })
-  @Permission('user:detail')
+  @Permission(PERMISSIONS.用户详情)
   GetInfo(@Request() req: Record<string, any>): Promise<any> {
     return this.userService.findById(req.user.id);
   }
 
   @ApiOperation({ summary: '更新用户信息' })
-  @Permission('user:edit')
   @Patch(':id')
+  @Permission(PERMISSIONS.编辑用户)
   async updateUser(@Body() user: UserEditDto): Promise<any> {
     if (Object.keys(user).length === 0) {
       throw new HttpException('请填写要修改的用户信息！', HttpStatus.BAD_REQUEST);
@@ -68,8 +69,8 @@ export class UserController {
 
   @ApiOperation({ summary: '删除用户' })
   @ApiParam({ name: 'id', description: '用户id' })
-  @Permission('user:del')
   @Delete(':id')
+  @Permission(PERMISSIONS.删除用户)
   async deleteUser(@Param('id') id: number): Promise<any> {
     return this.userService.deleteById(id);
   }

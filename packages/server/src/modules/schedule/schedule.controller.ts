@@ -27,9 +27,13 @@ import { PermissionsType } from '@/interfaces/permission.interface';
 import { ScheduleService } from './schedule.service';
 import { Schedule } from './schedule.entity';
 import { scheduleMethods } from '@/interfaces/schedule.interface';
+import { PERMISSIONS } from '@/constants/permission.constant';
+import { ScheduleCreateDto, ScheduleQueryDto, ScheduleEditDto, ScheduleDeleteDto } from './schedule.dto';
 
 @Controller('schedule')
 @ApiTags('schedule')
+@UseGuards(PermissionGuard)
+@UseGuards(JwtAuthGuard)
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
@@ -44,31 +48,29 @@ export class ScheduleController {
 
   @ApiOperation({ summary: '定时任务列表' })
   @Get()
-  // @UseGuards(PermissionGuard)
-  // @Permission(PermissionsType.定时任务列表)
-  @UseGuards(JwtAuthGuard)
-  async findAll(@Query() query: undefined | Record<string, any>): Promise<any> {
+  @Permission(PERMISSIONS.定时任务列表)
+  async findAll(@Query() query: ScheduleQueryDto): Promise<any> {
     return this.scheduleService.findAll(query);
   }
 
   @ApiOperation({ summary: '创建定时任务' })
   @Post()
-  @UseGuards(JwtAuthGuard)
-  async create(@Body() schedule: Partial<Schedule>): Promise<number> {
+  @Permission(PERMISSIONS.创建定时任务)
+  async create(@Body() schedule: ScheduleCreateDto): Promise<number> {
     return await this.scheduleService.create(schedule);
   }
 
   @ApiOperation({ summary: '更新定时任务' })
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
-  async update(@Body() schedule: Schedule): Promise<any> {
+  @Permission(PERMISSIONS.编辑定时任务)
+  async update(@Body() schedule: ScheduleEditDto): Promise<any> {
     return await this.scheduleService.update(schedule, true);
   }
 
   @ApiOperation({ summary: '删除定时任务' })
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') id: number): Promise<any> {
-    return await this.scheduleService.delete(id);
+  @Permission(PERMISSIONS.删除定时任务)
+  async delete(@Param() params: ScheduleDeleteDto): Promise<any> {
+    return await this.scheduleService.delete(params.id);
   }
 }

@@ -13,6 +13,7 @@ import { FileInterceptor } from '@/interceptors/file.interceptor';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { Permission } from '@/decorators/permission.decorator';
 import { PermissionGuard } from '@/guards/permission.guard';
+import { PERMISSIONS } from '@/constants/permission.constant';
 
 @UseGuards(PermissionGuard)
 @UseGuards(JwtAuthGuard)
@@ -24,7 +25,7 @@ export class FileController {
   @Post('upload')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor)
-  @Permission('file:upload')
+  @Permission(PERMISSIONS.图片上传)
   async upload(@UploadFile() file: MultipartFile): Promise<any> {
     return await this.fileService.upload(file);
   }

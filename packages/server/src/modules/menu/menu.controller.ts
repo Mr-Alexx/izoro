@@ -25,25 +25,26 @@ import { MenuService } from './menu.service';
 import { PermissionGuard } from '@/guards/permission.guard';
 import { Permission } from '@/decorators/permission.decorator';
 import { PermissionsType } from '@/interfaces/permission.interface';
+import { PERMISSIONS } from '@/constants/permission.constant';
+import { MenuCreateDto, MenuEditDto, MenuQueryDto } from './menu.dto';
 
 @Controller('menu')
 @ApiTags('menu')
+@UseGuards(PermissionGuard)
+@UseGuards(JwtAuthGuard)
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
   @ApiOperation({ summary: '菜单列表' })
   @Get()
-  @UseGuards(PermissionGuard)
   @Permission(PermissionsType.菜单列表)
-  @UseGuards(JwtAuthGuard)
-  async findAll(@Query() query: undefined | Record<string, any>): Promise<any> {
+  async findAll(@Query() query: MenuQueryDto): Promise<any> {
     return this.menuService.getMenuTree(query);
   }
 
   @ApiOperation({ summary: '菜单详情' })
   @Get(':id')
   @Permission(PermissionsType.菜单详情)
-  @UseGuards(JwtAuthGuard)
   async findById(@Param('id') id: number): Promise<any> {
     return this.menuService.findButtonsByMenuId(id);
   }
@@ -51,28 +52,28 @@ export class MenuController {
   @ApiOperation({ summary: '创建菜单' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(PermissionGuard)
   @Permission(PermissionsType.创建菜单)
-  @UseGuards(JwtAuthGuard)
-  async create(@Body() menu: Partial<Menu>): Promise<number> {
+  async create(@Body() menu: MenuCreateDto): Promise<number> {
     return this.menuService.create(menu);
   }
 
   @ApiOperation({ summary: '编辑菜单' })
   @Patch(':id')
-  @UseGuards(PermissionGuard)
   @Permission(PermissionsType.编辑菜单)
-  @UseGuards(JwtAuthGuard)
-  async update(@Param('id') id: number, @Body() menu: Partial<Menu>): Promise<any> {
-    return this.menuService.updateById(id, menu);
+  async update(@Body() menu: MenuEditDto): Promise<any> {
+    return this.menuService.updateById(menu);
   }
 
   @ApiOperation({ summary: '删除菜单' })
   @Delete(':id')
-  @UseGuards(PermissionGuard)
   @Permission(PermissionsType.删除菜单)
-  @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number): Promise<string> {
     return this.menuService.softDeleteById(id);
+  }
+
+  @ApiOperation({ summary: '权限列表MAP' })
+  @Get('permissions')
+  async getPermissions(): Promise<{ value: string; label: string }[]> {
+    return Object.keys(PERMISSIONS).map(key => ({ label: key, value: PERMISSIONS[key] }));
   }
 }

@@ -10,6 +10,7 @@ import { Not, Repository } from 'typeorm';
 import { Menu } from './menu.entity';
 import _ from '@/utils';
 import { MenuNodeTypes, MenuStatus } from '@/interfaces/status.interface';
+import { MenuEditDto, MenuQueryDto } from './menu.dto';
 
 @Injectable()
 export class MenuService {
@@ -50,12 +51,15 @@ export class MenuService {
     }
   }
 
-  async getMenuTree(query: any): Promise<any[]> {
+  async getMenuTree(query: MenuQueryDto): Promise<any[]> {
+    let newQuery;
     if (_.isString(query?.roleIds)) {
-      query.roleIds = query.roleIds.split(',').map(Number);
+      newQuery = {
+        roleIds: query.roleIds.split(',').map(Number),
+      };
     }
 
-    const data = await this.findAll(query);
+    const data = await this.findAll(newQuery);
     return this.makeTree(data);
   }
 
@@ -159,11 +163,11 @@ export class MenuService {
     }
   }
 
-  async updateById(id: number, menu: Partial<Menu>): Promise<Menu> {
-    if (!id) {
+  async updateById(menu: MenuEditDto): Promise<Menu> {
+    if (!menu.id) {
       throw new HttpException('menu id 必须有！', HttpStatus.BAD_REQUEST);
     }
-    const oldMenu = await this.menuRepository.findOne(id);
+    const oldMenu = await this.menuRepository.findOne(menu.id);
     if (!oldMenu) {
       throw new HttpException('找不到对应id的menu！', HttpStatus.NOT_FOUND);
     }

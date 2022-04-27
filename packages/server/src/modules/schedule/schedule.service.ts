@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StatusType } from '@/interfaces/status.interface';
 import { ScheduleMethods } from '@/interfaces/schedule.interface';
+import { ScheduleCreateDto, ScheduleEditDto, ScheduleQueryDto } from './schedule.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -18,7 +19,7 @@ export class ScheduleService {
   /**
    * @description 查询所有定时任务
    */
-  async findAll(query: Record<string, any>): Promise<any> {
+  async findAll(query: ScheduleQueryDto): Promise<any> {
     let { page, limit } = query;
     page = page || 1;
     limit = limit || 20;
@@ -39,7 +40,7 @@ export class ScheduleService {
   /**
    * @description 创建定时任务
    */
-  async create(schedule: Partial<Schedule>): Promise<number> {
+  async create(schedule: ScheduleCreateDto): Promise<number> {
     const { name } = schedule;
     const existSchedule = await this.scheduleRepository.findOne({ where: { name } });
     if (existSchedule) {
@@ -58,7 +59,7 @@ export class ScheduleService {
    * cron定义参考
    * @url https://docs.nestjs.cn/8/techniques?id=%e5%ae%9a%e6%97%b6%e4%bb%bb%e5%8a%a1
    */
-  addJob(schedule: Schedule): void {
+  addJob(schedule: ScheduleEditDto): void {
     const { id, name, status, cron_time, method } = schedule;
     const job = new CronJob(cron_time, () => {
       if (method in this) {

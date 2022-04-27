@@ -135,3 +135,46 @@ Prettier: 代码格式检查工具
 ## brew mysql 启动
 
 `mysql.server start`
+
+## controller 权限设置
+
+`test.controller.ts`
+
+```ts
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { PermissionGuard } from '@/guards/permission.guard';
+import { Permission } from '@/decorators/permission.decorator';
+
+@UseGuards(PermissionGuard)
+@ApiTags('test')
+@Controller('test')
+export class TestController {
+  @Permission('test:detail')
+  @Get()
+  async getDetail() {
+    return {};
+  }
+}
+```
+
+<hr/>
+
+`test.module.ts`
+
+```ts
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MenuModule } from '../menu/menu.module';
+import { TestController } from './test.controller';
+import { Test } from './test.entity';
+import { TestService } from './test.service';
+
+@Module({
+  // 如果使用权限守卫，MenuModule必须import进去
+  imports: [TypeOrmModule.forFeature([Test]), MenuModule],
+  controllers: [TestController],
+  providers: [TestService],
+})
+export class TestModule {}
+```
