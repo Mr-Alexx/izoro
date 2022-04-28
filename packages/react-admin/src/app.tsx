@@ -199,8 +199,8 @@ const refreshAccessToken = async () => {
  */
 const tokenRefreshInterceptor = (url: string, options: RequestOptionsInit) => {
   // 需要排除resetToken接口本身，否则会陷入死循环
-  // 排除/users/login 和 /users/find接口
-  if (url.match(/(\/users\/resetToken)|(\/users\/login)|(\/users\/find)/gi)) {
+  // 排除/auth/login 和 /user/info 接口
+  if (url.match(/(\/users\/resetToken)|(\/auth\/login)|(\/user\/info)/gi)) {
     return { url, options };
   }
   // 判断token时候过期
@@ -344,7 +344,7 @@ const errorHandler = (error: Error) => {
     const { url, options } = request;
     const { method, params, data, requestType, headers } = options;
 
-    if (url.includes('/users/find') && status === 401) {
+    if (url.includes('/user/info') && status === 401) {
       notification.warning({
         message: '登录状态过期或未登录',
         description: '请重新进行登录！',

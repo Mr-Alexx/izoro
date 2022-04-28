@@ -1,13 +1,16 @@
-// 二次封装ProTable，主要是统一基础配置
-import type { ActionType, ColumnsState, ListToolBarProps, ProTableProps } from '@ant-design/pro-table';
+/**
+ * @description 二次封装ProTable，统一基础配置
+ * @author 潜
+ */
+import type { ActionType, ListToolBarProps, ProColumns, ProTableProps } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type { ReactNode } from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import type { ParamsType } from '@ant-design/pro-provider';
 import styles from './index.less';
 import type { SearchConfig } from '@ant-design/pro-table/lib/components/Form/FormRender';
-import type { ToolBarOptions } from '@/components/TableToolBar';
-import TableToolBar from '@/components/TableToolBar';
+import type { ToolBarOptions } from './TableToolBar';
+import TableToolBar from './TableToolBar';
 import type { OptionConfig } from '@ant-design/pro-table/lib/components/ToolBar';
 import { RouteContext } from '@ant-design/pro-layout';
 import type { TablePaginationConfig } from 'antd';
@@ -38,10 +41,12 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
       extra?: React.ReactNode;
       content?: ReactNode[]; // React.ReactNode |
     };
+    /** 数据取值的键，如果是false，则直接返回data，如果有值则返回data[dataKey] */
+    dataKey?: string | false; // 数据取值，如果是false，则直接返回data，如果有值则返回data[dataKey]
   },
 ) => {
   const {
-    actionRef: propActionRef,
+    actionRef,
     rowKey,
     columns,
     sticky,
@@ -49,19 +54,17 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
     pagination,
     search,
     columnsState,
-    columnsStateMap,
     toolbar,
     toolBarRender,
     // tableAlertRender,
     // tableAlertOptionRender,
     footerToolBar,
     rowSelection,
-    onColumnsStateChange,
     scroll,
     request,
+    dataKey,
   } = props;
-  const defaultActionRef = useRef<ActionType>();
-  const actionRef = propActionRef || defaultActionRef;
+  const selectedRows = useRef<ProColumns<T, ValueType>[]>();
 
   // 合并 pagination 默认配置与用户设置
   let newPagination: false | TablePaginationConfig | undefined;
@@ -141,6 +144,7 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
         return [
           ...tools,
           <TableToolBar
+            key="toolbar"
             options={toolsOption}
             columns={columns?.map(v => ({ title: v.title as string, dataIndex: v.dataIndex as string }))}
           />,
@@ -151,28 +155,6 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
   }
 
   const position: string = toolbar?.position || 'top';
-
-  // 自定义列统一设置
-  // const [newColumnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>({});
-  // const changeColumnsStateMap = (map: Record<string, ColumnsState>) => {
-  //   if (onColumnsStateChange) {
-  //     onColumnsStateChange(map);
-  //     return;
-  //   }
-  //   // 即时响应
-  //   setColumnsStateMap(map);
-  //   // 存储更新，采用debounce，防止触发多个请求
-  //   // saveCustomColumns();
-  // };
-  // useEffect(() => {
-  //   // 初始化自定义列
-  //   if (columnsStateMap) {
-  //     setColumnsStateMap(columnsStateMap);
-  //   }
-  //   // getPageSettings('role').then((data: Record<string, any>) => {
-  //   //   setColumnsStateMap(data);
-  //   // });
-  // }, []);
 
   return (
     <RouteContext.Consumer>
@@ -186,14 +168,14 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
               styles['app-table'],
               collapsed ? styles['app-table--collapsed'] : '',
             )}
-            style={{ marginBottom: rowSelection ? 48 : 0 }}
+            style={{ marginBottom: selectedRows.current && selectedRows.current.length > 0 ? 48 : 0 }}
             {...props}
             rowKey={rowKey || 'id'}
             sticky={
               sticky === undefined
                 ? {
                     offsetHeader: 48,
-                    offsetScroll: rowSelection ? 48 : 0,
+                    offsetScroll: selectedRows.current && selectedRows.current.length > 0 ? 48 : 0,
                   }
                 : sticky
             }
@@ -207,8 +189,9 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
             // onColumnsStateChange={changeColumnsStateMap}
             // 自定义多选提示
             // tableAlertRender={tableAlertRender || false}
-            tableAlertOptionRender={({ selectedRowKeys }) => {
+            tableAlertOptionRender={({ selectedRowKeys, selectedRows: _selectedRows }) => {
               const selectedLenth = selectedRowKeys.length;
+              selectedRows.current = _selectedRows;
               return (
                 <div className={styles['row-selection-action-content']}>
                   <a
@@ -248,7 +231,7 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
               rowSelection
                 ? {
                     ...rowSelection,
-                    alwaysShowAlert: true,
+                    alwaysShowAlert: selectedRows.current && selectedRows.current.length > 0,
                   }
                 : false
             }
@@ -278,8 +261,8 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
                         throw new Error();
                       }
                       return {
-                        total: data.total,
-                        data: data.list || data.data,
+                        total: !data ? 0 : dataKey === false ? data?.length : data.total,
+                        data: !data ? [] : dataKey === false ? data : dataKey ? data[dataKey] : data.list || data.data,
                       };
                     } catch (err) {
                       return {

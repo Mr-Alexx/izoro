@@ -26,12 +26,36 @@
     }
   }
 
-  :global(.ant-page-header) {
-    padding-bottom: 12px;
+  :global {
+    .ant-page-header {
+      padding-bottom: 12px;
+    }
+    .ant-pro-page-container-children-content {
+      margin: 20px 20px 0;
+    }
+    .ant-page-header-footer {
+      margin-top: 0;
+    }
   }
 
-  :global(.ant-pro-page-container-children-content) {
-    margin: 20px 20px 0;
+  &.has-tabs {
+    :global {
+      .ant-page-header {
+        padding-bottom: 0 !important;
+      }
+      .ant-tabs-tab {
+        font-size: 14px;
+      }
+      .ant-tabs-tab + .ant-tabs-tab {
+        margin-left: 20px;
+      }
+    }
+  }
+
+  &.has-anchor-tabs {
+    :global(.ant-page-header) {
+      padding-bottom: 50px;
+    }
   }
 }
 
@@ -41,10 +65,4 @@
 }
 :global(.ant-table-tbody .ant-image-img) {
   object-fit: contain;
-}
-
-.has-anchor-tabs {
-  :global(.ant-page-header) {
-    padding-bottom: 50px;
-  }
 }

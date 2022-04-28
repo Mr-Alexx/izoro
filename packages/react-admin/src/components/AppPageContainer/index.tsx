@@ -35,7 +35,7 @@ type AppPageContainerProps = PageContainerProps & {
 };
 
 const AppPageContainer: FC<AppPageContainerProps> = props => {
-  const { anchor, extra, back, children, footerAlign } = props;
+  const { anchor, extra, back, children, footerAlign, tabList } = props;
   let { onBack } = props;
 
   // 锚点不记录到url上，不对返回有影响
@@ -89,6 +89,7 @@ const AppPageContainer: FC<AppPageContainerProps> = props => {
       className={classNames(styles['app-page-container'], {
         [styles[`app-page-container--${footerAlign}`]]: !!footerAlign,
         [styles['has-anchor-tabs']]: anchor?.list && anchor?.list?.length > 0,
+        [styles['has-tabs']]: tabList && tabList.length > 0,
       })}
       {...props}
       extra={extraContent}

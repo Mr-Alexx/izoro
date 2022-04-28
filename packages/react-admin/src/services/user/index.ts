@@ -1,4 +1,4 @@
-import { get, patch, post } from '@/utils/request';
+import { get, patch, post, del } from '@/utils/request';
 
 // 登录
 export const login = (data: UserApi.LoginDto): Promise<UserApi.LoginRes> => post('/auth/login', data);
@@ -19,7 +19,7 @@ export const createUser = (data: UserApi.UserCreateDto): Promise<UserApi.User> =
 export const editUser = (data: UserApi.UserEditDto): Promise<number> => patch(`/user/${data.id}`, data);
 
 // 删除用户
-export const deleteUser = (id: number): Promise<string> => patch(`/user/${id}`);
+export const deleteUser = (id: number): Promise<string> => del(`/user/${id}`);
 
 // 用户角色绑定
 // export const userBindRoles = (data: UserApi.UserBindRolesParams): Promise<API.AnyRes> =>

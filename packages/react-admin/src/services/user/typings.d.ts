@@ -53,7 +53,7 @@ declare namespace UserApi {
      */
     phone_number?: string;
     /**
-     * 账号状态：0 作废，1 冻结，2 正常
+     * 账号状态：0 禁用，1 正常
      */
     status: number;
   };
