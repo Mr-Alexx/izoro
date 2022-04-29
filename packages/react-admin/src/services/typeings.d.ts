@@ -12,6 +12,7 @@ declare namespace Api {
     total: number; // 总条数
     page?: number; // 页码
     limit?: number; // 每页条数
+    list: ListData;
     data: ListData;
   };
 

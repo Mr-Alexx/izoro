@@ -50,11 +50,11 @@
     path: '/account',
     component: './account/index',
   },
-  // {
-  //   name: '角色管理',
-  //   path: 'role',
-  //   component: './system/role/index',
-  // },
+  {
+    name: '角色管理',
+    path: 'role',
+    component: './role/index',
+  },
   // {
   //   name: '菜单管理',
   //   path: 'menu',

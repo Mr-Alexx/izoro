@@ -2,96 +2,25 @@
  * @description 账号管理页
  */
 
-import { FormInstance, Tooltip } from 'antd';
-import { Popconfirm } from 'antd';
-import { Button, message, Tag, Row, Col, Modal } from 'antd';
+import type { FormInstance } from 'antd';
+import { Button, message, Tag, Row, Col, Modal, Space } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProForm, { ProFormText, ProFormSelect, ModalForm } from '@ant-design/pro-form';
+import ProForm, { ProFormText, ProFormSelect, ModalForm, ProFormDependency } from '@ant-design/pro-form';
 import { getUsers, createUser, editUser, deleteUser } from '@/services/user';
-import { useState, useRef } from 'react';
-import { ACTIONS } from '@/constants';
+import { useState, useRef, FC } from 'react';
+import { ACTIONS, STATUS_ENUM, STATUS_OPTIONS } from '@/constants';
 import { Access, useAccess } from 'umi';
 import AppPageContainer from '@/components/AppPageContainer';
 import AppTable from '@/components/AppTable';
-import { ProFormTree } from '@/components/ProFormItem';
 import copy from 'copy-to-clipboard';
 import { ProFormDigit } from '@ant-design/pro-form';
-import { ClearOutlined, DeleteFilled, EditFilled } from '@ant-design/icons';
+import { ClearOutlined } from '@ant-design/icons';
 import ConfirmButton from '@/components/Button/ConfirmButton';
 import TooltipButton from '@/components/Button/TooltipButton';
+import { getRoles } from '@/services/role';
+import { useRequest } from 'umi';
 
-const WORDS: string[] = [
-  'a',
-  'b',
-  'c',
-  'd',
-  'e',
-  'f',
-  'g',
-  'h',
-  'i',
-  'j',
-  'k',
-  'l',
-  'm',
-  'n',
-  'o',
-  'p',
-  'q',
-  'r',
-  's',
-  't',
-  'u',
-  'v',
-  'w',
-  'x',
-  'y',
-  'z',
-  'A',
-  'B',
-  'C',
-  'D',
-  'E',
-  'F',
-  'G',
-  'H',
-  'I',
-  'J',
-  'K',
-  'L',
-  'M',
-  'N',
-  'O',
-  'P',
-  'Q',
-  'R',
-  'S',
-  'T',
-  'U',
-  'V',
-  'W',
-  'X',
-  'Y',
-  'Z',
-  '0',
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '_',
-  '-',
-  '$',
-  '%',
-  '&',
-  '@',
-  '+',
-  '!',
-];
+const WORDS: string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-$%&@+!';
 
 /**
  * @description 随机密码
@@ -99,10 +28,10 @@ const WORDS: string[] = [
  * 组合规则：首字母大写 + 一位特殊字符 + 1位数字 + 特殊字符外的随机串
  */
 const randomPassword = (len: number = 8): string => {
-  const wordsLenth = WORDS.slice(0, 63).length;
-  const UpperCase = WORDS.slice(26, 52);
-  const number = WORDS.slice(53, 62);
-  const chart = WORDS.slice(63);
+  const wordsLenth = WORDS.substring(0, 63).length;
+  const UpperCase = WORDS.substring(26, 52);
+  const number = WORDS.substring(53, 62);
+  const chart = WORDS.substring(63);
   let password = '';
 
   password += UpperCase[Math.floor(Math.random() * UpperCase.length)];
@@ -115,97 +44,17 @@ const randomPassword = (len: number = 8): string => {
   return password;
 };
 
-const UserPage = () => {
-  const [currentRow, setCurrentRow] = useState<UserApi.User>();
-  const [actionType, setActionType] = useState<number>(ACTIONS.view);
+const UserPage: FC = () => {
   const [visible, setVisible] = useState<boolean>(false);
-  const [modalVisible2, updateModalVisible2] = useState<boolean>(false);
   const [title, setTitle] = useState<string>();
 
   const formRef = useRef<FormInstance>();
   const actionRef = useRef<ActionType>();
   const access = useAccess();
 
-  const statusEnum = {
-    0: {
-      text: '禁用',
-      status: 'Error',
-    },
-    1: {
-      text: '正常',
-      status: 'Processing',
-    },
-  };
-
-  const statusList = Object.keys(statusEnum).map(key => {
-    return {
-      value: key,
-      label: statusEnum[key].text,
-    };
+  const { data: roles } = useRequest(getRoles, {
+    formatResult: (result: Api.ListRes) => result?.list?.map?.(item => ({ value: item.id, label: item.name })),
   });
-
-  /**
-   * @description 随机密码
-   */
-  const handleRandomPassword = (): void => {
-    const password = randomPassword();
-    formRef.current?.setFieldsValue({ password });
-  };
-
-  /**
-   * @description 编辑/添加账号
-   */
-  const submit = async (formVal: UserApi.UserEditDto): Promise<boolean> => {
-    try {
-      const data = formVal.id ? await editUser(formVal) : await createUser(formVal);
-      console.log(data);
-      message.success(`${formVal.id ? '编辑' : '新增'}成功！`);
-      actionRef.current?.reload();
-    } catch (err) {
-      console.error(err);
-      return false;
-    }
-    return true;
-  };
-
-  /**
-   * @description 绑定角色
-   */
-  const grantRoles = async (value: UserApi.User & { role_ids: number[] }) => {
-    try {
-      await userBindRoles({ user_id: Number(currentRow?.id), role_ids: value.role_ids || [] });
-      message.success('绑定角色成功！');
-      updateModalVisible2(false);
-      actionRef.current?.reload();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  /**
-   * @description 重置密码
-   */
-  const resetPassord = async (record: UserApi.User) => {
-    try {
-      const newPwd = randomPassword();
-      await editUser({
-        ...record,
-        password: newPwd,
-      });
-      const modal = Modal.success({
-        title: '密码重置成功',
-        content: `账号 ${record.account} 密码已重置为 ${newPwd}`,
-        okText: '复制密码',
-        onOk: () => {
-          copy(newPwd);
-          message.success('复制成功！');
-          modal.destroy();
-        },
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   // 表头数据（列）
   const columns: ProColumns<UserApi.User>[] = [
@@ -243,36 +92,33 @@ const UserPage = () => {
     {
       title: '角色',
       dataIndex: 'roles',
-      key: 'roles',
-      search: false,
-      // valueType: 'select',
       align: 'left',
       width: 140,
-      // fieldProps: {
-      //   options: roleList,
-      //   multiple: true,
-      // },
-      renderText: (_, row) => {
+      valueType: 'select',
+      fieldProps: {
+        options: roles,
+        mode: 'multiple',
+      },
+      render: (_, row) => {
         if (!row.roles) {
           return '-';
         }
         return (
-          <>
-            {row.roles?.map(v => (
-              <Tag key={v.id} color="processing" style={{ marginBottom: 5 }}>
-                {v.name}
+          <Space size={3}>
+            {row.roles?.map?.((item: any) => (
+              <Tag key={item.id} color="processing">
+                {item.name}
               </Tag>
             ))}
-          </>
+          </Space>
         );
       },
     },
     {
       title: '状态',
       dataIndex: 'status',
-      key: 'status',
       align: 'center',
-      valueEnum: statusEnum,
+      valueEnum: STATUS_ENUM,
       valueType: 'select',
       width: 80,
     },
@@ -317,50 +163,75 @@ const UserPage = () => {
     },
     {
       title: '操作',
-      width: 160,
+      width: 100,
       align: 'center',
       dataIndex: 'option',
-      key: 'option',
       valueType: 'option',
       fixed: 'right',
-      render: (_, row) => [
-        <Access key="reset" accessible={access.system.user.edit}>
-          {/* <Popconfirm
-            placement="rightBottom"
-            title={`确定要重置账号 ${row.account} 的密码吗？`}
-            onConfirm={() => resetPassord(row)}>
-            <Tooltip title="重置密码">
-              <Button size="small" type="text">
-                <ClearOutlined />
-              </Button>
-            </Tooltip>
-          </Popconfirm> */}
-          <ConfirmButton
-            title={`确定要重置账号 ${row.account} 的密码吗？`}
-            buttonProps={{
-              icon: <ClearOutlined />,
-            }}
-            onConfirm={() => resetPassord(row)}
-          />
-        </Access>,
-        <Access key="edit" accessible={access.system.user.edit}>
-          {/* <Tooltip title="编辑账号">
-            <Button size="small" type="text" onClick={() => handleAction(ACTIONS.edit, row)}>
-              <EditFilled />
-            </Button>
-          </Tooltip> */}
-          <TooltipButton iconType="edit" title="编辑账号" onClick={() => handleAction(ACTIONS.edit, row)} />
-        </Access>,
-        <Access key="del" accessible={access.system.user.edit}>
-          <ConfirmButton
-            type="delete"
-            title={`确定要删除账号 ${row.account} 吗？`}
-            onConfirm={() => handleAction(ACTIONS.del, row)}
-          />
-        </Access>,
-      ],
+      render: (_, row) => {
+        return (
+          <Space size={5}>
+            <Access key="reset" accessible={access.system.user.edit}>
+              <ConfirmButton
+                title={`确定要重置账号 ${row.account} 的密码吗？`}
+                tips="重置密码"
+                buttonProps={{
+                  icon: <ClearOutlined />,
+                  style: { color: '#40a9ff' },
+                }}
+                onConfirm={() => resetPassord(row)}
+              />
+            </Access>
+
+            <Access key="edit" accessible={access.system.user.edit}>
+              <TooltipButton iconType="edit" title="编辑账号" onClick={() => handleAction(ACTIONS.edit, row)} />
+            </Access>
+
+            <Access key="del" accessible={access.system.user.edit}>
+              <ConfirmButton
+                type="delete"
+                title={`确定要删除账号 ${row.account} 吗？`}
+                onConfirm={() => handleAction(ACTIONS.del, row)}
+              />
+            </Access>
+          </Space>
+        );
+      },
     },
   ];
+
+  /**
+   * @description 随机密码
+   */
+  const handleRandomPassword = (): void => {
+    const password = randomPassword();
+    formRef.current?.setFieldsValue({ password });
+  };
+
+  /**
+   * @description 重置密码
+   */
+  const resetPassord = async (record: UserApi.User) => {
+    try {
+      const newPwd = randomPassword();
+      await editUser({
+        ...record,
+        password: newPwd,
+      });
+      const modal = Modal.success({
+        title: '密码重置成功',
+        content: `账号 ${record.account} 密码已重置为 ${newPwd}`,
+        okText: '复制密码',
+        onOk: () => {
+          copy(newPwd);
+          message.success('复制成功！');
+          modal.destroy();
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   /**
    * 处理操作
@@ -370,16 +241,32 @@ const UserPage = () => {
    */
   const handleAction = (action: ACTIONS, record?: UserApi.User): void | boolean => {
     switch (action) {
-      case ACTIONS.edit:
       case ACTIONS.add:
-        formRef.current?.setFieldsValue({ ...record });
-        setTitle(record?.id ? '新增账号' : `编辑账号 - ${record?.account}`);
+        formRef.current?.resetFields();
+      case ACTIONS.edit:
+        record && formRef.current?.setFieldsValue({ ...record });
+        setTitle(record?.id ? `编辑账号 - ${record?.account}` : '新增账号');
         setVisible(true);
         break;
       case ACTIONS.del:
         deleteUser(record?.id as number).then(tip => message.success(tip));
         break;
     }
+  };
+
+  /**
+   * @description 编辑/添加账号
+   */
+  const submit = async (formVal: UserApi.UserEditDto): Promise<boolean> => {
+    try {
+      formVal.id ? await editUser(formVal) : await createUser(formVal);
+      message.success(`${formVal.id ? '编辑' : '新增'}成功！`);
+      actionRef.current?.reload();
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -406,8 +293,10 @@ const UserPage = () => {
         visible={visible}
         onVisibleChange={setVisible}
         onFinish={submit}
-        labelCol={{ span: 4 }}
-        layout="horizontal">
+        labelCol={{ flex: '100px' }}
+        wrapperCol={{ flex: 1 }}
+        layout="horizontal"
+        autoFocusFirstInput>
         <ProFormDigit name="id" hidden />
         <ProFormText
           name="account"
@@ -417,69 +306,54 @@ const UserPage = () => {
             { min: 4, max: 20, message: '长度介于4 ~ 20个字符' },
           ]}
         />
-        {actionType === ACTIONS.add && (
-          <ProForm.Item
-            label="密码"
-            name="password"
-            style={{ marginBottom: 0 }}
-            rules={[
-              { required: true, message: '密码必填' },
-              { min: 6, max: 24, message: '密码长度6-24' },
-            ]}>
-            <Row gutter={0}>
-              <Col span={18}>
-                <ProFormText name="password" placeholder="请输入密码" />
-              </Col>
-              <Col span={6}>
-                <Button type="primary" style={{ float: 'right' }} onClick={() => handleRandomPassword()}>
-                  随机密码
-                </Button>
-              </Col>
-            </Row>
-          </ProForm.Item>
-        )}
-        <ProFormText name="nickname" label="昵称" placeholder="请输入昵称" />
-        <ProFormText name="email" label="邮箱" placeholder="请输入邮箱" />
+        <ProFormDependency name={['id']}>
+          {({ id }) => {
+            if (!!id) {
+              return;
+            }
+            return (
+              <ProForm.Item
+                label="密码"
+                name="password"
+                style={{ marginBottom: 0 }}
+                rules={[
+                  { required: true, message: '密码必填' },
+                  { min: 6, max: 24, message: '密码长度6-24' },
+                ]}>
+                <Row gutter={0}>
+                  <Col span={18}>
+                    <ProFormText name="password" />
+                  </Col>
+                  <Col span={6}>
+                    <Button type="primary" style={{ float: 'right' }} onClick={() => handleRandomPassword()}>
+                      随机密码
+                    </Button>
+                  </Col>
+                </Row>
+              </ProForm.Item>
+            );
+          }}
+        </ProFormDependency>
+        <ProFormText name="nickname" label="昵称" />
+        <ProFormText name="email" label="邮箱" />
+        <ProFormText name="phone_number" label="手机号码" />
         <ProFormSelect
           name="status"
           label="状态"
-          placeholder="请选择账号状态"
           key="status"
-          options={statusList}
+          options={STATUS_OPTIONS}
           allowClear={false}
-          initialValue={'1'}
+          initialValue={1}
           rules={[{ required: true }]}
         />
-      </ModalForm>
-
-      <ModalForm
-        modalProps={{
-          destroyOnClose: true,
-        }}
-        title={title}
-        visible={modalVisible2}
-        onVisibleChange={updateModalVisible2}
-        initialValues={{
-          role_ids: currentRow?.roles?.map(v => v.id),
-        }}
-        onFinish={grantRoles}
-        layout="horizontal">
-        <ProFormTree
-          name="role_ids"
+        <ProFormSelect
+          name="roles"
           label="绑定角色"
-          placeholder="请选择角色"
+          mode="multiple"
           fieldProps={{
-            // options: roles,
-            multiple: true,
+            options: roles,
             showSearch: true,
             allowClear: true,
-            // treeCheckable: true,
-            treeDefaultExpandAll: true,
-            fieldNames: {
-              label: 'label',
-              value: 'value',
-              children: 'children',
-            },
           }}
         />
       </ModalForm>

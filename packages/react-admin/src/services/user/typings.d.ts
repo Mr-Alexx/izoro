@@ -14,13 +14,11 @@ declare namespace UserApi {
     accessToken: string;
   };
 
-  type UserQueryParams = {
+  type UserQueryParams = Api.ListQueryParams & {
     /** 账号状态：0 作废，1 冻结，2 正常 */
     status: number;
     /** 用户名，模糊搜索 */
     account: string;
-    limit: number;
-    page: number;
   };
 
   type UserCreateDto = {

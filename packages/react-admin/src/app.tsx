@@ -236,12 +236,8 @@ const requestInterceptor = (url: string, options: RequestOptionsInit) => {
 
   if (data?.current && data?.pageSize) {
     data.page = data?.current;
-    data.page_num = data?.pageSize;
-    if (data?.status === undefined) {
-      delete data?.status;
-    } else {
-      data.status = Number(data?.status);
-    }
+    data.limit = data?.pageSize;
+
     delete data?.current;
     delete data?.pageSize;
   }

@@ -7,18 +7,18 @@ import { Button, Tooltip } from 'antd';
 import type { ButtonProps, TooltipProps } from 'antd';
 import { DeleteFilled, EditFilled, EyeFilled, PlusCircleFilled } from '@ant-design/icons';
 
-type Action = 'view' | 'add' | 'edit' | 'delete';
+export type IconButtonAction = 'view' | 'add' | 'edit' | 'delete';
 type ConfirmButtonProps = TooltipProps &
   ButtonProps & {
     /** 按钮类型，'view' | 'add' | 'edit' | 'delete'，如果是这其中的一种，显示对应的图标按钮 */
-    iconType?: Action;
+    iconType?: IconButtonAction;
   };
 
-const iconMap = {
-  view: { tips: '查看', color: '#ffc069', icon: <EyeFilled /> },
-  add: { tips: '新增', color: '#ffc069', icon: <PlusCircleFilled /> },
-  edit: { tips: '编辑', color: '#ffc069', icon: <EditFilled /> },
-  delete: { tips: '删除', color: '#ffc069', icon: <DeleteFilled /> },
+export const iconMap = {
+  view: { tips: '查看', color: '#73d13d', icon: <EyeFilled /> },
+  add: { tips: '新增', color: '#40a9ff', icon: <PlusCircleFilled /> },
+  edit: { tips: '编辑', color: '#ffa940', icon: <EditFilled /> },
+  delete: { tips: '删除', color: '#ff4d4f', icon: <DeleteFilled /> },
 };
 
 const TooltipButton = (props: ConfirmButtonProps) => {
