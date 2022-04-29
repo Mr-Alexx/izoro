@@ -178,3 +178,9 @@ import { TestService } from './test.service';
 })
 export class TestModule {}
 ```
+
+## Mysql 相关
+
+### sql 之 left join、right join、inner join 的区别
+
+[参考文章](https://www.cnblogs.com/pcjim/articles/799302.html)

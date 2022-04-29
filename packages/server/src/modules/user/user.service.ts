@@ -4,6 +4,7 @@ import { Like, Repository } from 'typeorm';
 import { RoleService } from '../role/role.service';
 import { User } from './user.entity';
 import { UserEditDto, UserQueryDto } from './user.dto';
+import { isEmpty } from 'class-validator';
 
 @Injectable()
 export class UserService {
@@ -85,13 +86,15 @@ export class UserService {
       const userQuery = this.userRepository
         .createQueryBuilder('user')
         .select()
-        .innerJoin('user.roles', 'role')
+        .leftJoin('user.roles', 'role')
         .addSelect(['role.id', 'role.name'])
         .orderBy('user.id', 'ASC')
         .skip((page - 1) * limit)
         .take(limit);
-      status && userQuery.where('user.status = :status', { status });
-      account && userQuery.andWhere('user.account LIKE :account', { account: `%${account}%` });
+
+      !isEmpty(status) && userQuery.where('user.status = :status', { status });
+      !isEmpty(account) && userQuery.andWhere('user.account LIKE :account', { account: `%${account}%` });
+
       const [list, total] = await userQuery.getManyAndCount();
       return { list, total };
     } catch (err) {

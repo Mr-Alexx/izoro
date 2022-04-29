@@ -35,7 +35,7 @@ export class RoleController {
 
   @ApiOperation({ summary: '角色列表' })
   @Get()
-  async findAll(@Query() query: RoleQueryDto): Promise<any> {
+  async findAll(@Query() query: RoleQueryDto): Promise<App.ListRes<Role[]>> {
     return this.roleService.findAll(query);
   }
 

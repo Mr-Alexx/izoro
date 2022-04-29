@@ -21,7 +21,7 @@ export class RoleService {
     private readonly menuService: MenuService,
   ) {}
 
-  async findAll(query: RoleQueryDto): Promise<any> {
+  async findAll(query: RoleQueryDto): Promise<App.ListRes<Role[]>> {
     const { status, name } = query;
     let { page, limit } = query;
     page = page || 1;
