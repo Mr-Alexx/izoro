@@ -1,11 +1,14 @@
 import AppPageContainer from '@/components/AppPageContainer';
 import AppTable from '@/components/AppTable';
+import ConfirmButton from '@/components/Button/ConfirmButton';
+import TooltipButton from '@/components/Button/TooltipButton';
 import { ACTIONS } from '@/constants';
 import { addCategory, deleteCategory, editCategory, getCategories } from '@/services/category';
 import ProForm, { ModalForm, ProFormText, ProFormTreeSelect } from '@ant-design/pro-form';
 import type { ProColumnType } from '@ant-design/pro-table';
-import { Button, FormInstance, message, Popconfirm } from 'antd';
+import { Button, FormInstance, message, Popconfirm, Space } from 'antd';
 import { useState, useMemo, useRef } from 'react';
+import { Access, useAccess } from 'umi';
 
 const CategoryPage = () => {
   const [visible, setVisible] = useState<boolean>();
@@ -15,6 +18,7 @@ const CategoryPage = () => {
   // const title = useMemo(() => {
   //   return currentRow?.id ? '新增分类' : `编辑分类 - ${currentRow?.name}`;
   // }, [currentRow]);
+  const access = useAccess();
 
   const columns: ProColumnType<CategoryApi.Category>[] = [
     {
@@ -50,25 +54,28 @@ const CategoryPage = () => {
     },
     {
       title: '操作',
-      dataIndex: 'operation',
-      width: 160,
+      align: 'center',
+      dataIndex: 'option',
+      width: 100,
       fixed: 'right',
       render: (_, row) => {
         return (
-          <>
-            <Button type="text" onClick={() => handleAction(ACTIONS.add)}>
-              新增
-            </Button>
-            <Button type="text" onClick={() => handleAction(ACTIONS.edit, row)}>
-              修改
-            </Button>
+          <Space size={5}>
+            <Access key="edit" accessible={access.system.role.edit}>
+              <TooltipButton iconType="add" title="新增子分类" onClick={() => handleAction(ACTIONS.add)} />
+            </Access>
+            <Access key="edit" accessible={access.system.role.edit}>
+              <TooltipButton iconType="edit" title="编辑分类" onClick={() => handleAction(ACTIONS.edit, row)} />
+            </Access>
 
-            <Popconfirm title={`确定要删除分类 ${row.name} 吗？`} onConfirm={() => handleAction(ACTIONS.del, row)}>
-              <Button type="text" danger>
-                删除
-              </Button>
-            </Popconfirm>
-          </>
+            <Access key="del" accessible={access.system.role.edit}>
+              <ConfirmButton
+                type="delete"
+                title={`确定要删除分类 ${row.name} 吗？`}
+                onConfirm={() => handleAction(ACTIONS.del, row)}
+              />
+            </Access>
+          </Space>
         );
       },
     },
