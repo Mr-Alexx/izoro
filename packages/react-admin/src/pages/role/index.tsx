@@ -72,7 +72,7 @@ const User: FC = () => {
     },
     {
       title: '操作',
-      width: 120,
+      width: 80,
       align: 'center',
       dataIndex: 'option',
       valueType: 'option',

@@ -6,7 +6,7 @@
   {
     path: '/dashboard',
     name: '首页',
-    icon: 'icon-shouye',
+    icon: 'icon-home',
     // component: './home/index',
     component: './dashboard/workplace',
   },
@@ -46,12 +46,13 @@
   },
   {
     name: '账号管理',
-    icon: 'user',
+    icon: 'icon-account',
     path: '/account',
     component: './account/index',
   },
   {
     name: '角色管理',
+    icon: 'icon-role',
     path: 'role',
     component: './role/index',
   },
@@ -72,8 +73,15 @@
   // },
   {
     name: '分类管理',
+    icon: 'icon-category',
     path: 'category',
     component: './category/index',
+  },
+  {
+    name: '文章管理',
+    icon: 'icon-article',
+    path: '/article',
+    component: './article/index',
   },
   // {
   //   name: '定时任务管理',

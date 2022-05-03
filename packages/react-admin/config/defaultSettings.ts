@@ -7,7 +7,7 @@ const Settings: LayoutSettings & {
   title: 'TEAMSURE',
   pwa: false,
   logo: '/images/logo.png',
-  iconfontUrl: '//at.alicdn.com/t/font_2360339_bbx1obfgcww.js', // 菜单要使用iconfont，此处必加
+  iconfontUrl: '//at.alicdn.com/t/font_3368508_65h9th8ew5f.js', // 菜单要使用iconfont，此处必加
   // navTheme: 'dark',
   // 拂晓蓝
   // primaryColor: '#1890ff',
