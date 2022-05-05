@@ -194,4 +194,19 @@ export class ArticleService {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  /** 查看密码 */
+  async viewPassword(id: number): Promise<string> {
+    if (!id) {
+      throw new HttpException('非法操作，文章id不存在！', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      console.log('result', id, typeof id);
+      const result = await this.articleRepository.findOne(id);
+
+      return result.password;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

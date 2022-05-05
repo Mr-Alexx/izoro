@@ -21,10 +21,8 @@ import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { Article } from './article.entity';
 import { Permission } from '@/decorators/permission.decorator';
 import { ArticleCreateDto, ArticleQueryDto, ArticleEditDto } from './article.dto';
+import { PERMISSIONS } from '@/constants/permission.constant';
 
-// @Crud({
-//   model: Article // Article采用增删改查接口模式
-// })
 @Controller('article')
 @ApiTags('Article')
 export class ArticleController {
@@ -54,7 +52,7 @@ export class ArticleController {
   @ApiOperation({ description: '创建文章' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @Permission('article:add')
+  @Permission(PERMISSIONS.创建文章)
   @UseGuards(JwtAuthGuard)
   async create(@Body() article: ArticleCreateDto): Promise<any> {
     return await this.articleService.create(article);
@@ -63,7 +61,7 @@ export class ArticleController {
   @ApiOperation({ description: '编辑文章' })
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  @Permission('article:edit')
+  @Permission(PERMISSIONS.编辑文章)
   @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: string, @Body() article: ArticleEditDto): Promise<any> {
     return await this.articleService.update(id, article);
@@ -74,7 +72,7 @@ export class ArticleController {
    */
   @Patch('delete')
   @HttpCode(HttpStatus.OK)
-  @Permission('article:del')
+  @Permission(PERMISSIONS.删除文章)
   @UseGuards(JwtAuthGuard)
   async recycleAll(@Body('ids') ids: string[]): Promise<any> {
     if (!Array.isArray(ids) || ids.length === 0) {
@@ -92,5 +90,12 @@ export class ArticleController {
       throw new HttpException('非法操作！ids数组不能为空！', HttpStatus.BAD_REQUEST);
     }
     return await this.articleService.deleteAll(ids);
+  }
+
+  @Get('/article/password/:id')
+  @Permission(PERMISSIONS.查看密码)
+  @UseGuards(JwtAuthGuard)
+  async viewPassword(@Param('id') id: number): Promise<string> {
+    return this.articleService.viewPassword(id);
   }
 }

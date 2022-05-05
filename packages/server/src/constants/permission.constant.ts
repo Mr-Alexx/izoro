@@ -41,6 +41,7 @@ export enum PERMISSIONS {
   编辑文章 = 'article:edit',
   文章列表 = 'article:list',
   文章详情 = 'article:detail',
+  查看密码 = 'article:view-password',
 
   /*============= 定时任务 =============*/
   创建定时任务 = 'schedule:add',
