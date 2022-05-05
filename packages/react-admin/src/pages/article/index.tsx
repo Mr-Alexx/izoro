@@ -1,24 +1,22 @@
 /**
- * @description 账号管理页
+ * @description 文章管理页
  */
 
 import type { FormInstance } from 'antd';
-import { Button, message, Tag, Row, Col, Modal, Space } from 'antd';
+import { Button, message, Row, Col, Space } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProForm, { ProFormText, ProFormSelect, ModalForm, ProFormDependency } from '@ant-design/pro-form';
-import { getUsers, createUser, editUser, deleteUser } from '@/services/user';
 import { useState, useRef, FC } from 'react';
 import { ACTIONS, STATUS_ENUM, STATUS_OPTIONS } from '@/constants';
 import { Access, useAccess } from 'umi';
 import AppPageContainer from '@/components/AppPageContainer';
 import AppTable from '@/components/AppTable';
-import copy from 'copy-to-clipboard';
 import { ProFormDigit } from '@ant-design/pro-form';
-import { ClearOutlined } from '@ant-design/icons';
 import ConfirmButton from '@/components/Button/ConfirmButton';
 import TooltipButton from '@/components/Button/TooltipButton';
 import { getRoles } from '@/services/role';
 import { useRequest } from 'umi';
+import { addArticle, deleteArticle, editArticle, getArticles } from '@/services/article';
 
 const WORDS: string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-$%&@+!';
 
@@ -57,62 +55,32 @@ const UserPage: FC = () => {
   });
 
   // 表头数据（列）
-  const columns: ProColumns<UserApi.User>[] = [
+  const columns: ProColumns<ArticleApi.Article>[] = [
     {
       title: 'ID',
       dataIndex: 'id',
-      width: 60,
+      width: 140,
       align: 'center',
       search: false,
     },
     {
-      title: '头像',
-      dataIndex: 'avatar',
+      title: '封面',
+      dataIndex: 'cover',
       valueType: 'image',
       align: 'center',
       width: 100,
+      search: false,
       fieldProps: {
         width: 80,
         height: 80,
       },
     },
     {
-      title: '账号',
-      dataIndex: 'account',
+      title: '标题',
+      dataIndex: 'title',
       align: 'center',
-      width: 120,
-    },
-    {
-      title: '名称',
-      dataIndex: 'nickname',
-      align: 'center',
-      valueType: 'text',
-      width: 100,
-    },
-    {
-      title: '角色',
-      dataIndex: 'roles',
-      align: 'left',
-      width: 140,
-      valueType: 'select',
-      fieldProps: {
-        options: roles,
-        mode: 'multiple',
-      },
-      render: (_, row) => {
-        if (!row.roles) {
-          return '-';
-        }
-        return (
-          <Space size={3}>
-            {row.roles?.map?.((item: any) => (
-              <Tag key={item.id} color="processing">
-                {item.name}
-              </Tag>
-            ))}
-          </Space>
-        );
-      },
+      width: 200,
+      ellipsis: true,
     },
     {
       title: '状态',
@@ -123,26 +91,38 @@ const UserPage: FC = () => {
       width: 80,
     },
     {
-      title: '邮箱',
-      ellipsis: true,
-      dataIndex: 'email',
-      align: 'center',
-      search: false,
-      width: 140,
-    },
-    {
-      title: '电话',
-      dataIndex: 'phone_number',
-      align: 'center',
-      search: false,
+      title: '是否需要密码',
+      dataIndex: 'is_need_password',
       width: 120,
+      search: false,
+      render: (_, row) => {
+        return !row.is_need_password ? null : (
+          <TooltipButton iconType="view" title="查看密码" onClick={() => viewPassword(row)} />
+        );
+      },
     },
     {
-      title: '最近登录时间',
-      dataIndex: 'last_login_at',
+      title: '查看人数',
+      dataIndex: 'views',
+      width: 80,
+      search: false,
+      align: 'center',
+    },
+    {
+      title: '标签',
+      dataIndex: 'tags',
+      width: 120,
+      valueType: 'select',
+      fieldProps: {
+        options: [],
+        mode: 'multiple',
+      },
+    },
+    {
+      title: '发布时间',
+      dataIndex: 'published_time',
       align: 'center',
       valueType: 'dateTime',
-      search: false,
       width: 120,
     },
     {
@@ -171,26 +151,16 @@ const UserPage: FC = () => {
       render: (_, row) => {
         return (
           <Space size={5}>
-            <Access key="reset" accessible={access.system.user.edit}>
-              <ConfirmButton
-                title={`确定要重置账号 ${row.account} 的密码吗？`}
-                tips="重置密码"
-                buttonProps={{
-                  icon: <ClearOutlined />,
-                  style: { color: '#40a9ff' },
-                }}
-                onConfirm={() => resetPassord(row)}
-              />
-            </Access>
+            <TooltipButton iconType="view" title="查看文章" onClick={() => handleAction(ACTIONS.view, row)} />
 
             <Access key="edit" accessible={access.system.user.edit}>
-              <TooltipButton iconType="edit" title="编辑账号" onClick={() => handleAction(ACTIONS.edit, row)} />
+              <TooltipButton iconType="edit" title="编辑文章" onClick={() => handleAction(ACTIONS.edit, row)} />
             </Access>
 
             <Access key="del" accessible={access.system.user.edit}>
               <ConfirmButton
                 type="delete"
-                title={`确定要删除账号 ${row.account} 吗？`}
+                title={`确定要删除文章 ${row.title} 吗？`}
                 onConfirm={() => handleAction(ACTIONS.del, row)}
               />
             </Access>
@@ -201,7 +171,7 @@ const UserPage: FC = () => {
   ];
 
   /**
-   * @description 随机密码
+   * 随机密码
    */
   const handleRandomPassword = (): void => {
     const password = randomPassword();
@@ -209,29 +179,10 @@ const UserPage: FC = () => {
   };
 
   /**
-   * @description 重置密码
+   * 查看密码
+   * @param {ArticleApi.Article} record
    */
-  const resetPassord = async (record: UserApi.User) => {
-    try {
-      const newPwd = randomPassword();
-      await editUser({
-        ...record,
-        password: newPwd,
-      });
-      const modal = Modal.success({
-        title: '密码重置成功',
-        content: `账号 ${record.account} 密码已重置为 ${newPwd}`,
-        okText: '复制密码',
-        onOk: () => {
-          copy(newPwd);
-          message.success('复制成功！');
-          modal.destroy();
-        },
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const viewPassword = (record: ArticleApi.Article) => {};
 
   /**
    * 处理操作
@@ -239,27 +190,30 @@ const UserPage: FC = () => {
    * @param {CategoryApi.Category} record 行记录
    * @return {void | boolean} boolean用于popconfirm异步关闭
    */
-  const handleAction = (action: ACTIONS, record?: UserApi.User): void | boolean => {
+  const handleAction = (action: ACTIONS, record?: ArticleApi.Article): void | boolean => {
     switch (action) {
+      case ACTIONS.view:
+        window.open(`https://www.izoro.top/post/${record?.id}`);
+        break;
       case ACTIONS.add:
         formRef.current?.resetFields();
       case ACTIONS.edit:
         record && formRef.current?.setFieldsValue({ ...record });
-        setTitle(record?.id ? `编辑账号 - ${record?.account}` : '新增账号');
+        setTitle(record?.id ? `编辑文章 - ${record?.title}` : '新增文章');
         setVisible(true);
         break;
       case ACTIONS.del:
-        deleteUser(record?.id as number).then(tip => message.success(tip));
+        deleteArticle(record?.id as number).then(tip => message.success(tip));
         break;
     }
   };
 
   /**
-   * @description 编辑/添加账号
+   * @description 编辑/添加文章
    */
-  const submit = async (formVal: UserApi.UserEditDto): Promise<boolean> => {
+  const submit = async (formVal: ArticleApi.ArticleEditDto): Promise<boolean> => {
     try {
-      formVal.id ? await editUser(formVal) : await createUser(formVal);
+      formVal.id ? await editArticle(formVal) : await addArticle(formVal);
       message.success(`${formVal.id ? '编辑' : '新增'}成功！`);
       actionRef.current?.reload();
     } catch (err) {
@@ -271,21 +225,21 @@ const UserPage: FC = () => {
 
   return (
     <AppPageContainer>
-      <AppTable<UserApi.User>
+      <AppTable<ArticleApi.Article>
         actionRef={actionRef}
         toolBarRender={() => [
           <Access key="primary" accessible={access.system.user.create}>
             <Button type="primary" onClick={() => handleAction(ACTIONS.add)}>
-              新增账号
+              新增文章
             </Button>
           </Access>,
         ]}
         columns={columns}
         // @ts-ignore
-        request={getUsers}
+        request={getArticles}
       />
 
-      {/* 编辑、新增账号 */}
+      {/* 编辑、新增文章 */}
       <ModalForm
         formRef={formRef}
         title={title}
@@ -300,9 +254,9 @@ const UserPage: FC = () => {
         <ProFormDigit name="id" hidden />
         <ProFormText
           name="account"
-          label="账号"
+          label="文章"
           rules={[
-            { required: true, message: '账号必填' },
+            { required: true, message: '文章必填' },
             { min: 4, max: 20, message: '长度介于4 ~ 20个字符' },
           ]}
         />

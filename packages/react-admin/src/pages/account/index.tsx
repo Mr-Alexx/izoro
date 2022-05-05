@@ -1,5 +1,5 @@
 /**
- * @description 文章管理页
+ * @description 账号管理页
  */
 
 import type { FormInstance } from 'antd';
@@ -66,8 +66,8 @@ const UserPage: FC = () => {
       search: false,
     },
     {
-      title: '封面',
-      dataIndex: 'cover',
+      title: '头像',
+      dataIndex: 'avatar',
       valueType: 'image',
       align: 'center',
       width: 100,
@@ -77,10 +77,42 @@ const UserPage: FC = () => {
       },
     },
     {
-      title: '标题',
-      dataIndex: 'title',
+      title: '账号',
+      dataIndex: 'account',
       align: 'center',
-      width: 160,
+      width: 120,
+    },
+    {
+      title: '名称',
+      dataIndex: 'nickname',
+      align: 'center',
+      valueType: 'text',
+      width: 100,
+    },
+    {
+      title: '角色',
+      dataIndex: 'roles',
+      align: 'left',
+      width: 140,
+      valueType: 'select',
+      fieldProps: {
+        options: roles,
+        mode: 'multiple',
+      },
+      render: (_, row) => {
+        if (!row.roles) {
+          return '-';
+        }
+        return (
+          <Space size={3}>
+            {row.roles?.map?.((item: any) => (
+              <Tag key={item.id} color="processing">
+                {item.name}
+              </Tag>
+            ))}
+          </Space>
+        );
+      },
     },
     {
       title: '状态',
@@ -91,13 +123,23 @@ const UserPage: FC = () => {
       width: 80,
     },
     {
-      title: '是否需要密码',
-      dataIndex: 'is_need_password',
+      title: '邮箱',
+      ellipsis: true,
+      dataIndex: 'email',
+      align: 'center',
+      search: false,
+      width: 140,
+    },
+    {
+      title: '电话',
+      dataIndex: 'phone_number',
+      align: 'center',
+      search: false,
       width: 120,
     },
     {
-      title: '发布时间',
-      dataIndex: 'published_time',
+      title: '最近登录时间',
+      dataIndex: 'last_login_at',
       align: 'center',
       valueType: 'dateTime',
       search: false,
