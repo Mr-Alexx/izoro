@@ -49,9 +49,9 @@
     "@ant-design/icons": "^4.7.0",
     "@ant-design/pro-card": "1.19.3",
     "@ant-design/pro-descriptions": "^1.10.34",
-    "@ant-design/pro-form": "1.52.4",
-    "@ant-design/pro-layout": "6.34.10",
-    "@ant-design/pro-table": "2.71.4",
+    "@ant-design/pro-form": "^1.52.4",
+    "@ant-design/pro-layout": "^6.34.10",
+    "@ant-design/pro-table": "^2.71.4",
     "@tinymce/tinymce-react": "^3.12.6",
     "@umijs/route-utils": "^2.0.4",
     "ahooks": "^2.0.0",
@@ -68,7 +68,8 @@
     "shortid": "^2.2.16",
     "umi": "^3.5.20",
     "umi-request": "^1.4.0",
-    "viewerjs": "^1.10.1"
+    "viewerjs": "^1.10.1",
+    "js-cookie": "~3.0.1"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.0.2",
@@ -80,7 +81,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-helmet": "^6.1.0",
-    "@umijs/fabric": "^2.5.2",
+    "@umijs/fabric": "^2.10.2",
     "@umijs/plugin-blocks": "^2.0.5",
     "@umijs/plugin-esbuild": "^1.0.1",
     "@umijs/preset-ant-design-pro": "^1.2.0",

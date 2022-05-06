@@ -7,7 +7,6 @@
 
 import { CallHandler, ExecutionContext, HttpException, HttpStatus, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { FastifyRequest } from 'fastify';
 import { MultipartFile } from '@/interfaces/global.interface';
 import { pipeline } from 'stream';
 import { promisify } from 'util';
@@ -20,7 +19,7 @@ const pump = promisify(pipeline);
 @Injectable()
 export class FileInterceptor implements NestInterceptor {
   async intercept(ctx: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
-    const req = ctx.switchToHttp().getRequest() as FastifyRequest;
+    const req = ctx.switchToHttp().getRequest();
     const isMultipart = req.isMultipart();
     if (!isMultipart) {
       throw new HttpException('Body type must be multipart/form-data!', HttpStatus.BAD_REQUEST);

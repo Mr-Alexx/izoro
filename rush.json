@@ -1,0 +1,43 @@
+/**
+ * This is the main configuration file for Rush.
+ * For full documentation, please see https://rushjs.io
+ */
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
+  "rushVersion": "5.68.1",
+  "pnpmVersion": "6.7.1",
+  "pnpmOptions": {
+    "useWorkspaces": true
+  },
+  "nodeSupportedVersionRange": ">=12.13.0 <13.0.0 || >=14.15.0 <15.0.0 || >=16.13.0 <17.0.0",
+  "gitPolicy": {},
+  "repository": {
+    "url": "https://gitee.com/submersible_submersible/nestjs-api.git",
+    "defaultBranch": "master",
+    "defaultRemote": "origin"
+  },
+  "eventHooks": {
+    "preRushInstall": [],
+    "postRushInstall": [],
+    "preRushBuild": [],
+    "postRushBuild": []
+  },
+  "variants": [],
+  "projects": [
+    {
+      "packageName": "react-admin",
+      "projectFolder": "apps/react-admin",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "react-client",
+      "projectFolder": "apps/react-client",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "server",
+      "projectFolder": "apps/server",
+      "shouldPublish": false
+    }
+  ]
+}

@@ -1,3 +1,8 @@
+## Monorepo - Rush
+
+[单仓库多项目管理工具 - rush 文档](https://rushjs.io/zh-cn/pages/maintainer/setup_new_repo/)  
+[rush + pnpm + ts + monorepo 脚手架开发之环境篇二](https://juejin.cn/post/7034475702309093407)
+
 ## Nest project
 
 1. 全局安装 lerna `npm i lerna -g`

@@ -31,3 +31,12 @@ packages/server/public/upload/images/2021-04-16/
 
 # pm2
 pm2.json
+
+# Rush temporary files
+common/deploy/
+common/temp/
+common/autoinstallers/*/.npmrc
+**/.rush/temp/
+
+# Heft
+.heft

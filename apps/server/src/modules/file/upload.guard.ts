@@ -5,12 +5,11 @@
  */
 
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { FastifyRequest } from 'fastify';
 
 @Injectable()
 export class UploadGuard implements CanActivate {
   public async canActivate(ctx: ExecutionContext): Promise<boolean> {
-    const req = ctx.switchToHttp().getRequest() as FastifyRequest;
+    const req = ctx.switchToHttp().getRequest();
     const isMultipart = req.isMultipart();
     if (!isMultipart) {
       throw new HttpException('Body type must be multipart/form-data!', HttpStatus.BAD_REQUEST);
