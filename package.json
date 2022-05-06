@@ -1,0 +1,18 @@
+{
+  "name": "nest-api",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "author": "潜",
+  "license": "UNLICENSED",
+  "scripts": {
+    "server:dev": "pnpm run dev --filter=server",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "engines": {
+    "node": ">=10",
+    "pnpm": ">=3"
+  }
+}
