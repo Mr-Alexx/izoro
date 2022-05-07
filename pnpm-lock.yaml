@@ -13,6 +13,11 @@ importers:
       '@ant-design/pro-layout': ^6.34.10
       '@ant-design/pro-table': ^2.71.4
       '@ant-design/pro-utils': ^1.40.0
+      '@bytemd/plugin-breaks': ^1.13.1
+      '@bytemd/plugin-frontmatter': ^1.13.1
+      '@bytemd/plugin-gfm': ^1.13.1
+      '@bytemd/plugin-highlight': ^1.13.1
+      '@bytemd/react': ^1.13.1
       '@tinymce/tinymce-react': ^3.12.6
       '@types/classnames': ^2.2.7
       '@types/express': ^4.17.0
@@ -32,6 +37,7 @@ importers:
       '@umijs/yorkie': ^2.0.3
       ahooks: ^2.0.0
       antd: ^4.18.4
+      bytemd: ^1.13.1
       carlo: ^0.9.46
       classnames: ^2.3.1
       copy-to-clipboard: ^3.3.1
@@ -77,10 +83,16 @@ importers:
       '@ant-design/pro-layout': 6.35.0_yvgjk3mfdfdhr2l6mn5mdnuvlq
       '@ant-design/pro-table': 2.73.0_yvgjk3mfdfdhr2l6mn5mdnuvlq
       '@ant-design/pro-utils': 1.40.0_yvgjk3mfdfdhr2l6mn5mdnuvlq
+      '@bytemd/plugin-breaks': 1.13.1_bytemd@1.13.1
+      '@bytemd/plugin-frontmatter': 1.13.1_bytemd@1.13.1
+      '@bytemd/plugin-gfm': 1.13.1_bytemd@1.13.1
+      '@bytemd/plugin-highlight': 1.13.1_bytemd@1.13.1
+      '@bytemd/react': 1.13.1_react@17.0.2
       '@tinymce/tinymce-react': 3.14.0_sfoxds7t5ydpegc3knd667wn6m
       '@umijs/route-utils': 2.0.5
       ahooks: 2.10.14_react@17.0.2
       antd: 4.20.2_sfoxds7t5ydpegc3knd667wn6m
+      bytemd: 1.13.1
       classnames: 2.3.1
       copy-to-clipboard: 3.3.1
       immutability-helper: 3.1.1
@@ -3122,6 +3134,48 @@ packages:
   /@bloomberg/record-tuple-polyfill/0.0.3:
     resolution: {integrity: sha512-sBnCqW0nqofE47mxFnw+lvx6kzsQstwaQMVkh66qm/A6IlsnH7WsyGuVXTou8RF2wL4W7ybOoHPvP2WgIo6rhQ==}
 
+  /@bytemd/plugin-breaks/1.13.1_bytemd@1.13.1:
+    resolution: {integrity: sha512-iYiE4Sh0lpVG4VDwcGKzKI0RjI8o03A1SOH2UPHetAXATbaGl1Zsat3PcOJLKAOVAYaY94WYhsUbEkYFAAM0Ww==}
+    peerDependencies:
+      bytemd: ^1.5.0
+    dependencies:
+      bytemd: 1.13.1
+    dev: false
+
+  /@bytemd/plugin-frontmatter/1.13.1_bytemd@1.13.1:
+    resolution: {integrity: sha512-fu4kvId6J8pBqqbF69JJxQSrdz9l9JslH1GdON/3v+pipirmx78bq2yE1ZiPvy49DGcpr7fgeXnIriIZR4yAtQ==}
+    peerDependencies:
+      bytemd: ^1.5.0
+    dependencies:
+      bytemd: 1.13.1
+    dev: false
+
+  /@bytemd/plugin-gfm/1.13.1_bytemd@1.13.1:
+    resolution: {integrity: sha512-V6ioQtGAW4T73Va2wVG8nGhGulPKi6FcPCN3yn4aE+FUV4/1j5lXXOEk7nPsfj9ZSlmmkappAc7BWnuKie2N4w==}
+    peerDependencies:
+      bytemd: ^1.5.0
+    dependencies:
+      bytemd: 1.13.1
+    dev: false
+
+  /@bytemd/plugin-highlight/1.13.1_bytemd@1.13.1:
+    resolution: {integrity: sha512-n8Hks5+Exm2243Y4hXUhTEyY3jvIIde4rTC+bMyVHXt9paDqHT6r70YzZhaQgukhDGJfshfupY1HveTIRH+dHg==}
+    peerDependencies:
+      bytemd: ^1.5.0
+    dependencies:
+      bytemd: 1.13.1
+      highlight.js: 11.5.1
+    dev: false
+
+  /@bytemd/react/1.13.1_react@17.0.2:
+    resolution: {integrity: sha512-mZEAeWAcVEkVhafHlseP0cJcM3bIwuK8AyZzIgyFzmWw6qyDntnyvrPzzXGWDT/vqhQnGMOE2suvMK4G7dMgbA==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      bytemd: 1.13.1
+      react: 17.0.2
+    dev: false
+
   /@chenshuai2144/sketch-color/1.0.8_react@17.0.2:
     resolution: {integrity: sha512-dPAzzWc+w7zyTAi71WXYZpiTYyIS80MxYyy2E/7jufhnJI1Z29wCPL35VvuJ/gs5zYpF2+w/B7BizWa2zKXpGw==}
     peerDependencies:
@@ -4429,6 +4483,12 @@ packages:
       classnames: 2.3.1
     dev: true
 
+  /@types/codemirror/5.60.5:
+    resolution: {integrity: sha512-TiECZmm8St5YxjFUp64LK0c8WU5bxMDt9YaAek1UqUb9swrSCoJhh92fWu1p3mTEqlHjhB5sY7OFBhWroJXZVg==}
+    dependencies:
+      '@types/tern': 0.23.4
+    dev: false
+
   /@types/connect/3.4.35:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
@@ -4468,7 +4528,6 @@ packages:
 
   /@types/estree/0.0.51:
     resolution: {integrity: sha512-CuPgU6f3eT/XgKKPqKd/gLZV1Xmvf1a2R5POBOGQa6uv82xpls89HU5zKeVoyR8XzHd1RGNOlQlvUe3CFkjWNQ==}
-    dev: true
 
   /@types/express-serve-static-core/4.17.28:
     resolution: {integrity: sha512-P1BJAEAW3E2DJUlkgq4tOL3RyMunoWXqbSCygWo5ZIWTjUgN1YnaXWW4VWl/oc8vs/XoYibEGBKP0uZyF4AHig==}
@@ -4794,6 +4853,12 @@ packages:
     dependencies:
       '@types/superagent': 4.1.15
     dev: true
+
+  /@types/tern/0.23.4:
+    resolution: {integrity: sha512-JAUw1iXGO1qaWwEOzxTKJZ/5JxVeON9kvGZ/osgZaJImBnyjyn0cjovPsf6FNLmyGY8Vw9DoXZCMlfMkMwHRWg==}
+    dependencies:
+      '@types/estree': 0.0.51
+    dev: false
 
   /@types/unist/2.0.6:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
@@ -7209,6 +7274,12 @@ packages:
       dicer: 0.2.5
       readable-stream: 1.1.14
     dev: true
+
+  /bytemd/1.13.1:
+    resolution: {integrity: sha512-Sd8vq6/viHlkFmgZBgDRvnPiY5nomSqexirJ3hUDKbg+0MILMJkXNtXAxp25aT0hpG6jOm4asO8rSOxVTdZF0w==}
+    dependencies:
+      '@types/codemirror': 5.60.5
+    dev: false
 
   /bytes/3.0.0:
     resolution: {integrity: sha1-0ygVQE1olpn4Wk6k+odV3ROpYEg=}
@@ -10961,6 +11032,11 @@ packages:
 
   /highlight.js/10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
+    dev: false
+
+  /highlight.js/11.5.1:
+    resolution: {integrity: sha512-LKzHqnxr4CrD2YsNoIf/o5nJ09j4yi/GcH5BnYz9UnVpZdS4ucMgvP61TDty5xJcFGRjnH4DpujkS9bHT3hq0Q==}
+    engines: {node: '>=12.0.0'}
     dev: false
 
   /history-with-query/4.10.4:

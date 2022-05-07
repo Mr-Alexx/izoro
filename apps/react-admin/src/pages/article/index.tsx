@@ -17,6 +17,7 @@ import TooltipButton from '@/components/Button/TooltipButton';
 import { getRoles } from '@/services/role';
 import { useRequest } from 'umi';
 import { addArticle, deleteArticle, editArticle, getArticles } from '@/services/article';
+import { Link } from 'umi';
 
 const WORDS: string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-$%&@+!';
 
@@ -229,9 +230,10 @@ const UserPage: FC = () => {
         actionRef={actionRef}
         toolBarRender={() => [
           <Access key="primary" accessible={access.system.user.create}>
-            <Button type="primary" onClick={() => handleAction(ACTIONS.add)}>
-              新增文章
-            </Button>
+            <Link to="/article/add">
+              {/* onClick={() => handleAction(ACTIONS.add)} */}
+              <Button type="primary">新增文章</Button>
+            </Link>
           </Access>,
         ]}
         columns={columns}
