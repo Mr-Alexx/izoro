@@ -1,15 +1,20 @@
 {
-  "name": "nest-api",
+  "name": "izoro",
   "private": true,
   "version": "0.0.0",
-  "description": "",
+  "description": "Nest.js Next.js React.js Ant-Design",
   "author": "潜",
   "license": "UNLICENSED",
+  "repository": {
+    "url": "https://gitee.com/submersible_submersible/izoro.git"
+  },
   "scripts": {
-    "server:dev": "pnpm run dev --filter=server",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "pnpm -C ./apps/react-admin start:no-mock & pnpm -C ./apps/react-client dev & pnpm -C ./apps/server dev",
+    "dev:react-admin": "pnpm -C ./apps/react-admin start:no-mock",
+    "dev:react-client": "pnpm -C ./apps/react-client dev",
+    "dev:server": "pnpm -C ./apps/server dev",
+    "dev:admin-server": "pnpm -C ./apps/react-admin start:no-mock & pnpm -C ./apps/server dev",
+    "dev:client-server": "pnpm -C ./apps/react-client dev & pnpm -C ./apps/server dev"
   },
   "engines": {
     "node": ">=10",
