@@ -1,6 +1,6 @@
 import { themes, highlights } from './select-options';
 
-function editHeaderConfig({ editor, codemirror, replaceLines }, { name, value }) {
+function editHeaderConfig({ editor, codemirror }, { name, value }) {
   name = name || 'theme';
   value = value || 'cyanosis';
 
@@ -26,22 +26,52 @@ function editHeaderConfig({ editor, codemirror, replaceLines }, { name, value })
     headerConfigLineTexts = doc.lines.slice(0, lastIndex + 1).map(line => line.text);
     const existNameIndex = headerConfigLineTexts.findIndex(text => text.indexOf(name) > -1);
     const newConfigText = `${name}: ${value}`;
+
     if (existNameIndex !== -1) {
+      // 如果配置已存在，直接替换
       headerConfigLineTexts[existNameIndex] = newConfigText;
     } else {
-      headerConfigLineTexts.splice(headerConfigLineTexts.length - 2, 0, newConfigText);
+      // 否则，往---前面添加新行
+      headerConfigLineTexts.splice(headerConfigLineTexts.length - 1, 0, newConfigText);
     }
   } else {
     headerConfigLineTexts = ['---', `${name}: ${value}`, '---'];
   }
 
-  const range = [codemirror.Pos(0, lastIndex), codemirror.Pos(0, lines.length)];
-  console.log('headerConfigLineTexts', lastIndex, headerConfigLineTexts, range);
-  const newRange = headerConfigLineTexts.filter(text => !!text).concat(editor.getRange(...range).split('\n'));
-  editor.replaceRange(newRange.join('\n'), ...range);
+  // editor.replaceRange综合bytemd和codemirror源码来看
+  // 需要传三个参数
+  // text: 替代的文本
+  // form: 替换开始地方，codemirror的行列数据，使用codemirror.Pos(行下标, 列下标)获取
+  // to: 替换结束地方，codemirror的行列数据，使用codemirror.Pos(行下标, 列下标)获取
+  editor.replaceRange(
+    headerConfigLineTexts.filter(text => !!text).join('\n'),
+    // 从(0, 0)开始
+    codemirror.Pos(0, 0),
+    // 到(---行下标, ---列下标)结束
+    codemirror.Pos(lastIndex, headerConfigLineTexts[headerConfigLineTexts.length - 1].length),
+  );
+
   // 保持光标聚焦
   editor.focus();
 }
+
+/**
+ * 设置css链接
+ * @param {string} type 类型
+ * @param {string} linkUrl 链接地址
+ */
+export const createCssLink = (type, linkUrl) => {
+  const el = document.head.querySelector(`#${type}`);
+  if (el) {
+    el.setAttribute('href', linkUrl);
+  } else {
+    const link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', linkUrl);
+    link.setAttribute('id', type);
+    document.head.prepend(link);
+  }
+};
 
 /**
  * 主题选择插件
@@ -60,20 +90,22 @@ export function themeSelectPlugin() {
               cheatsheet: '',
               handler: {
                 type: 'action',
+                // {codemirror, editor, root}
                 click(codemirrorInstance) {
                   editHeaderConfig(codemirrorInstance, { name: 'theme', value: theme });
                   // 设置主题css
-                  const themeEl = document.head.querySelector('#theme');
-                  const cssRoot = `/css/juejin-markdown-theme/${theme}.min.css`;
-                  if (themeEl) {
-                    themeEl.setAttribute('href', cssRoot);
-                  } else {
-                    const link = document.createElement('link');
-                    link.setAttribute('rel', 'stylesheet');
-                    link.setAttribute('href', cssRoot);
-                    link.setAttribute('id', 'theme');
-                    document.head.prepend(link);
-                  }
+                  createCssLink('theme', `/css/themes/${theme}.min.css`);
+                  // const themeEl = document.head.querySelector('#theme');
+                  // const cssRoot = `/css/juejin-markdown-theme/${theme}.min.css`;
+                  // if (themeEl) {
+                  //   themeEl.setAttribute('href', cssRoot);
+                  // } else {
+                  //   const link = document.createElement('link');
+                  //   link.setAttribute('rel', 'stylesheet');
+                  //   link.setAttribute('href', cssRoot);
+                  //   link.setAttribute('id', 'theme');
+                  //   document.head.prepend(link);
+                  // }
                 },
               },
             };
@@ -103,17 +135,18 @@ export function highlightSelectPlugin() {
                   // 设置highlight
                   editHeaderConfig(codemirrorInstance, { name: 'highlight', value: highlight });
                   // 添加样式
-                  const highlightEl = document.head.querySelector('#highlight');
-                  const cssRoot = `/css/highlight/${highlight}.min.css`;
-                  if (highlightEl) {
-                    highlightEl.setAttribute('href', cssRoot);
-                  } else {
-                    const link = document.createElement('link');
-                    link.setAttribute('rel', 'stylesheet');
-                    link.setAttribute('href', cssRoot);
-                    link.setAttribute('id', 'highlight');
-                    document.head.append(link);
-                  }
+                  createCssLink('highlight', `/css/highlights/${highlight}.min.css`);
+                  // const highlightEl = document.head.querySelector('#highlight');
+                  // const cssRoot = `/css/highlight/${highlight}.min.css`;
+                  // if (highlightEl) {
+                  //   highlightEl.setAttribute('href', cssRoot);
+                  // } else {
+                  //   const link = document.createElement('link');
+                  //   link.setAttribute('rel', 'stylesheet');
+                  //   link.setAttribute('href', cssRoot);
+                  //   link.setAttribute('id', 'highlight');
+                  //   document.head.append(link);
+                  // }
                 },
               },
             };

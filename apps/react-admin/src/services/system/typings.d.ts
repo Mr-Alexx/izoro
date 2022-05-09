@@ -1,7 +1,16 @@
 /**
  * @description  system模块接口 参数/结果 类型
  */
-declare namespace SYSTEM_API {
+declare namespace SystemApi {
+  /* =============== 文件上传 =============== */
+  type UploadImageItem = {
+    file: File;
+    filepath: string;
+    filename: string;
+    encoding: string;
+    mimetype: string;
+  };
+
   /* =============== 定时任务 =============== */
   type CreateScheduleParams = {
     rpc?: string;

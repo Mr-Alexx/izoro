@@ -1,76 +1,92 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Editor as BytemdEditor } from '@bytemd/react';
 import gfm from '@bytemd/plugin-gfm';
 import breaks from '@bytemd/plugin-breaks';
 import frontmatter from '@bytemd/plugin-frontmatter';
 import zhHans from 'bytemd/locales/zh_Hans.json';
 import 'bytemd/dist/index.css';
-// import './cyanosis.min.css';
-// import './atom-one-dark.min.css';
 import highlight from './bytemd-plugins/plugin-highlight';
-import { highlightSelectPlugin, themeSelectPlugin } from './bytemd-plugins/extra-plugin';
-import { useEffect } from 'react';
-import { getProcessor } from 'bytemd';
+import { highlightSelectPlugin, themeSelectPlugin, createCssLink } from './bytemd-plugins/extra-plugin';
+import { BytemdPlugin, getProcessor } from 'bytemd';
+import { uploadFile } from '@/services/system/index';
 
 export type BytemdEditorProps = {
   value?: string;
   onChange?: (value: string) => void;
 };
 
+type ProccessResult = { html: any; frontmatter: Record<string, string> };
+
+const plugins: BytemdPlugin[] = [
+  highlight(),
+  gfm(),
+  breaks(),
+  frontmatter(),
+  themeSelectPlugin() as BytemdPlugin,
+  highlightSelectPlugin() as BytemdPlugin,
+];
+
+/**
+ * markdown获取处理后的html和theme、highlight
+ * 配置默认主题为cyanosis，默认highlight为atom-one-dark
+ * 使用方式参考bytemd源码 /packages/bytemd/src/viewer.ts getProcessor方法定义
+ * @param {string} value markdown内容
+ * @return {ProccessResult}
+ */
+export const getProcessorData = (value: string): ProccessResult => {
+  // @ts-expect-error
+  const { value: html, frontmatter } = getProcessor({ plugins }).processSync(value);
+  return {
+    html,
+    frontmatter: {
+      theme: 'cyanosis',
+      highlight: 'atom-one-dark',
+      ...frontmatter,
+    },
+  };
+};
+
 const MarkdownEditor = (props: BytemdEditorProps) => {
-  const { onChange, value, width, height } = props;
+  const { onChange, value } = props;
   const [editorValue, setEditorValue] = useState<string>('');
-  const plugins = [highlight(), gfm(), breaks(), frontmatter(), themeSelectPlugin(), highlightSelectPlugin()];
+
+  /* 设置默认主题 */
+  useEffect(() => {
+    createCssLink('theme', '/css/themes/cyanosis.min.css');
+    createCssLink('highlight', '/css/highlights/atom-one-dark.min.css');
+
+    return () => {
+      document.querySelector('link#theme')?.remove?.();
+      document.querySelector('link#highlight')?.remove?.();
+    };
+  }, []);
 
   const triggerChange = (content: string) => {
-    // console.log('content', content);
-    // changeStyle(content);
-    const { contents, frontmatter } = getProcessor({ value: content, plugins }).processSync(content);
-    // console.log('d: ', contents, frontmatter);
     if (!value) {
       setEditorValue(content || '');
     }
-    onChange?.(contents);
+    onChange?.(content);
   };
 
-  /**
-   * highlight和theme切换方法
-   */
-  const changeStyle = (inputVal: string) => {
-    const lines = inputVal.split('\n');
-
-    if (lines[0].match(/---/) && lines.filter(line => line.match(/---/)).length >= 2) {
-      const themeLine = lines.filter(line => line.indexOf('theme: ') > -1)[0];
-      const highlightLine = lines.filter(line => line.indexOf('highlight: ') > -1)[0];
-      const theme = themeLine.substring(6).trim() || 'juejin';
-      const highlight = highlightLine.substring(10).trim();
-
-      toggleLink('theme', `/css/juejin-markdown-theme/${theme}.min.css`);
-      toggleLink('highlight', `/css/highlight/${highlight}.min.css`);
-    }
-  };
-
-  const toggleLink = (type: string, href: string) => {
-    // 先移除已存在的，避免重复添加
-    document.getElementById(type)?.remove?.();
-
-    const link = document.createElement('link');
-    link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('href', href);
-    link.setAttribute('id', type);
-    document.head.append(link);
+  const handleUpload = async (files: File[]): Promise<any> => {
+    console.log(files);
+    const data = await uploadFile({ file: files[0] });
+    console.log('d', data);
+    return {
+      url: '',
+      title: '',
+      alt: '',
+    };
   };
 
   return (
-    <>
-      <BytemdEditor
-        value={value ?? editorValue}
-        onChange={triggerChange}
-        locale={zhHans}
-        // @ts-ignore
-        plugins={plugins}
-      />
-    </>
+    <BytemdEditor
+      value={value ?? editorValue}
+      onChange={triggerChange}
+      locale={zhHans}
+      plugins={plugins}
+      uploadImages={handleUpload}
+    />
   );
 };
 
