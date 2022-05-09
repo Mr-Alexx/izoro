@@ -1,8 +1,16 @@
 import { get, post, patch, del } from '@/utils/request';
 
 /* =============== 文件上传 =============== */
-export const uploadFile = (data: { file: File }): Promise<{ url: string; id: number }> =>
-  post('/file/upload', data, { contentType: 'multipart/form-data' });
+export const uploadFile = (data: any): Promise<{ url: string; id: number }> =>
+  post('/file/upload', data, {
+    // @ts-expect-error
+    headers: {
+      // 如果填multipart/form-data会报 Multipart: Boundary not found
+      // 设置为false时，会默认multipart/form-data; Boundary....
+      // 'Content-Type': 'multipart/form-data',
+      contentType: false,
+    },
+  });
 
 /* =============== 定时任务 =============== */
 // 定时任务列表

@@ -69,14 +69,14 @@ const MarkdownEditor = (props: BytemdEditorProps) => {
   };
 
   const handleUpload = async (files: File[]): Promise<any> => {
-    console.log(files);
-    const data = await uploadFile({ file: files[0] });
-    console.log('d', data);
-    return {
-      url: '',
-      title: '',
-      alt: '',
-    };
+    const data = await Promise.all(
+      files.map(file => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return uploadFile(formData);
+      }),
+    );
+    return data;
   };
 
   return (
