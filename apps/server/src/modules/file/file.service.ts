@@ -28,10 +28,9 @@ export class FileService {
 
     const newFile = await this.fileReposity.create(file);
     await this.fileReposity.save(newFile);
-
     return {
       id: newFile.id,
-      url: newFile.url,
+      url: `http://localhost:3001/${newFile.url.replace('/public/', '')}`,
     };
   }
 
