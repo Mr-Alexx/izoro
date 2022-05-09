@@ -1,13 +1,7 @@
-export interface MultipartFile {
-  toBuffer: () => Promise<Buffer>;
-  file: NodeJS.ReadableStream;
-  filepath: string;
-  fieldname: string;
-  filename: string;
-  encoding: string;
-  mimetype: string;
+import { MultipartFile as FastifyMultipartFile } from '@fastify/multipart';
+
+export interface MultipartFile extends FastifyMultipartFile {
   name?: string;
   url?: string;
   size?: number;
-  fields: import('fastify-multipart').MultipartFields;
 }

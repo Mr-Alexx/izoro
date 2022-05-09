@@ -348,3 +348,8 @@ brew upgrade ** //更新某个软件包
 brew info ** //查看指定软件包的说明
 brew cache clean //清理缓存
 ```
+
+## 图床
+
+[https://www.imgurl.org/](https://www.imgurl.org/)  
+后续可以用 electron 做个插件，上传图片到图床

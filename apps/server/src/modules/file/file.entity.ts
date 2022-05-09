@@ -5,7 +5,7 @@
  */
 
 import { CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { ApiPropertyColumn } from '@/decorators/agregate.decorator';
+import { ApiPropertyColumn, ApiPropertyOptionalColumn } from '@/decorators/agregate.decorator';
 
 @Entity()
 export class File {
@@ -21,7 +21,7 @@ export class File {
   @ApiPropertyColumn({ comment: '文件类型' })
   mimetype: string;
 
-  @ApiPropertyColumn({ comment: '文件大小,KB' })
+  @ApiPropertyOptionalColumn({ comment: '文件大小,KB', default: null })
   size: number;
 
   @ApiPropertyColumn({ comment: '文件相对路径' })

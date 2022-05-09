@@ -9,18 +9,24 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { ValidationPipe } from './pipes/validation.pipe';
 import fastifyCsrf from 'fastify-csrf';
 import fastifyHelmet from 'fastify-helmet';
-import fastifyRateLimit from 'fastify-rate-limit';
+import fastifyRateLimit from '@fastify/rate-limit';
 import fastifyCompress from 'fastify-compress';
-import fastifyCookie from 'fastify-cookie';
-import fastifyMultipart from 'fastify-multipart';
+import fastifyCookie from '@fastify/cookie';
+import fastifyMultipart from '@fastify/multipart';
+import fastifyStatic from '@fastify/static';
 import { errorLogger } from './logger/log4.logger';
 import fastifySwagger from 'fastify-swagger';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'; // api文档插件
 import { ClassSerializerInterceptor } from '@nestjs/common';
+import * as path from 'path';
 
 async function bootstrap() {
   const adapter = new FastifyAdapter({
     // http2: true, // 设为true需要nginx配置
+  });
+  // 静态文件查看
+  adapter.register(fastifyStatic, {
+    root: path.join(__dirname, '..', 'public'),
   });
   // api访问速率限制
   adapter.register(fastifyRateLimit, {

@@ -15,8 +15,8 @@ import { Permission } from '@/decorators/permission.decorator';
 import { PermissionGuard } from '@/guards/permission.guard';
 import { PERMISSIONS } from '@/constants/permission.constant';
 
-@UseGuards(PermissionGuard)
-@UseGuards(JwtAuthGuard)
+// @UseGuards(PermissionGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('file')
 @ApiTags('file')
 export class FileController {
