@@ -61,6 +61,7 @@ export class Menu {
   @ApiPropertyOptionalColumn({
     comment: '绑定的权限列表，所有权限在 @/interfaces/permission.interfaces.ts 内定义',
     type: 'simple-array',
+    default: null,
   })
   permissions: string[];
 
