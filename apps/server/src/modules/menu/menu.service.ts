@@ -89,7 +89,8 @@ export class MenuService {
         .where('menu.node_type = :type', { type: MenuNodeTypes.button })
         .andWhere('role.id in (:roles)', { roles })
         .getMany();
-      return data.map(v => v.menu_code);
+      // return data.map(v => v.menu_code);
+      return []
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }

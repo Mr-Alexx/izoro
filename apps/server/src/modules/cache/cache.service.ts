@@ -42,7 +42,7 @@ export class CacheService {
   }
 
   /**
-   * @description 产出全部缓存
+   * @description 清除全部缓存
    */
   async clearAll(): Promise<any> {
     try {

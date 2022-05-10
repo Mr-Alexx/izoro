@@ -22,12 +22,14 @@ import { Article } from './article.entity';
 import { Permission } from '@/decorators/permission.decorator';
 import { ArticleCreateDto, ArticleQueryDto, ArticleEditDto } from './article.dto';
 import { PERMISSIONS } from '@/constants/permission.constant';
+import { CacheService } from '../cache/cache.service';
+import { ARTICLES_DRAFT_CACHE_KEY_PREFIX } from '@/constants/index.constant';
 
 @Controller('article')
 @ApiTags('Article')
 export class ArticleController {
   // 注入service，this调用
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(private readonly articleService: ArticleService, private readonly cacheService: CacheService) {}
 
   /**
    * @create 2021/03/04 21:48
@@ -92,10 +94,36 @@ export class ArticleController {
     return await this.articleService.deleteAll(ids);
   }
 
-  @Get('/article/password/:id')
+  @Get('password/:id')
   @Permission(PERMISSIONS.查看密码)
   @UseGuards(JwtAuthGuard)
   async viewPassword(@Param('id') id: number): Promise<string> {
     return this.articleService.viewPassword(id);
+  }
+
+  @ApiOperation({ description: '草稿列表' })
+  @Get('draft')
+  // @Permission('')
+  // @UseGuards(JwtAuthGuard)
+  async findDrafts(): Promise<Article[]> {
+    const data = await this.cacheService.get(ARTICLES_DRAFT_CACHE_KEY_PREFIX);
+    return data;
+  }
+
+  @ApiOperation({ description: '存草稿' })
+  @Patch('draft/:uuid')
+  // @Permission('')
+  // @UseGuards(JwtAuthGuard)
+  async updateDraft(@Param('uuid') uuid: string, @Body() data: Partial<Article>): Promise<any> {
+    return this.cacheService.set(`${ARTICLES_DRAFT_CACHE_KEY_PREFIX}:${uuid}`, data);
+  }
+
+  @ApiOperation({ description: '删除草稿' })
+  @Delete('draft/:uuid')
+  @Permission('')
+  @UseGuards(JwtAuthGuard)
+  async deleteDraft(@Param('uuid') uuid: string): Promise<string> {
+    await this.cacheService.del(`${ARTICLES_DRAFT_CACHE_KEY_PREFIX}:${uuid}`);
+    return '删除草稿成功！';
   }
 }

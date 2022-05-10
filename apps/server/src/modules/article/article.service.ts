@@ -9,6 +9,7 @@ import * as FlakeId from 'flakeid'; // module.export 模块，需要使用该引
 import _ from '@/utils';
 import { CacheService } from '../cache/cache.service';
 import { ArticleEditDto } from './article.dto';
+import { ARTICLES_CACHE_KEY_PREFIX } from '@/constants/index.constant';
 
 @Injectable()
 export class ArticleService {
@@ -41,8 +42,8 @@ export class ArticleService {
     sort = (sort || 'created_at') + '';
 
     // 取缓存
-    const cacheKey = JSON.stringify(queryObj);
-    // const cache = await this.cacheService.get(`article:list:${cacheKey}`);
+    // const cacheKey = JSON.stringify(queryObj);
+    // const cache = await this.cacheService.get(`${ARTICLES_CACHE_KEY_PREFIX}:${cacheKey}`);
     // if (cache) {
     //   return cache;
     // }

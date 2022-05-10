@@ -6,6 +6,7 @@ import { Article } from './article.entity';
 import { CategoryModule } from '../category/category.module';
 import { TagModule } from '../tag/tag.module';
 import { CacheModule } from '../cache/cache.module';
+import { CacheService } from '../cache/cache.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Article]), CategoryModule, TagModule, CacheModule],
