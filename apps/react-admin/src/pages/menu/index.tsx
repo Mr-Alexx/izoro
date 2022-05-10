@@ -5,13 +5,15 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { FormInstance } from 'antd';
 import { Button, message, Tag, Row, Col } from 'antd';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import ProForm, { ProFormSelect, ProFormText, ProFormDigit, DrawerForm, ProFormRadio } from '@ant-design/pro-form';
 import { ACTIONS, MENU_ICON_LIST } from '@/constants';
-import { getMenus, createMenu, editMenu, getPermissions, bindPermission } from '@/services/user';
+import { createMenu, editMenu, getPermissions, bindPermission } from '@/services/user';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Access, useAccess, useRequest } from 'umi';
 import Iconfont from '@/components/Iconfont';
+import AppTable from '@/components/AppTable';
+import { useModel } from 'umi';
+import { getMenus } from '@/services/menu';
 
 // @ts-ignore
 const Menu: React.ForwardedRef = () => {
@@ -21,10 +23,15 @@ const Menu: React.ForwardedRef = () => {
   const [visible, updateVisible] = useState(false);
   const [actionType, setActionType] = useState<number>(ACTIONS.view);
   const actionRef = useRef<ActionType>();
-  const [permissionList, setPermissionList] = useState<any[]>([]);
   const [isPage, setIsPage] = useState<boolean>();
   const [currentIcon, setCurrentIcon] = useState<string | undefined>();
   const access = useAccess();
+
+  const { permissions, initPermissions } = useModel('mapListModel');
+
+  useEffect(() => {
+    initPermissions();
+  }, []);
 
   const formRef = useRef<FormInstance>();
 
@@ -48,13 +55,6 @@ const Menu: React.ForwardedRef = () => {
   const disabled = useMemo(() => {
     return actionType === ACTIONS.view;
   }, [actionType]);
-
-  // 初始化权限列表（返回所有），绑定权限用
-  useRequest(() => getPermissions(), {
-    onSuccess: data => {
-      setPermissionList(data);
-    },
-  });
 
   const handleAction = (type: number, row: Partial<UserApi.MenuItem> | undefined) => {
     setActionType(type);
@@ -123,22 +123,22 @@ const Menu: React.ForwardedRef = () => {
         return <Iconfont style={{ fontSize: 20 }} type={row?.icon} />;
       },
     },
-    {
-      title: '状态',
-      key: 'status1',
-      dataIndex: 'status',
-      width: 80,
-      valueEnum: {
-        0: {
-          text: '禁用',
-          status: 'Error',
-        },
-        1: {
-          text: '启用',
-          status: 'Processing',
-        },
-      },
-    },
+    // {
+    //   title: '状态',
+    //   key: 'status1',
+    //   dataIndex: 'status',
+    //   width: 80,
+    //   valueEnum: {
+    //     0: {
+    //       text: '禁用',
+    //       status: 'Error',
+    //     },
+    //     1: {
+    //       text: '启用',
+    //       status: 'Processing',
+    //     },
+    //   },
+    // },
     {
       title: '路由地址',
       key: 'path',
@@ -163,7 +163,7 @@ const Menu: React.ForwardedRef = () => {
         return row.permissions.map(v => {
           return (
             <Tag color="blue" key={v} style={{ marginTop: 3, marginBottom: 3 }}>
-              {permissionList.find(item => item.value === v)?.label}
+              {permissions!.find(item => item.value === v)?.label}
             </Tag>
           );
         });
@@ -194,27 +194,11 @@ const Menu: React.ForwardedRef = () => {
 
   return (
     <PageContainer>
-      <ProTable<UserApi.MenuItem>
-        sticky
+      <AppTable<UserApi.MenuItem>
         actionRef={actionRef}
-        scroll={{ x: 1300 }}
-        // expandable={{
-        //   defaultExpandedRowKeys: expandedRows,
-        // }}
         columns={columns}
-        // @ts-ignore
-        request={async () => {
-          // 表单搜索项会从 params 传入，传递给后端接口。
-          // console.log(params, sorter, filter);
-          const data = await getMenus();
-          // @ts-ignore
-          // seEexpandedRows(data.map(v => v.id));
-          return {
-            data,
-            success: true,
-          };
-        }}
-        rowKey="id"
+        request={getMenus}
+        dataKey={false}
         toolbar={{
           actions: [
             <Access accessible={access.system.user.create}>
@@ -365,7 +349,7 @@ const Menu: React.ForwardedRef = () => {
           showSearch
           mode="multiple"
           placeholder="请选择权限"
-          options={permissionList}
+          options={permissions}
         />
         {isPage && <ProFormDigit readonly={disabled} name="pid" label="上级菜单" />}
         <ProFormDigit

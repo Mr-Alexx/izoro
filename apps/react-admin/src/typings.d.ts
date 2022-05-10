@@ -50,4 +50,19 @@ declare namespace APP {
   type initialStateGlobal = {
     collapsed?: boolean | undefined;
   };
+
+  type Option = { value: string | number; label: string };
+  type Options = Option[] | undefined;
+
+  type TreeSelectOption = {
+    title: string;
+    value: string | number;
+    label?: string;
+    key?: string | number;
+    children?: {
+      value: string | number;
+      label: string;
+    }[];
+  };
+  type TreeSelectOptions = TreeSelectOption[] | undefined;
 }

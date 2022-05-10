@@ -44,23 +44,24 @@
       },
     ],
   },
-  {
-    name: '账号管理',
-    icon: 'icon-account',
-    path: '/account',
-    component: './account/index',
-  },
-  {
-    name: '角色管理',
-    icon: 'icon-role',
-    path: 'role',
-    component: './role/index',
-  },
   // {
-  //   name: '菜单管理',
-  //   path: 'menu',
-  //   component: './system/menu/index',
+  //   name: '账号管理',
+  //   icon: 'icon-account',
+  //   path: '/account',
+  //   component: './account/index',
   // },
+  // {
+  //   name: '角色管理',
+  //   icon: 'icon-role',
+  //   path: 'role',
+  //   component: './role/index',
+  // },
+  {
+    name: '菜单管理',
+    path: 'menu',
+    component: './menu/index',
+  },
+
   // {
   //   name: '权限管理',
   //   path: 'permission',
@@ -71,41 +72,43 @@
   //   path: 'api-route',
   //   component: './system/api-route/index',
   // },
-  {
-    name: '分类管理',
-    icon: 'icon-category',
-    path: 'category',
-    component: './category/index',
-  },
-  {
-    name: '文章管理',
-    icon: 'icon-article',
-    path: '/article',
-    routes: [
-      {
-        path: '/article',
-        redirect: '/article/index',
-      },
-      {
-        path: '/article/index',
-        component: './article/index',
-      },
-      {
-        name: '新增文章',
-        path: '/article/add',
-        component: './article/edit',
-        layout: false,
-        hideInMenu: true,
-      },
-      {
-        name: '编辑文章',
-        path: '/article/edit/:id',
-        component: './article/edit',
-        hideInMenu: true,
-        hideInSearch: true,
-      },
-    ],
-  },
+
+  // {
+  //   name: '分类管理',
+  //   icon: 'icon-category',
+  //   path: 'category',
+  //   component: './category/index',
+  // },
+  // {
+  //   name: '文章管理',
+  //   icon: 'icon-article',
+  //   path: '/article',
+  //   routes: [
+  //     {
+  //       path: '/article',
+  //       redirect: '/article/index',
+  //     },
+  //     {
+  //       path: '/article/index',
+  //       component: './article/index',
+  //     },
+  //     {
+  //       name: '新增文章',
+  //       path: '/article/add',
+  //       component: './article/edit',
+  //       layout: false,
+  //       hideInMenu: true,
+  //     },
+  //     {
+  //       name: '编辑文章',
+  //       path: '/article/edit/:id',
+  //       component: './article/edit',
+  //       hideInMenu: true,
+  //       hideInSearch: true,
+  //     },
+  //   ],
+  // },
+
   // {
   //   name: '定时任务管理',
   //   path: 'schedule',

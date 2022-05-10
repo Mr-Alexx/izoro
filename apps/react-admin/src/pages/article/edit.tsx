@@ -7,20 +7,31 @@ import ProForm, {
   ProFormTextArea,
   ProFormUploadButton,
 } from '@ant-design/pro-form';
+import { debounce } from 'lodash'; // '@/utils/throttle-debounce';
 
 const ArticleEditPage = () => {
+  /* 存草稿 */
+  const saveDraft = debounce(formVal => {
+    console.log('草稿', formVal);
+  }, 300);
+
   return (
-    <ProForm>
+    <ProForm
+      onValuesChange={saveDraft}
+      onFinish={async formVal => {
+        console.log('d', formVal);
+        return false;
+      }}>
       {/* <ProFormText label="标题" name="title" rules={[{ required: true }]} />
+      <ProFormTextArea label="小结" name="summary" rules={[{required: true}]}/>
       <ProFormUploadButton label="封面图" name="cover" />
-      <ProFormTextArea label="小结" name="summary" rules={[{ required: true }]} />
       <ProFormRadio.Group
         label="状态"
         name="status"
         options={[
-          { label: '删除', value: -1 },
           { label: '草稿', value: 0 },
           { label: '发布', value: 1 },
+          { label: '关闭', value: 2 }
         ]}
         rules={[{ required: true }]}
       />
@@ -39,6 +50,14 @@ const ArticleEditPage = () => {
       <ProForm.Item name="markdown">
         <MarkdownEditor />
       </ProForm.Item>
+
+      {/* <ProFormDependency name={['markdown']}>
+        {({markdown}) => {
+          return <ProFormTextArea hidden name="summary" fieldProps={{
+            value: ''
+          }} />
+        }}
+      </ProFormDependency> */}
     </ProForm>
   );
 };
