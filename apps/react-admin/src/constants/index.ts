@@ -30,13 +30,16 @@ export enum OPERATION_TEXT {
 
 // 菜单icon列表
 export const MENU_ICON_LIST = [
-  'icon-chengpinku',
-  'icon-kefu',
-  'icon-shouye',
-  'icon-shangjia',
-  'icon-chanpin',
-  'icon-douyin',
-  'icon-shezhi',
+  'icon-article',
+  'icon-menu',
+  'icon-chart',
+  'icon-account',
+  'icon-tag',
+  'icon-home',
+  'icon-category',
+  'icon-mission',
+  'icon-role',
+  'icon-setting',
 ];
 
 // 状态 enum

@@ -5,15 +5,22 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { FormInstance } from 'antd';
 import { Button, message, Tag, Row, Col } from 'antd';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
-import ProForm, { ProFormSelect, ProFormText, ProFormDigit, DrawerForm, ProFormRadio } from '@ant-design/pro-form';
+import ProForm, {
+  ProFormSelect,
+  ProFormText,
+  ProFormDigit,
+  DrawerForm,
+  ProFormRadio,
+  ProFormTreeSelect,
+} from '@ant-design/pro-form';
 import { ACTIONS, MENU_ICON_LIST } from '@/constants';
-import { createMenu, editMenu, getPermissions, bindPermission } from '@/services/user';
+import { getPermissions, bindPermission } from '@/services/user';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Access, useAccess, useRequest } from 'umi';
 import Iconfont from '@/components/Iconfont';
 import AppTable from '@/components/AppTable';
 import { useModel } from 'umi';
-import { getMenus } from '@/services/menu';
+import { getMenus, addMenu, editMenu } from '@/services/menu';
 
 // @ts-ignore
 const Menu: React.ForwardedRef = () => {
@@ -27,6 +34,7 @@ const Menu: React.ForwardedRef = () => {
   const [currentIcon, setCurrentIcon] = useState<string | undefined>();
   const access = useAccess();
 
+  const [menus, setMenus] = useState<any[]>();
   const { permissions, initPermissions } = useModel('mapListModel');
 
   useEffect(() => {
@@ -71,7 +79,7 @@ const Menu: React.ForwardedRef = () => {
       let msg = '新增成功';
       const id = currentRow?.id;
       if (!id) {
-        await createMenu({
+        await addMenu({
           ...value,
           pid: Number(value?.pid || 0),
           sort: Number(value?.sort),
@@ -210,6 +218,9 @@ const Menu: React.ForwardedRef = () => {
         }}
         pagination={false}
         search={false}
+        onLoad={dataSource => {
+          setMenus([{ id: 0, name: '根菜单' }, ...(dataSource ?? [])]);
+        }}
       />
       {/* 查看、编辑、新增菜单弹窗 */}
       <DrawerForm
@@ -243,71 +254,49 @@ const Menu: React.ForwardedRef = () => {
             },
           },
         }}>
-        <ProFormRadio.Group
-          disabled={!!currentRow?.id}
-          name="node_type"
-          label="菜单类型"
-          options={[
-            { value: 1, label: '一级菜单' },
-            { value: 2, label: '子菜单' },
-            // { value: 3, label: '按钮' },
-          ]}
+        <ProFormTreeSelect
+          name="pid"
+          label="上级菜单"
           fieldProps={{
-            onChange: e => {
-              setIsPage(e.target.value === 2);
+            fieldNames: {
+              value: 'id',
+              label: 'name',
+              children: 'children',
             },
+            // @ts-ignore
+            options: menus,
           }}
         />
-        <ProFormText
-          readonly={disabled}
-          label="菜单名称"
-          name="name"
-          rules={[{ required: true }]}
-          placeholder="name，如 系统管理"
+        <ProFormText label="菜单名称" name="name" rules={[{ required: true }]} placeholder="name，如 系统管理" />
+        <ProFormText name="path" label="路由地址" placeholder="path，如 /system" rules={[{ required: true }]} />
+        <ProFormText label="组件路径" name="component" placeholder="component，如 ./system/index" />
+        <ProFormRadio.Group
+          name="hide_in_menu"
+          label="隐藏菜单"
+          options={[
+            { value: 0, label: '否' },
+            { value: 1, label: '是' },
+          ]}
         />
-        <ProFormText
-          readonly={disabled}
-          label="菜单标识"
-          name="menu_code"
-          placeholder="menu_code，填写英文名称即可，如 system"
-        />
-        <ProFormText
-          readonly={disabled}
-          name="path"
-          label="路由地址"
-          placeholder="path，如 /system"
-          rules={[{ required: true }]}
-        />
-        <ProFormText readonly={disabled} label="组件路径" name="component" placeholder="component，如 ./system/index" />
-        {/* 一级菜单才让加icon */}
-        {currentRow?.pid === 0 && (
-          <ProForm.Item label="菜单图标" style={{ marginBottom: 0 }}>
-            <Row gutter={10}>
-              <Col span={22}>
-                <ProFormSelect
-                  readonly={disabled}
-                  name="icon"
-                  placeholder="icon"
-                  options={MENU_ICON_LIST.map(icon => ({ value: icon, label: icon }))}
-                  fieldProps={{
-                    onChange: value => setCurrentIcon(value),
-                    // @ts-ignore
-                    optionItemRender(item) {
-                      return (
-                        <div key={item.value}>
-                          <Iconfont type={item.value} /> {item.label}
-                        </div>
-                      );
-                    },
-                  }}
-                />
-              </Col>
-              <Col span={2}>
-                {currentIcon && <Iconfont style={{ fontSize: 20, marginTop: 5 }} type={currentIcon} />}
-              </Col>
-            </Row>
-          </ProForm.Item>
-        )}
+        <ProForm.Item label="菜单图标" style={{ marginBottom: 0 }}>
+          <ProFormSelect
+            name="icon"
+            placeholder="icon"
+            options={MENU_ICON_LIST.map(icon => ({ value: icon, label: icon }))}
+            fieldProps={{
+              showSearch: true,
+              onChange: value => setCurrentIcon(value),
+              optionItemRender(item) {
+                return (
+                  <div key={item.value}>
+                    <Iconfont type={item.value} /> {item.label}
+                  </div>
+                );
+              },
+              suffixIcon: <Iconfont style={{ fontSize: 20, marginTop: 5 }} type={currentIcon || ''} />,
+            }}
+          />
+        </ProForm.Item>
         {/* <div>
           <div>{currentIcon && <Iconfont type={currentIcon} />}</div>
           <ProFormSelect
