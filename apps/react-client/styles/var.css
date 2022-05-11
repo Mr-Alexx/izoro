@@ -11,7 +11,7 @@
   --text-color-light: #4e5969;
   --text-color-lighter: #909090;
 
-  --bg-body: #f7f1f1;
+  --bg-body: rgb(238, 240, 244);
   --bg-main: #e0dcdc;
   --bg-wrapper: #ffffff;
 }

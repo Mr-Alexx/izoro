@@ -20,6 +20,7 @@
   // background-color: #fff;
   max-height: 500px;
   overflow-y: auto;
+  padding-bottom: 15px;
 
   @include scrollbar();
 }
