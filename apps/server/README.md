@@ -99,7 +99,8 @@ Nest is [MIT licensed](LICENSE).
 
 ## 权限管理
 
-[参考](https://blog.csdn.net/javageektech/article/details/107075199)
+[参考](https://blog.csdn.net/javageektech/article/details/107075199)  
+[参考 2](https://blog.csdn.net/weixin_40629244/article/details/105308524)
 经典设计：
 
 - 用户管理
