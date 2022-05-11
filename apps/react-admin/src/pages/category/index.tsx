@@ -70,7 +70,7 @@ const CategoryPage = () => {
 
             <Access key="del" accessible={access.system.role.edit}>
               <ConfirmButton
-                type="delete"
+                iconType="delete"
                 title={`确定要删除分类 ${row.name} 吗？`}
                 onConfirm={() => handleAction(ACTIONS.del, row)}
               />

@@ -44,21 +44,22 @@
       },
     ],
   },
-  // {
-  //   name: '账号管理',
-  //   icon: 'icon-account',
-  //   path: '/account',
-  //   component: './account/index',
-  // },
-  // {
-  //   name: '角色管理',
-  //   icon: 'icon-role',
-  //   path: 'role',
-  //   component: './role/index',
-  // },
+  {
+    name: '账号管理',
+    icon: 'icon-account',
+    path: '/account',
+    component: './account/index',
+  },
+  {
+    name: '角色管理',
+    icon: 'icon-role',
+    path: 'role',
+    component: './role/index',
+  },
   {
     name: '菜单管理',
-    path: 'menu',
+    icon: 'icon-menu',
+    path: '/menu',
     component: './menu/index',
   },
 

@@ -5,7 +5,6 @@
  */
 import { Button, Popconfirm, Tooltip } from 'antd';
 import type { ButtonProps, PopconfirmProps } from 'antd';
-import { DeleteFilled, EditFilled, EyeFilled, PlusCircleFilled } from '@ant-design/icons';
 import { FC } from 'react';
 import type { IconButtonAction } from './TooltipButton';
 import { iconMap } from './TooltipButton';
@@ -13,7 +12,7 @@ import { iconMap } from './TooltipButton';
 type ConfirmButtonProps = PopconfirmProps & {
   buttonProps?: ButtonProps;
   /** 按钮类型，'view' | 'add' | 'edit' | 'delete'，如果是这其中的一种，显示对应的图标按钮 */
-  type?: IconButtonAction;
+  iconType?: IconButtonAction;
   /** 提示，如果有，会采用Tooltip的形式 */
   tips?: string;
 };
@@ -39,7 +38,7 @@ const IconButton: FC<ButtonProps & { iconType: IconButtonAction }> = ({ iconType
 };
 
 const ConfirmButton = (props: ConfirmButtonProps) => {
-  const { children, buttonProps, placement, type, tips, ...popconfirmProps } = props;
+  const { children, buttonProps, placement, iconType, tips, ...popconfirmProps } = props;
   const newButtonProps = {
     type: 'text',
     size: 'small',
@@ -48,8 +47,8 @@ const ConfirmButton = (props: ConfirmButtonProps) => {
 
   return (
     <Popconfirm {...popconfirmProps} placement={placement ?? 'bottomRight'}>
-      {type ? (
-        <IconButton iconType={type} />
+      {iconType ? (
+        <IconButton iconType={iconType} />
       ) : tips ? (
         <Tooltip title={tips}>
           <Button {...newButtonProps}>{children}</Button>

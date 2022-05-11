@@ -17,15 +17,16 @@ import AppPageContainer from '@/components/AppPageContainer';
 import AppTable from '@/components/AppTable';
 import ConfirmButton from '@/components/Button/ConfirmButton';
 import TooltipButton from '@/components/Button/TooltipButton';
+import { ToolFilled } from '@ant-design/icons';
 
 /**
  * @description hooks形式的函数式组件
  * @see https://juejin.cn/post/6944863057000529933
  */
 const User: FC = () => {
-  const [currentRow, setCurrentRow] = useState<RoleApi.Role>(); // 当前操作行
   const [visible, setVisible] = useState<boolean>(false);
   const [title, setTitle] = useState<string>();
+  const [roleId, setRoleId] = useState<number>();
 
   const formRef = useRef<FormInstance>();
   const actionRef = useRef<ActionType>(); // 表格dom引用
@@ -72,7 +73,7 @@ const User: FC = () => {
     },
     {
       title: '操作',
-      width: 80,
+      width: 100,
       align: 'center',
       dataIndex: 'option',
       valueType: 'option',
@@ -80,21 +81,17 @@ const User: FC = () => {
       render: (_, row) => {
         return (
           <Space size={5}>
-            <Access key="edit" accessible={access.system.role.edit}>
-              <TooltipButton iconType="edit" title="编辑角色" onClick={() => handleAction(ACTIONS.edit, row)} />
-            </Access>
+            <TooltipButton iconType="edit" title="编辑角色" onClick={() => handleAction(ACTIONS.edit, row)} />
 
-            <Access key="del" accessible={access.system.role.edit}>
-              <ConfirmButton
-                type="delete"
-                title={`确定要删除角色 ${row.name} 吗？`}
-                onConfirm={() => handleAction(ACTIONS.del, row)}
-              />
-            </Access>
+            <TooltipButton color="#ffa940" title="菜单授权" onClick={() => setRoleId(row.id)}>
+              <ToolFilled />
+            </TooltipButton>
 
-            {/* <Access key="shouquan" accessible={access.system.role.grandMenuPermission}>
-              <a onClick={() => openDrawer(row)}>授权</a>
-            </Access> */}
+            <ConfirmButton
+              iconType="delete"
+              title={`确定要删除角色 ${row.name} 吗？`}
+              onConfirm={() => handleAction(ACTIONS.del, row)}
+            />
           </Space>
         );
       },
@@ -223,16 +220,15 @@ const User: FC = () => {
       </ModalForm>
 
       {/* 菜单授权 */}
-      {/* {actionType === 10 && (
-        <MenuTree
-          role={currentRow}
-          confirmLoading={drawerConfirmLoading}
-          visible={drawerVisible}
-          onClose={closeDrawer}
-          onOk={editPermissions}
-          request={getRoleMenu}
-        />
-      )} */}
+      <MenuTree
+        roleId={roleId}
+        onClose={() => setRoleId(undefined)}
+        // confirmLoading={drawerConfirmLoading}
+        // visible={drawerVisible}
+        // onClose={closeDrawer}
+        // onOk={editPermissions}
+        // request={getRoleMenu}
+      />
     </AppPageContainer>
   );
 };

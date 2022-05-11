@@ -2,29 +2,31 @@ import type { FC } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import type { RoleItem } from '../data';
-import { Table, message, Checkbox, Drawer, Button, Spin } from 'antd';
+import { Table, message, Checkbox, Drawer, Button, Spin, Skeleton } from 'antd';
 import type { Key } from 'antd/lib/table/interface';
-import { useRequest } from 'umi';
+import ProForm, { DrawerForm } from '@ant-design/pro-form';
+import { getMenus } from '@/services/menu';
 
 interface Props {
-  visible: boolean;
-  role?: Partial<RoleItem>;
-  confirmLoading?: boolean;
-  onOk: (data: any[]) => Promise<void>;
+  /* 角色id */
+  roleId?: number;
+  /* 关闭回调 */
   onClose?: () => void;
-  request: (data: UserApi.RoleMenuParams) => Promise<UserApi.MenuItem[]>;
 }
 
 const MenuTree: FC<Props> = (props: Props) => {
-  const { role, visible, confirmLoading, onOk, onClose, request } = props;
-
-  /* ========== 状态管理 ========== */
+  const { roleId, onClose } = props;
+  const [visible, setVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<UserApi.MenuItem[]>([]);
+  const [data, setData] = useState<MenuApi.Menu[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
-  // const [checkedIds, setCheckedIds] = useState<Record<number, boolean>>({});
 
-  /* ========== 事件处理 ========= */
+  useEffect(() => {
+    if (roleId) {
+      setVisible(true);
+      fetchData();
+    }
+  }, [roleId]);
   /**
    * @description 改造菜单数据
    * @param { Array } list
@@ -48,11 +50,14 @@ const MenuTree: FC<Props> = (props: Props) => {
   const fetchData = async (): Promise<void> => {
     setLoading(true);
     try {
-      const res = await request({ role_id: role?.id as number });
-      const [formatData, defaultChecked] = formatPermissionData(res, []);
+      const res = await getMenus({ roleIds: [roleId as number] });
+      console.log('res', res);
+      setData(res);
 
-      setData(formatData);
-      setSelectedRowKeys(defaultChecked);
+      // const [formatData, defaultChecked] = formatPermissionData(res, []);
+
+      // setData(formatData);
+      // setSelectedRowKeys(defaultChecked);
       // 默认选中
     } catch (err) {
       message.error('获取菜单失败');
@@ -90,7 +95,7 @@ const MenuTree: FC<Props> = (props: Props) => {
   /**
    * @description 全选与反选
    */
-  const toggleSelectedAll = (list: UserApi.MenuItem[], checked: number) => {
+  const toggleSelectedAll = (list: MenuApi.Menu[], checked: number) => {
     list.forEach(item => {
       item.checked = checked;
       if (item.permissions) {
@@ -104,23 +109,6 @@ const MenuTree: FC<Props> = (props: Props) => {
     });
   };
 
-  /* ========== 副作用 ========== */
-  // const { loading, data: listData } = useRequest(() => request({ role_id: role?.id as number }), {
-  //   formatResult: res => res,
-  //   onSuccess: res => {
-  //     const [formatData, defaultChecked] = formatPermissionData(res, []);
-
-  //     setData(formatData);
-  //     setSelectedRowKeys(defaultChecked);
-  //   },
-  // });
-  useEffect(() => {
-    if (role?.id) {
-      fetchData();
-    }
-  }, [role]);
-
-  /* ========== 表头数据 ========== */
   const columns: Record<string, any>[] = [
     {
       title: '菜单',
@@ -152,67 +140,61 @@ const MenuTree: FC<Props> = (props: Props) => {
   ];
 
   return (
-    <Drawer
-      title={`分配权限：${role?.name}`}
+    <DrawerForm
+      // title={`分配权限：${role?.name}`}
       width={900}
-      onClose={onClose}
+      // onClose={onClose}
+      drawerProps={{
+        placement: 'right',
+        destroyOnClose: true,
+        bodyStyle: {
+          paddingBottom: 80,
+        },
+      }}
       visible={visible}
-      placement="right"
-      bodyStyle={{ paddingBottom: 80 }}
-      destroyOnClose
-      footer={
-        <div
-          style={{
-            textAlign: 'right',
-          }}>
-          <Button onClick={onClose} style={{ marginRight: 8 }}>
-            取消
-          </Button>
-          <Button onClick={() => onOk(data)} loading={confirmLoading} type="primary">
-            确定
-          </Button>
-        </div>
-      }>
+      onVisibleChange={onClose}
+      // onFinish={onOk}
+    >
       {/* defaultExpandAllRows不展开问题，参考 https://github.com/ant-design/ant-design/issues/4145 */}
-      {loading ? (
-        <Spin spinning={loading} />
-      ) : (
-        <Table
-          columns={columns}
-          dataSource={data}
-          rowKey="id"
-          pagination={false}
-          expandable={{
-            defaultExpandAllRows: true,
-          }}
-          rowSelection={{
-            checkStrictly: true,
-            selectedRowKeys,
-            onSelectAll: selected => {
-              // 全选与反选
-              // 遍历源数据，将checked都改为1
-              toggleSelectedAll(data, Number(selected));
-            },
-            onChange: selectedKeys => {
-              setSelectedRowKeys(selectedKeys);
-            },
-            onSelect: (row, selected) => {
-              // eslint-disable-next-line
-              row.checked = Number(selected);
-              if (!row?.permissions) {
-                return;
-              }
-              // 子权限选中与反选
-              row.permissions.forEach((item: UserApi.MenuItem) => {
+      <Skeleton loading={loading} active paragraph={{ rows: 16 }}>
+        <ProForm.Item>
+          <Table
+            columns={columns}
+            dataSource={data}
+            rowKey="id"
+            pagination={false}
+            expandable={{
+              defaultExpandAllRows: true,
+            }}
+            rowSelection={{
+              checkStrictly: true,
+              selectedRowKeys,
+              onSelectAll: selected => {
+                // 全选与反选
+                // 遍历源数据，将checked都改为1
+                toggleSelectedAll(data, Number(selected));
+              },
+              onChange: selectedKeys => {
+                setSelectedRowKeys(selectedKeys);
+              },
+              onSelect: (row, selected) => {
                 // eslint-disable-next-line
-                item.checked = Number(selected);
-              });
-              setData([...data]);
-            },
-          }}
-        />
-      )}
-    </Drawer>
+                row.checked = Number(selected);
+                if (!row?.permissions) {
+                  return;
+                }
+                // 子权限选中与反选
+                row.permissions.forEach((item: MenuApi.Menu) => {
+                  // eslint-disable-next-line
+                  item.checked = Number(selected);
+                });
+                setData([...data]);
+              },
+            }}
+          />
+        </ProForm.Item>
+      </Skeleton>
+    </DrawerForm>
   );
 };
 

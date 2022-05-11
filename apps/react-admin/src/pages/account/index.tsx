@@ -189,7 +189,7 @@ const UserPage: FC = () => {
 
             <Access key="del" accessible={access.system.user.edit}>
               <ConfirmButton
-                type="delete"
+                iconType="delete"
                 title={`确定要删除账号 ${row.account} 吗？`}
                 onConfirm={() => handleAction(ACTIONS.del, row)}
               />

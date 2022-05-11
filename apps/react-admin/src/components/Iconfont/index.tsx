@@ -2,7 +2,7 @@ import type { FC } from 'react';
 
 import { createFromIconfontCN } from '@ant-design/icons';
 
-const IconFont = createFromIconfontCN({
+const Font = createFromIconfontCN({
   scriptUrl: ['//at.alicdn.com/t/font_2498052_idxror9cdef.js'],
 });
 
@@ -12,7 +12,7 @@ export type IconfontProps = {
 };
 
 const Iconfont: FC<IconfontProps> = props => {
-  return <IconFont type={props.type} style={{ fontSize: 14, ...props.style }} />;
+  return <Font type={props.type} style={{ fontSize: 14, ...props.style }} />;
 };
 
 export default Iconfont;

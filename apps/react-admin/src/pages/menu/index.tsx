@@ -1,9 +1,10 @@
 /**
  * @description 菜单、权限列表
  */
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import type { FormInstance } from 'antd';
-import { Button, message, Tag, Row, Col } from 'antd';
+import type { FC } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { FormInstance, Space } from 'antd';
+import { Button, message, Tag } from 'antd';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProForm, {
   ProFormSelect,
@@ -12,115 +13,75 @@ import ProForm, {
   DrawerForm,
   ProFormRadio,
   ProFormTreeSelect,
+  ProFormDependency,
 } from '@ant-design/pro-form';
 import { ACTIONS, MENU_ICON_LIST } from '@/constants';
-import { getPermissions, bindPermission } from '@/services/user';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Access, useAccess, useRequest } from 'umi';
 import Iconfont from '@/components/Iconfont';
 import AppTable from '@/components/AppTable';
-import { useModel } from 'umi';
-import { getMenus, addMenu, editMenu } from '@/services/menu';
+import { useModel, Access, useAccess } from 'umi';
+import { getMenus, addMenu, editMenu, deleteMenu } from '@/services/menu';
+import TooltipButton from '@/components/Button/TooltipButton';
+import ConfirmButton from '@/components/Button/ConfirmButton';
 
-// @ts-ignore
-const Menu: React.ForwardedRef = () => {
-  // const [expandedRows, seEexpandedRows] = useState<number[] | undefined>();
-
-  const [currentRow, setCurrentRow] = useState<Partial<UserApi.MenuItem> | undefined>();
-  const [visible, updateVisible] = useState(false);
-  const [actionType, setActionType] = useState<number>(ACTIONS.view);
-  const actionRef = useRef<ActionType>();
-  const [isPage, setIsPage] = useState<boolean>();
-  const [currentIcon, setCurrentIcon] = useState<string | undefined>();
-  const access = useAccess();
-
-  const [menus, setMenus] = useState<any[]>();
+const Menu: FC = () => {
+  const [menus, setMenus] = useState<Partial<MenuApi.Menu>[]>();
+  const [visible, setVisible] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>();
   const { permissions, initPermissions } = useModel('mapListModel');
+  const access = useAccess();
+  const actionRef = useRef<ActionType>();
+  const formRef = useRef<FormInstance>();
 
   useEffect(() => {
     initPermissions();
   }, []);
 
-  const formRef = useRef<FormInstance>();
-
-  const title = useMemo(() => {
-    let modalTitle = '';
-    console.log(currentRow);
-    switch (actionType) {
-      case ACTIONS.edit:
-        modalTitle = `编辑 - ${currentRow?.name}`;
-        break;
+  /**
+   * 处理操作
+   * @param {ACTIONS} action 操作
+   * @param {CategoryApi.Category} record 行记录
+   * @return {void | boolean} boolean用于popconfirm异步关闭
+   */
+  const handleAction = (action: ACTIONS, record?: MenuApi.Menu): void | boolean => {
+    switch (action) {
       case ACTIONS.add:
-        modalTitle = `新增 - ${!currentRow?.name ? '根菜单' : `${currentRow.name}-子菜单`}`;
+        formRef.current?.resetFields();
+      case ACTIONS.edit:
+        setTitle(record?.id ? `编辑菜单 - ${record?.name}` : '新增菜单');
+        formRef.current?.setFieldsValue({ ...record });
+        setVisible(true);
         break;
-      default:
-        modalTitle = `查看 - ${currentRow?.name}`;
+      case ACTIONS.del:
+        deleteMenu(record?.id as number).then(tip => message.success(tip));
+        actionRef.current?.reload();
         break;
     }
-    return modalTitle;
-  }, [actionType, currentRow]);
-
-  const disabled = useMemo(() => {
-    return actionType === ACTIONS.view;
-  }, [actionType]);
-
-  const handleAction = (type: number, row: Partial<UserApi.MenuItem> | undefined) => {
-    setActionType(type);
-    setCurrentRow(row);
-    setCurrentIcon(row?.icon);
-    setIsPage(row?.node_type === 2);
-    updateVisible(true);
   };
+
   /**
    * @description 新增/编辑菜单
    */
-  const submitMenu = async (value: UserApi.MenuItem) => {
+  const submitMenu = async (formVal: MenuApi.Menu) => {
     try {
-      let msg = '新增成功';
-      const id = currentRow?.id;
-      if (!id) {
-        await addMenu({
-          ...value,
-          pid: Number(value?.pid || 0),
-          sort: Number(value?.sort),
-        });
-      } else {
-        // 绑定权限（菜单下有子菜单不允许绑定，后台设定问题，这次要做过滤）
-        // if (!currentRow?.children) {
-        //   await bindPermission({ permissions: value.permissions, id: currentRow?.id as number });
-        // }
-
-        await editMenu({
-          ...value,
-          pid: Number(value?.pid || 0),
-          // @ts-ignore
-          id: currentRow?.id,
-          sort: Number(value?.sort),
-        });
-        msg = '修改成功';
-      }
-      updateVisible(false);
-      message.success(msg);
-      // onAction();
+      formVal.id ? await editMenu(formVal) : await addMenu(formVal);
+      message.success(`${formVal.id ? '编辑' : '新增'}成功！`);
       actionRef.current?.reload();
-      return true;
     } catch (err) {
-      // message.error(err);
       console.error(err);
       return false;
     }
+    return true;
   };
 
-  const columns: ProColumns<UserApi.MenuItem>[] = [
+  const columns: ProColumns<MenuApi.Menu>[] = [
     {
       title: '菜单名称',
-      key: 'name',
       dataIndex: 'name',
       width: 250,
     },
     {
       title: '图标',
-      key: 'icon',
       width: 80,
       dataIndex: 'icon',
       align: 'center',
@@ -149,20 +110,17 @@ const Menu: React.ForwardedRef = () => {
     // },
     {
       title: '路由地址',
-      key: 'path',
       dataIndex: 'path',
       width: 160,
       ellipsis: true,
     },
     {
       title: '组件路径',
-      key: 'component',
       dataIndex: 'component',
       width: 200,
     },
     {
       title: '权限',
-      key: 'permissions',
       dataIndex: 'permissions',
       render: (_, row) => {
         if (!row.permissions) {
@@ -179,30 +137,30 @@ const Menu: React.ForwardedRef = () => {
     },
     {
       title: '操作',
-      key: 'option1',
       dataIndex: 'option',
       valueType: 'option',
-      width: 180,
+      align: 'center',
+      width: 100,
       fixed: 'right',
       render: (_, row) => {
-        return [
-          <Access key="view" accessible={access.system.user.view}>
-            <a onClick={() => handleAction(ACTIONS.view, row)}>查看</a>
-          </Access>,
-          <Access key="edit" accessible={access.system.user.edit}>
-            <a onClick={() => handleAction(ACTIONS.edit, row)}>编辑</a>
-          </Access>,
-          <Access key="add" accessible={access.system.user.create}>
-            <a onClick={() => handleAction(ACTIONS.add, { pid: row?.id, name: row?.name })}>新建子菜单</a>
-          </Access>,
-        ];
+        return (
+          <Space size={5}>
+            <TooltipButton
+              iconType="add"
+              title="新增子菜单"
+              onClick={() => handleAction(ACTIONS.add, { pid: row?.id } as MenuApi.Menu)}
+            />
+            <TooltipButton iconType="edit" title="编辑菜单" onClick={() => handleAction(ACTIONS.edit, row)} />
+            <ConfirmButton iconType="delete" title="删除菜单" onConfirm={() => handleAction(ACTIONS.del, row)} />
+          </Space>
+        );
       },
     },
   ];
 
   return (
     <PageContainer>
-      <AppTable<UserApi.MenuItem>
+      <AppTable<MenuApi.Menu>
         actionRef={actionRef}
         columns={columns}
         request={getMenus}
@@ -218,9 +176,7 @@ const Menu: React.ForwardedRef = () => {
         }}
         pagination={false}
         search={false}
-        onLoad={dataSource => {
-          setMenus([{ id: 0, name: '根菜单' }, ...(dataSource ?? [])]);
-        }}
+        onLoad={dataSource => setMenus([{ id: 0, name: '请选择' }, ...dataSource])}
       />
       {/* 查看、编辑、新增菜单弹窗 */}
       <DrawerForm
@@ -228,36 +184,21 @@ const Menu: React.ForwardedRef = () => {
         title={title}
         drawerProps={{
           forceRender: true,
-          destroyOnClose: true,
+          // destroyOnClose: true,
         }}
         visible={visible}
-        onVisibleChange={updateVisible}
+        onVisibleChange={setVisible}
         onFinish={submitMenu}
         layout="horizontal"
-        labelCol={{ span: 5 }}
-        initialValues={{
-          name: currentRow?.name,
-          menu_code: currentRow?.menu_code,
-          path: currentRow?.path,
-          component: currentRow?.component,
-          icon: currentRow?.icon,
-          sort: currentRow?.sort || 1,
-          status: currentRow?.status || 1,
-          node_type: currentRow?.node_type || 1,
-          pid: currentRow?.pid || 0,
-          permissions: currentRow?.permissions,
-        }}
-        submitter={{
-          submitButtonProps: {
-            style: {
-              display: actionType === ACTIONS.view ? 'none' : 'inherit',
-            },
-          },
-        }}>
+        labelCol={{ flex: '100px' }}
+        wrapperCol={{ flex: '1' }}>
+        <ProFormDigit hidden name="id" />
         <ProFormTreeSelect
           name="pid"
           label="上级菜单"
+          placeholder="请选择"
           fieldProps={{
+            allowClear: true,
             fieldNames: {
               value: 'id',
               label: 'name',
@@ -267,12 +208,13 @@ const Menu: React.ForwardedRef = () => {
             options: menus,
           }}
         />
-        <ProFormText label="菜单名称" name="name" rules={[{ required: true }]} placeholder="name，如 系统管理" />
-        <ProFormText name="path" label="路由地址" placeholder="path，如 /system" rules={[{ required: true }]} />
-        <ProFormText label="组件路径" name="component" placeholder="component，如 ./system/index" />
+        <ProFormText label="菜单名称" name="name" rules={[{ required: true }]} />
+        <ProFormText name="path" label="路由地址" rules={[{ required: true }]} />
+        <ProFormText label="组件路径" name="component" />
         <ProFormRadio.Group
           name="hide_in_menu"
           label="隐藏菜单"
+          initialValue={0}
           options={[
             { value: 0, label: '否' },
             { value: 1, label: '是' },
@@ -281,11 +223,9 @@ const Menu: React.ForwardedRef = () => {
         <ProForm.Item label="菜单图标" style={{ marginBottom: 0 }}>
           <ProFormSelect
             name="icon"
-            placeholder="icon"
             options={MENU_ICON_LIST.map(icon => ({ value: icon, label: icon }))}
             fieldProps={{
               showSearch: true,
-              onChange: value => setCurrentIcon(value),
               optionItemRender(item) {
                 return (
                   <div key={item.value}>
@@ -293,60 +233,26 @@ const Menu: React.ForwardedRef = () => {
                   </div>
                 );
               },
-              suffixIcon: <Iconfont style={{ fontSize: 20, marginTop: 5 }} type={currentIcon || ''} />,
+              suffixIcon: (
+                <ProFormDependency name={['icon']}>
+                  {({ icon }) => icon && <Iconfont style={{ fontSize: 20, marginTop: 5 }} type={icon} />}
+                </ProFormDependency>
+              ),
             }}
           />
         </ProForm.Item>
-        {/* <div>
-          <div>{currentIcon && <Iconfont type={currentIcon} />}</div>
-          <ProFormSelect
-            readonly={disabled}
-            label="菜单图标"
-            name="icon"
-            placeholder="icon"
-            options={MENU_ICON_LIST.map(icon => ({ value: icon, label: icon }))}
-            fieldProps={{
-              onChange: value => setCurrentIcon(value),
-              // @ts-ignore
-              optionItemRender(item) {
-                return (
-                  <div key={item.value}>
-                    <Iconfont type={item.value} /> {item.label}
-                  </div>
-                );
-              },
-            }}
-          />
-        </div> */}
-        <ProFormSelect
-          readonly={disabled}
+        <ProFormRadio.Group
           name="status"
           label="菜单状态"
-          placeholder="status"
-          rules={[{ required: true, message: '请选择状态' }]}
-          key="status"
-          allowClear={false}
+          rules={[{ required: true }]}
+          initialValue={1}
           options={[
             { value: 0, label: '禁用' },
             { value: 1, label: '启用' },
           ]}
         />
-        <ProFormSelect
-          readonly={disabled}
-          name="permissions"
-          label="绑定权限"
-          showSearch
-          mode="multiple"
-          placeholder="请选择权限"
-          options={permissions}
-        />
-        {isPage && <ProFormDigit readonly={disabled} name="pid" label="上级菜单" />}
-        <ProFormDigit
-          readonly={disabled}
-          name="sort"
-          label="排序"
-          rules={[{ required: true, message: '请填写排序' }]}
-        />
+        <ProFormSelect name="permissions" label="绑定权限" showSearch mode="multiple" options={permissions} />
+        <ProFormDigit name="sort" label="排序" />
       </DrawerForm>
     </PageContainer>
   );
