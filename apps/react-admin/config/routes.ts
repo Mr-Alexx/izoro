@@ -74,41 +74,41 @@
   //   component: './system/api-route/index',
   // },
 
-  // {
-  //   name: '分类管理',
-  //   icon: 'icon-category',
-  //   path: 'category',
-  //   component: './category/index',
-  // },
-  // {
-  //   name: '文章管理',
-  //   icon: 'icon-article',
-  //   path: '/article',
-  //   routes: [
-  //     {
-  //       path: '/article',
-  //       redirect: '/article/index',
-  //     },
-  //     {
-  //       path: '/article/index',
-  //       component: './article/index',
-  //     },
-  //     {
-  //       name: '新增文章',
-  //       path: '/article/add',
-  //       component: './article/edit',
-  //       layout: false,
-  //       hideInMenu: true,
-  //     },
-  //     {
-  //       name: '编辑文章',
-  //       path: '/article/edit/:id',
-  //       component: './article/edit',
-  //       hideInMenu: true,
-  //       hideInSearch: true,
-  //     },
-  //   ],
-  // },
+  {
+    name: '分类管理',
+    icon: 'icon-category',
+    path: 'category',
+    component: './category/index',
+  },
+  {
+    name: '文章管理',
+    icon: 'icon-article',
+    path: '/article',
+    routes: [
+      {
+        path: '/article',
+        redirect: '/article/index',
+      },
+      {
+        path: '/article/index',
+        component: './article/index',
+      },
+      {
+        name: '新增文章',
+        path: '/article/add',
+        component: './article/edit',
+        layout: false,
+        hideInMenu: true,
+      },
+      {
+        name: '编辑文章',
+        path: '/article/edit/:id',
+        component: './article/edit',
+        hideInMenu: true,
+        hideInSearch: true,
+      },
+    ],
+  },
 
   // {
   //   name: '定时任务管理',

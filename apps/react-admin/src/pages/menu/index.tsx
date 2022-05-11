@@ -79,35 +79,13 @@ const Menu: FC = () => {
       title: '菜单名称',
       dataIndex: 'name',
       width: 250,
+      renderText: (text, row) => (
+        <Space size={5}>
+          {row.icon && <Iconfont style={{ fontSize: 16 }} type={row?.icon} />}
+          <span>{text}</span>
+        </Space>
+      ),
     },
-    {
-      title: '图标',
-      width: 80,
-      dataIndex: 'icon',
-      align: 'center',
-      render: (_, row) => {
-        if (!row?.icon) {
-          return null;
-        }
-        return <Iconfont style={{ fontSize: 20 }} type={row?.icon} />;
-      },
-    },
-    // {
-    //   title: '状态',
-    //   key: 'status1',
-    //   dataIndex: 'status',
-    //   width: 80,
-    //   valueEnum: {
-    //     0: {
-    //       text: '禁用',
-    //       status: 'Error',
-    //     },
-    //     1: {
-    //       text: '启用',
-    //       status: 'Processing',
-    //     },
-    //   },
-    // },
     {
       title: '路由地址',
       dataIndex: 'path',

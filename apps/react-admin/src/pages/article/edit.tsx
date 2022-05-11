@@ -1,5 +1,7 @@
 import Editor from '@/components/Editor';
 import MarkdownEditor from '@/components/Editor/MarkdownEditor';
+import useParams from '@/hooks/useParams';
+import { getArticle } from '@/services/article';
 import ProForm, {
   ProFormDependency,
   ProFormRadio,
@@ -10,6 +12,8 @@ import ProForm, {
 import { debounce } from 'lodash'; // '@/utils/throttle-debounce';
 
 const ArticleEditPage = () => {
+  const { id } = useParams();
+
   /* 存草稿 */
   const saveDraft = debounce(formVal => {
     console.log('草稿', formVal);
@@ -18,6 +22,22 @@ const ArticleEditPage = () => {
   return (
     <ProForm
       onValuesChange={saveDraft}
+      request={async () => {
+        if (!id) {
+          return;
+        }
+        try {
+          const data = await getArticle(id);
+          console.log(data);
+          return {
+            ...data,
+            markdown: data.markdown?.replace(/↵/gi, '\n\r'),
+          };
+        } catch (err) {
+          console.error(err);
+          return;
+        }
+      }}
       onFinish={async formVal => {
         console.log('d', formVal);
         return false;

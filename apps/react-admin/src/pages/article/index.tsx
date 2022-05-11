@@ -155,7 +155,12 @@ const UserPage: FC = () => {
             <TooltipButton iconType="view" title="查看文章" onClick={() => handleAction(ACTIONS.view, row)} />
 
             <Access key="edit" accessible={access.system.user.edit}>
-              <TooltipButton iconType="edit" title="编辑文章" onClick={() => handleAction(ACTIONS.edit, row)} />
+              <TooltipButton
+                iconType="edit"
+                title="编辑文章"
+                onClick={() => handleAction(ACTIONS.edit, row)}
+                to={`/article/edit/${row.id}`}
+              />
             </Access>
 
             <Access key="del" accessible={access.system.user.edit}>
