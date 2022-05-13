@@ -14,7 +14,7 @@ export type AnchorItem = {
 
 const Anchors = (props: {
   dataSource?: AnchorItem[];
-  sticky:
+  sticky?:
     | false
     | {
         offsetTop: number | string;

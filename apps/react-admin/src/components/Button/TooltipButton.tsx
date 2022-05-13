@@ -6,12 +6,15 @@
 import { Button, Tooltip } from 'antd';
 import type { ButtonProps, TooltipProps } from 'antd';
 import { DeleteFilled, EditFilled, EyeFilled, PlusCircleFilled } from '@ant-design/icons';
+import { Link } from 'umi';
 
 export type IconButtonAction = 'view' | 'add' | 'edit' | 'delete';
 type ConfirmButtonProps = TooltipProps &
   ButtonProps & {
     /** 按钮类型，'view' | 'add' | 'edit' | 'delete'，如果是这其中的一种，显示对应的图标按钮 */
     iconType?: IconButtonAction;
+    /* 链接形式 */
+    to?: string;
   };
 
 export const iconMap = {
@@ -22,7 +25,7 @@ export const iconMap = {
 };
 
 const TooltipButton = (props: ConfirmButtonProps) => {
-  const { children, iconType: type, title, ...buttonProps } = props;
+  const { children, iconType: type, title, to, ...buttonProps } = props;
   let newButtonProps = {
     type: 'text',
     size: 'small',
@@ -39,7 +42,13 @@ const TooltipButton = (props: ConfirmButtonProps) => {
   }
   return (
     <Tooltip title={title ?? iconMap[type as string]?.tips}>
-      <Button {...newButtonProps}>{children}</Button>
+      {to ? (
+        <Link to={to}>
+          <Button {...newButtonProps}>{children}</Button>
+        </Link>
+      ) : (
+        <Button {...newButtonProps}>{children}</Button>
+      )}
     </Tooltip>
   );
 };
