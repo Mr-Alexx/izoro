@@ -1,5 +1,5 @@
 import Editor from '@/components/Editor';
-import MarkdownEditor from '@/components/Editor/MarkdownEditor';
+import MarkdownEditor, { getProcessorData } from '@/components/Editor/MarkdownEditor';
 import useParams from '@/hooks/useParams';
 import { getArticle } from '@/services/article';
 import ProForm, {
@@ -24,7 +24,7 @@ const ArticleEditPage = () => {
       onValuesChange={saveDraft}
       request={async () => {
         if (!id) {
-          return;
+          return { loading: false };
         }
         try {
           const data = await getArticle(id);
@@ -68,7 +68,7 @@ const ArticleEditPage = () => {
       </ProFormDependency> */}
 
       <ProForm.Item name="markdown">
-        <MarkdownEditor />
+        <MarkdownEditor onChange={value => getProcessorData(value)} />
       </ProForm.Item>
 
       {/* <ProFormDependency name={['markdown']}>
