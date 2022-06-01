@@ -75,7 +75,7 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
       showSizeChanger: true,
       pageSize: 30,
       showQuickJumper: true,
-      position: ['bottomLeft'], // 'topLeft' | 'topCenter' | 'topRight' | 'bottomLeft' | 'bottomCenter' | 'bottomRight';
+      position: ['bottomCenter'], // 'topLeft' | 'topCenter' | 'topRight' | 'bottomLeft' | 'bottomCenter' | 'bottomRight';
       pageSizeOptions: ['10', '20', '30', '40', '50', '100', '200'],
       ...pagination,
     };
@@ -179,7 +179,7 @@ const AppTable = <T extends Record<string, any>, U extends ParamsType = {}, Valu
                   }
                 : sticky
             }
-            scroll={scroll ?? { x: 1300 }}
+            scroll={scroll ?? { x: 1000 }}
             pagination={newPagination}
             search={newSearch}
             toolbar={toolbar}

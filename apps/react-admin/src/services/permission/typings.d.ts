@@ -13,10 +13,6 @@ declare namespace PermissionApi {
      */
     code;
     /**
-     * 排序
-     */
-    sort?: number;
-    /**
      * 状态， 0废弃 1正常
      */
     status: number;

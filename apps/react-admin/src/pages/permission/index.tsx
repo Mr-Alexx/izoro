@@ -14,10 +14,9 @@ import { useEffect, useRef, useState } from 'react';
 import { AutoComplete, FormInstance, Space } from 'antd';
 import { Button, message } from 'antd';
 import { getPermissions, addPermission, editPermission, deletePermission } from '@/services/permission';
-import ProForm, { ModalForm, ProFormDigit, ProFormRadio, ProFormSelect, ProFormText } from '@ant-design/pro-form';
-import { PageContainer } from '@ant-design/pro-layout';
+import ProForm, { ModalForm, ProFormDigit } from '@ant-design/pro-form';
 import { Access, useAccess, useModel } from 'umi';
-import { ACTIONS, STATUS_ENUM } from '@/constants';
+import { ACTIONS } from '@/constants';
 import AppTable from '@/components/AppTable';
 import TooltipButton from '@/components/Button/TooltipButton';
 import ConfirmButton from '@/components/Button/ConfirmButton';
@@ -40,6 +39,7 @@ const PermissionTable: React.FC = () => {
       width: 50,
       dataIndex: 'id',
       align: 'center',
+      search: false,
     },
     {
       title: '权限名称',
@@ -52,21 +52,14 @@ const PermissionTable: React.FC = () => {
       dataIndex: 'code',
       valueType: 'text',
     },
-    {
-      title: '状态',
-      width: 80,
-      align: 'center',
-      dataIndex: 'status',
-      valueType: 'select',
-      valueEnum: STATUS_ENUM,
-    },
-    {
-      title: '排序',
-      width: 80,
-      dataIndex: 'order',
-      align: 'center',
-      search: false,
-    },
+    // {
+    //   title: '状态',
+    //   width: 80,
+    //   align: 'center',
+    //   dataIndex: 'status',
+    //   valueType: 'select',
+    //   valueEnum: STATUS_ENUM,
+    // },
     {
       title: '操作',
       width: 80,
@@ -75,7 +68,11 @@ const PermissionTable: React.FC = () => {
       render: (_, row) => (
         <Space size={5}>
           <TooltipButton iconType="edit" title="编辑权限" onClick={() => handleAction(ACTIONS.edit, row)} />
-          <ConfirmButton iconType="delete" title="删除权限" onConfirm={() => handleAction(ACTIONS.del, row)} />
+          <ConfirmButton
+            iconType="delete"
+            title={`删除 ${row.name} 权限？`}
+            onConfirm={() => handleAction(ACTIONS.del, row)}
+          />
         </Space>
       ),
     },
@@ -119,11 +116,15 @@ const PermissionTable: React.FC = () => {
   };
 
   return (
-    <PageContainer>
+    <>
       <AppTable<PermissionApi.Permission>
+        headerTitle="权限列表"
         actionRef={actionRef}
         columns={columns}
         request={getPermissions}
+        scroll={{
+          x: 600,
+        }}
         toolbar={{
           actions: [
             <Access key="create" accessible={access.system.permission.create}>
@@ -132,12 +133,6 @@ const PermissionTable: React.FC = () => {
               </Button>
             </Access>,
           ],
-        }}
-        options={{
-          fullScreen: false,
-          reload: true,
-          setting: false,
-          density: true,
         }}
       />
 
@@ -181,7 +176,8 @@ const PermissionTable: React.FC = () => {
             }}
           />
         </ProForm.Item>
-        <ProFormRadio.Group
+        <ProFormDigit name="status" initialValue={1} hidden />
+        {/* <ProFormRadio.Group
           name="status"
           label="状态"
           initialValue={1}
@@ -189,10 +185,9 @@ const PermissionTable: React.FC = () => {
             { value: 1, label: '正常' },
             { value: 0, label: '废弃' },
           ]}
-        />
-        <ProFormDigit name="sort" label="排序" key="order" />
+        /> */}
       </ModalForm>
-    </PageContainer>
+    </>
   );
 };
 

@@ -3,7 +3,7 @@
  */
 import type { FC } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { AutoComplete, FormInstance, Space } from 'antd';
+import { FormInstance, Space } from 'antd';
 import { Button, message, Tag } from 'antd';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProForm, {
@@ -16,30 +16,27 @@ import ProForm, {
   ProFormDependency,
 } from '@ant-design/pro-form';
 import { ACTIONS, MENU_ICON_LIST } from '@/constants';
-import { PageContainer } from '@ant-design/pro-layout';
 import Iconfont from '@/components/Iconfont';
 import AppTable from '@/components/AppTable';
-import { useModel, Access, useAccess } from 'umi';
+import { Access, useAccess } from 'umi';
 import { getMenus, addMenu, editMenu, deleteMenu } from '@/services/menu';
 import TooltipButton from '@/components/Button/TooltipButton';
 import ConfirmButton from '@/components/Button/ConfirmButton';
-
-const TYPE_OPTIONS = [
-  { value: 1, label: '菜单' },
-  { value: 2, label: '权限' },
-];
+import { getPermissions } from '@/services/permission';
 
 const Menu: FC = () => {
   const [menus, setMenus] = useState<Partial<MenuApi.Menu>[]>();
   const [visible, setVisible] = useState<boolean>(false);
   const [title, setTitle] = useState<string>();
-  const { permissions, initPermissions } = useModel('mapListModel');
+  const [permissions, setPermissions] = useState<PermissionApi.Permission[]>();
   const access = useAccess();
   const actionRef = useRef<ActionType>();
   const formRef = useRef<FormInstance>();
 
   useEffect(() => {
-    initPermissions();
+    getPermissions({ current: 1, pageSize: 1000 }).then(data => {
+      setPermissions(data.data);
+    });
   }, []);
 
   /**
@@ -54,7 +51,7 @@ const Menu: FC = () => {
         formRef.current?.resetFields();
       case ACTIONS.edit:
         setTitle(record?.id ? `编辑菜单 - ${record?.name}` : '新增菜单');
-        formRef.current?.setFieldsValue({ ...record });
+        formRef.current?.setFieldsValue({ ...record, permissions: record?.permissions?.map((item: any) => item.id) });
         setVisible(true);
         break;
       case ACTIONS.del:
@@ -83,7 +80,7 @@ const Menu: FC = () => {
     {
       title: '菜单名称',
       dataIndex: 'name',
-      width: 250,
+      width: 200,
       renderText: (text, row) => (
         <Space size={5}>
           {row.icon && <Iconfont style={{ fontSize: 16 }} type={row?.icon} />}
@@ -97,44 +94,27 @@ const Menu: FC = () => {
       width: 160,
       ellipsis: true,
     },
-    {
-      title: '菜单类型',
-      dataIndex: 'type',
-      width: 80,
-      align: 'center',
-      valueType: 'select',
-      render: (_, row) => {
-        return <Tag color={row.type === 1 ? 'processing' : 'cyan'}>{row.type === 1 ? '菜单' : '权限'}</Tag>;
-      },
-    },
-    {
-      title: '权限标识',
-      dataIndex: 'permission_code',
-      width: 120,
-      ellipsis: true,
-      search: false,
-    },
     // {
     //   title: '组件路径',
     //   dataIndex: 'component',
     //   width: 200,
     // },
-    // {
-    //   title: '权限',
-    //   dataIndex: 'permissions',
-    //   render: (_, row) => {
-    //     if (!row.permissions) {
-    //       return null;
-    //     }
-    //     return row.permissions.map(v => {
-    //       return (
-    //         <Tag color="blue" key={v} style={{ marginTop: 3, marginBottom: 3 }}>
-    //           {permissions!.find(item => item.value === v)?.label}
-    //         </Tag>
-    //       );
-    //     });
-    //   },
-    // },
+    {
+      title: '绑定权限',
+      dataIndex: 'permissions',
+      render: (_, row) => {
+        if (!row.permissions) {
+          return null;
+        }
+        return row.permissions.map((item: any) => {
+          return (
+            <Tag color="processing" key={item.id} style={{ marginTop: 3, marginBottom: 3 }}>
+              {item.name}
+            </Tag>
+          );
+        });
+      },
+    },
     {
       title: '操作',
       dataIndex: 'option',
@@ -159,8 +139,9 @@ const Menu: FC = () => {
   ];
 
   return (
-    <PageContainer>
+    <>
       <AppTable<MenuApi.Menu>
+        headerTitle="菜单列表"
         actionRef={actionRef}
         columns={columns}
         // @ts-ignore
@@ -194,16 +175,6 @@ const Menu: FC = () => {
         labelCol={{ flex: '100px' }}
         wrapperCol={{ flex: '1' }}>
         <ProFormDigit hidden name="id" />
-        <ProFormRadio.Group
-          name="type"
-          label="菜单类型"
-          fieldProps={{
-            optionType: 'button',
-            buttonStyle: 'solid',
-          }}
-          initialValue={1}
-          options={TYPE_OPTIONS}
-        />
         <ProFormTreeSelect
           name="pid"
           label="上级菜单"
@@ -221,66 +192,46 @@ const Menu: FC = () => {
         />
         <ProFormText label="菜单名称" name="name" rules={[{ required: true }]} />
 
-        <ProFormDependency name={['type']}>
-          {({ type }) => {
-            // 权限时，只需要填写标识就ok
-            if (type === 2) {
-              return (
-                // <ProFormSelect
-                //   name="permission_code"
-                //   label="权限标识"
-                //   options={permissions}
-                //   rules={[{ required: true, message: '权限类型时必须填写权限标识' }]}
-                //   fieldProps={{ showSearch: true }}
-                // />
-                <ProForm.Item
-                  name="permission_code"
-                  label="权限标识"
-                  rules={[{ required: true, message: '权限类型时必须填写权限标识' }]}>
-                  <AutoComplete options={permissions} />
-                </ProForm.Item>
-              );
-            }
-            return (
-              <>
-                <ProFormText name="path" label="路由地址" rules={[{ required: true }]} />
-                <ProFormText label="组件路径" name="component" />
-                <ProFormRadio.Group
-                  name="hide_in_menu"
-                  label="隐藏菜单"
-                  initialValue={0}
-                  options={[
-                    { value: 0, label: '否' },
-                    { value: 1, label: '是' },
-                  ]}
-                />
-                <ProForm.Item label="菜单图标" style={{ marginBottom: 0 }}>
-                  <ProFormSelect
-                    name="icon"
-                    options={MENU_ICON_LIST.map(icon => ({ value: icon, label: icon }))}
-                    fieldProps={{
-                      showSearch: true,
-                      optionItemRender(item) {
-                        return (
-                          <div key={item.value}>
-                            <Iconfont type={item.value} /> {item.label}
-                          </div>
-                        );
-                      },
-                      suffixIcon: (
-                        <ProFormDependency name={['icon']}>
-                          {({ icon }) => icon && <Iconfont style={{ fontSize: 20, marginTop: 5 }} type={icon} />}
-                        </ProFormDependency>
-                      ),
-                    }}
-                  />
-                </ProForm.Item>
-              </>
-            );
-          }}
-        </ProFormDependency>
+        <ProFormText name="path" label="路由地址" rules={[{ required: true }]} />
+        <ProFormText label="组件路径" name="component" />
+        <ProFormRadio.Group
+          name="hide_in_menu"
+          label="隐藏菜单"
+          initialValue={0}
+          options={[
+            { value: 0, label: '否' },
+            { value: 1, label: '是' },
+          ]}
+        />
+        <ProForm.Item label="菜单图标" style={{ marginBottom: 0 }}>
+          <ProFormSelect
+            name="icon"
+            options={MENU_ICON_LIST.map(icon => ({ value: icon, label: icon }))}
+            fieldProps={{
+              showSearch: true,
+              optionItemRender(item) {
+                return (
+                  <div key={item.value}>
+                    <Iconfont type={item.value} /> {item.label}
+                  </div>
+                );
+              },
+              suffixIcon: (
+                <ProFormDependency name={['icon']}>
+                  {({ icon }) => icon && <Iconfont style={{ fontSize: 20, marginTop: 5 }} type={icon} />}
+                </ProFormDependency>
+              ),
+            }}
+          />
+        </ProForm.Item>
 
-        {/* <ProFormSelect name="permissions" label="绑定权限" showSearch mode="multiple" options={permissions} /> */}
+        <ProFormSelect
+          name="permissions"
+          label="绑定权限"
+          showSearch
+          mode="multiple"
+          options={permissions?.map(item => ({ value: item.id, label: item.name }))}
+        />
 
         <ProFormRadio.Group
           name="status"
@@ -294,7 +245,7 @@ const Menu: FC = () => {
         />
         <ProFormDigit name="sort" label="排序" />
       </DrawerForm>
-    </PageContainer>
+    </>
   );
 };
 
