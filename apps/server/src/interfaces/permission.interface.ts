@@ -48,4 +48,11 @@ export enum PermissionsType {
   编辑定时任务 = 'schedule:edit',
   定时任务列表 = 'schedule:list',
   定时任务详情 = 'schedule:detail',
+
+  /*============= 权限 =============*/
+  创建权限 = 'permission:add',
+  删除权限 = 'permission:del',
+  编辑权限 = 'permission:edit',
+  权限列表 = 'permission:list',
+  权限详情 = 'permission:detail',
 }

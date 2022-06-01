@@ -31,7 +31,7 @@ import { MenuCreateDto, MenuEditDto, MenuQueryDto } from './menu.dto';
 @Controller('menu')
 @ApiTags('menu')
 @UseGuards(PermissionGuard)
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 

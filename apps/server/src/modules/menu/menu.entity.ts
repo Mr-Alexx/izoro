@@ -19,10 +19,6 @@ export class Menu {
   @ApiPropertyColumn({ comment: '菜单名称' })
   name: string;
 
-  @IsString()
-  @ApiPropertyColumn({ comment: '菜单标识' })
-  menu_code: string;
-
   @ApiPropertyColumn({ comment: '菜单描述', default: null })
   description: string;
 
@@ -30,8 +26,11 @@ export class Menu {
   @ApiPropertyColumn({ comment: '父id', default: 0 })
   pid: number;
 
-  @ApiPropertyColumn({ comment: '节点类型，1目录 2页面 3按钮', default: MenuNodeTypes.directory })
-  node_type: MenuNodeTypes;
+  @ApiPropertyColumn({ comment: '节点类型：1 菜单，2 权限', default: MenuNodeTypes.menu })
+  type: MenuNodeTypes;
+
+  @ApiPropertyColumn({ comment: '权限编码', default: null })
+  permission_code: string;
 
   @ApiPropertyColumn({ comment: '图标', default: null })
   icon: string;
@@ -52,15 +51,6 @@ export class Menu {
   @ApiPropertyColumn({ comment: '是否隐藏', default: false })
   hidden: boolean;
 
-  @ApiPropertyColumn({ comment: '是否缓存', default: false })
-  cache: boolean;
-
-  @ApiPropertyColumn({ comment: '是否显示在面包屑', default: true })
-  breadcrumb: boolean;
-
-  @ApiPropertyColumn({ comment: '是否固定菜单', default: false })
-  affix: boolean;
-
   @ApiPropertyColumn({ comment: '菜单树层级，以便于查询指定层级的菜单', default: 1 })
   level: number;
 
@@ -75,12 +65,6 @@ export class Menu {
 
   @ManyToMany(() => Role, role => role.menus, { cascade: true })
   roles: Array<Role>;
-
-  @ApiPropertyColumn({
-    comment: '绑定的权限列表，所有权限在 @/guards/interfaces/permission.interfaces.ts 内定义',
-    type: 'simple-array',
-  })
-  permissions: string[];
 
   @CreateDateColumn({
     type: 'datetime',
