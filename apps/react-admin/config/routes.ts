@@ -57,12 +57,17 @@
     component: './role/index',
   },
   {
+    name: '权限管理',
+    icon: 'icon-menu',
+    path: '/permission',
+    component: './permission/index',
+  },
+  {
     name: '菜单管理',
     icon: 'icon-menu',
     path: '/menu',
     component: './menu/index',
   },
-
   // {
   //   name: '权限管理',
   //   path: 'permission',
