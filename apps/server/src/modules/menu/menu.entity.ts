@@ -6,8 +6,9 @@
 
 import { MenuNodeTypes, MenuStatus } from '@/interfaces/status.interface';
 import { IsNumber, IsString } from 'class-validator';
-import { CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Role } from '../role/role.entity';
+import { Permission } from '../permission/permission.entity';
 import { ApiPropertyColumn } from '@/decorators/agregate.decorator';
 
 @Entity()
@@ -25,12 +26,6 @@ export class Menu {
   @IsNumber()
   @ApiPropertyColumn({ comment: '父id', default: 0 })
   pid: number;
-
-  @ApiPropertyColumn({ comment: '节点类型：1 菜单，2 权限', default: MenuNodeTypes.menu })
-  type: MenuNodeTypes;
-
-  @ApiPropertyColumn({ comment: '权限编码', default: null })
-  permission_code: string;
 
   @ApiPropertyColumn({ comment: '图标', default: null })
   icon: string;
@@ -65,6 +60,10 @@ export class Menu {
 
   @ManyToMany(() => Role, role => role.menus, { cascade: true })
   roles: Array<Role>;
+
+  @ManyToMany(() => Permission, permission => permission.menus, { cascade: true })
+  @JoinTable()
+  permissions: Array<Permission>;
 
   @CreateDateColumn({
     type: 'datetime',

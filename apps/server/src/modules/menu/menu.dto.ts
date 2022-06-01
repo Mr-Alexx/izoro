@@ -11,17 +11,11 @@ export class MenuCreateDto {
   @ApiProperty({ description: '菜单名称' })
   name: string;
 
-  @ApiPropertyOptional({ description: '菜单标识' })
-  menu_code: string;
-
   @ApiPropertyOptional({ description: '菜单描述', default: null })
   description: string;
 
   @ApiProperty({ description: '父id', default: 0 })
   pid: number;
-
-  @ApiProperty({ description: '节点类型，1目录 2页面 3按钮' })
-  node_type: number;
 
   @ApiPropertyOptional({ description: '图标', default: null })
   icon: string;
@@ -57,10 +51,10 @@ export class MenuCreateDto {
   status: number;
 
   @ApiPropertyOptional({
-    description: '绑定的权限列表，所有权限在 @/constants/permission.constant.ts 内定义',
+    description: '绑定的权限',
     type: 'simple-array',
   })
-  permissions: string[];
+  permissions: number[];
 }
 
 // 编辑参数

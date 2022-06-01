@@ -5,11 +5,12 @@
  */
 
 import { IsNumber, IsString } from 'class-validator';
-import { CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Role } from '../role/role.entity';
 import { ApiPropertyColumn } from '@/decorators/agregate.decorator';
 import { ApiPropertyOptionalColumn } from '@/decorators/agregate.decorator';
 import { COMMON_STATUS_ENUM } from '@/constants/index.constant';
+import { Menu } from '../menu/menu.entity';
 
 @Entity()
 export class Permission {
@@ -24,16 +25,15 @@ export class Permission {
   @ApiPropertyColumn({ comment: '权限编码' })
   code: string;
 
-  @ApiPropertyOptionalColumn({ comment: '状态', default: 1 })
-  @IsNumber()
-  sort: number;
-
-  @ApiPropertyOptionalColumn({ comment: '排序', default: COMMON_STATUS_ENUM.normal })
+  @ApiPropertyOptionalColumn({ comment: '状态', default: COMMON_STATUS_ENUM.normal })
   @IsNumber()
   status: COMMON_STATUS_ENUM;
 
   @ManyToMany(() => Role, role => role.menus, { cascade: true })
   roles: Array<Role>;
+
+  @ManyToMany(() => Menu, menu => menu.roles)
+  menus: Array<Menu>;
 
   @CreateDateColumn({
     type: 'datetime',

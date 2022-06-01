@@ -6,12 +6,13 @@
 
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PermissionModule } from '../permission/permission.module';
 import { MenuController } from './menu.controller';
 import { Menu } from './menu.entity';
 import { MenuService } from './menu.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Menu])],
+  imports: [TypeOrmModule.forFeature([Menu]), PermissionModule],
   controllers: [MenuController],
   providers: [MenuService],
   exports: [MenuService],

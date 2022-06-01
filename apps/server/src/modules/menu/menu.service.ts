@@ -10,19 +10,23 @@ import { Not, Repository } from 'typeorm';
 import { Menu } from './menu.entity';
 import _ from '@/utils';
 import { MenuNodeTypes, MenuStatus } from '@/interfaces/status.interface';
-import { MenuEditDto, MenuQueryDto } from './menu.dto';
+import { MenuCreateDto, MenuEditDto, MenuQueryDto } from './menu.dto';
+import { PermissionService } from '../permission/permission.service';
 
 @Injectable()
 export class MenuService {
   constructor(
     @InjectRepository(Menu)
     private readonly menuRepository: Repository<Menu>,
+    private readonly permissionService: PermissionService,
   ) {}
 
   async findAll(query: any): Promise<any> {
     const queryBuilder = this.menuRepository
       .createQueryBuilder('menu')
-      .where('menu.status != :status', { status: MenuStatus.deleted });
+      .where('menu.status != :status', { status: MenuStatus.deleted })
+      .leftJoin('menu.permissions', 'permission')
+      .addSelect(['permission.name', 'permission.id']);
 
     if (_.isObject(query)) {
       const { node_type, menuIds, roleIds } = query;
@@ -89,7 +93,7 @@ export class MenuService {
         .where('menu.node_type = :type', { type: MenuNodeTypes.permission })
         .andWhere('role.id in (:roles)', { roles })
         .getMany();
-      return data.map(v => v.type);
+      return data;
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -121,17 +125,15 @@ export class MenuService {
    * @author 潜
    * @return { Promise<number> }
    */
-  async create(menu: Partial<Menu>): Promise<number> {
+  async create(menu: MenuCreateDto): Promise<number> {
     if (!_.isObject(menu)) {
       throw new HttpException('节点必须为一个对象！', HttpStatus.BAD_REQUEST);
     }
-    console.log(menu);
     // 权限不允许相同的出现
     const existMenu = await this.menuRepository.findOne({
-      permission_code: menu.permission_code,
       pid: menu.pid,
-      type: MenuNodeTypes.permission,
     });
+
     if (existMenu) {
       throw new HttpException('同一父节点下的子节点编码不能重复！', HttpStatus.BAD_REQUEST);
     }
@@ -144,7 +146,15 @@ export class MenuService {
         }
       }
 
-      const newMenu = await this.menuRepository.create(menu);
+      let permissions;
+      if (menu.permissions) {
+        permissions = await this.permissionService.findAll({ ids: menu.permissions });
+      }
+
+      const newMenu = await this.menuRepository.create({
+        ...menu,
+        permissions,
+      });
       await this.menuRepository.save(newMenu);
       return Promise.resolve(newMenu.id);
     } catch (err) {
@@ -161,7 +171,13 @@ export class MenuService {
       throw new HttpException('找不到对应id的menu！', HttpStatus.NOT_FOUND);
     }
 
-    const newMenu = await this.menuRepository.merge(oldMenu, menu);
+    let permissions;
+    if (menu.permissions) {
+      const { data } = await this.permissionService.findAll({ ids: menu.permissions });
+      permissions = data;
+    }
+
+    const newMenu = await this.menuRepository.merge(oldMenu, { ...menu, permissions });
     return this.menuRepository.save(newMenu);
   }
 

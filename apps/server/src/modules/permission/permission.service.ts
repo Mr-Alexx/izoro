@@ -6,7 +6,7 @@
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { Permission } from './permission.entity';
 import _ from '@/utils';
 import { PermissionEditDto, PermissionQueryDto } from './permission.dto';
@@ -26,7 +26,12 @@ export class PermissionService {
     );
 
     if (_.isObject(query)) {
-      const { roleIds } = query;
+      const { roleIds, ids } = query;
+
+      if (_.isArray(ids)) {
+        queryBuilder.where({ id: In(ids) });
+      }
+
       if (_.isArray(roleIds)) {
         queryBuilder.leftJoinAndSelect('permission.roles', 'role', 'role.id IN (:ids)', { ids: roleIds });
       }
@@ -34,7 +39,7 @@ export class PermissionService {
 
     try {
       // .addOrderBy('permission.id', 'DESC')
-      const [data, total] = await queryBuilder.orderBy('permission.sort', 'ASC').getManyAndCount();
+      const [data, total] = await queryBuilder.orderBy('permission.id', 'DESC').getManyAndCount();
       // 设置checked属性
       // data.forEach(v => {
       //   v['checked'] = v.roles ? v.roles.length > 0 : false;

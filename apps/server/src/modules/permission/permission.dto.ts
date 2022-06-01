@@ -14,9 +14,6 @@ export class PermissionCreateDto {
   @ApiProperty({ description: '权限编码' })
   code: string;
 
-  @ApiPropertyOptional({ description: '排序' })
-  sort: number;
-
   @ApiProperty({ description: '状态， 0废弃 1正常' })
   status: number;
 }
