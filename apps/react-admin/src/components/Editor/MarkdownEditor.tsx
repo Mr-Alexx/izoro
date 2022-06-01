@@ -3,6 +3,7 @@ import { Editor as BytemdEditor } from '@bytemd/react';
 import gfm from '@bytemd/plugin-gfm';
 import breaks from '@bytemd/plugin-breaks';
 import frontmatter from '@bytemd/plugin-frontmatter';
+// import math from '@bytemd/plugin-math-ssr';
 import zhHans from 'bytemd/locales/zh_Hans.json';
 import 'bytemd/dist/index.css';
 import highlight from './bytemd-plugins/plugin-highlight';
@@ -10,15 +11,20 @@ import { highlightSelectPlugin, themeSelectPlugin, createCssLink } from './bytem
 import { BytemdPlugin, getProcessor } from 'bytemd';
 import { uploadFile } from '@/services/system/index';
 
+const HTYPE_REG = /h(1|2|3|4|5|6)/gi;
+const DEFAULT_THEME = 'cyanosis';
+const DEFAULT_HIGHTLIGHT = 'atom-one-dark';
+
 export type BytemdEditorProps = {
   value?: string;
   onChange?: (value: string) => void;
 };
 
-type ProccessResult = { html: any; frontmatter: Record<string, string> };
+type ProccessResult = { html: any; frontmatter: Record<string, string>; catalog?: string };
 
 const plugins: BytemdPlugin[] = [
   highlight(),
+  // math(),
   gfm(),
   breaks(),
   frontmatter(),
@@ -34,13 +40,26 @@ const plugins: BytemdPlugin[] = [
  * @return {ProccessResult}
  */
 export const getProcessorData = (value: string): ProccessResult => {
+  let catalog: Record<string, any>[] = [];
   // @ts-expect-error
-  const { value: html, frontmatter } = getProcessor({ plugins }).processSync(value);
+  const { value: html, frontmatter } = getProcessor({
+    plugins: [
+      ...plugins,
+      {
+        rehype: p =>
+          p.use(() => (tree: { children: Record<string, any>[] }) => {
+            catalog = tree.children?.filter?.(item => HTYPE_REG.test(item.tagName));
+          }),
+      },
+    ],
+  }).processSync(value);
+
   return {
     html,
+    catalog: catalog?.map?.(item => item.tabName).join(''),
     frontmatter: {
-      theme: 'cyanosis',
-      highlight: 'atom-one-dark',
+      theme: DEFAULT_THEME,
+      highlight: DEFAULT_HIGHTLIGHT,
       ...frontmatter,
     },
   };
@@ -52,8 +71,8 @@ const MarkdownEditor = (props: BytemdEditorProps) => {
 
   /* 设置默认主题 */
   useEffect(() => {
-    createCssLink('theme', '/css/themes/cyanosis.min.css');
-    createCssLink('highlight', '/css/highlights/atom-one-dark.min.css');
+    createCssLink('theme', `/css/themes/${DEFAULT_THEME}.min.css`);
+    createCssLink('highlight', `/css/highlights/${DEFAULT_HIGHTLIGHT}.min.css`);
 
     return () => {
       document.querySelector('link#theme')?.remove?.();

@@ -26,6 +26,7 @@ import { CacheModule } from './modules/cache/cache.module';
 import { ScheduleModule as TaskModule } from '@/modules/schedule/schedule.module';
 import { TagController } from './modules/tag/tag.controller';
 import { SettingModule } from './modules/setting/setting.module';
+import { PermissionModule } from './modules/permission/permission.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -54,6 +55,7 @@ import { SettingModule } from './modules/setting/setting.module';
     FileModule,
     MenuModule,
     RoleModule,
+    PermissionModule,
     // ScheduleModule.forRoot(),
     // TaskModule,
     SettingModule,

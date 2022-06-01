@@ -53,9 +53,8 @@ export enum CommentStatus {
 
 // 菜单节点类型
 export enum MenuNodeTypes {
-  directory = 1, // 目录
-  page = 2, // 页面
-  button = 3, // 按钮
+  menu = 1, // 目录
+  permission = 2, // 按钮
 }
 
 // 菜单状态

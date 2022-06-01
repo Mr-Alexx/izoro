@@ -1,5 +1,5 @@
 import Editor from '@/components/Editor';
-import MarkdownEditor from '@/components/Editor/MarkdownEditor';
+import MarkdownEditor, { getProcessorData } from '@/components/Editor/MarkdownEditor';
 import useParams from '@/hooks/useParams';
 import { getArticle } from '@/services/article';
 import ProCard from '@ant-design/pro-card';
@@ -31,7 +31,7 @@ const ArticleEditPage = () => {
       onValuesChange={saveDraft}
       request={async () => {
         if (!id) {
-          return {};
+          return { loading: false };
         }
         try {
           const data = await getArticle(id);
@@ -119,6 +119,9 @@ const ArticleEditPage = () => {
           </ProForm.Item>
         </div>
       </div>
+      {/* <ProForm.Item name="markdown">
+        <MarkdownEditor onChange={value => getProcessorData(value)} />
+      </ProForm.Item> */}
 
       {/* <ProFormDependency name={['html']}>
         {({ html }) => {

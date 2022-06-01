@@ -28,7 +28,7 @@ export class MenuService {
       const { node_type, menuIds, roleIds } = query;
 
       if (node_type !== 'all') {
-        queryBuilder.andWhere('menu.node_type != :type', { type: MenuNodeTypes.button });
+        queryBuilder.andWhere('menu.node_type != :type', { type: MenuNodeTypes.permission });
       }
       if (_.isArray(menuIds) && menuIds.length > 0) {
         queryBuilder.andWhere('menu.id IN (:menus)', { menus: query?.menuIds });
@@ -69,7 +69,7 @@ export class MenuService {
       .where({
         pid: id,
         status: Not(MenuStatus.deleted),
-        node_type: MenuNodeTypes.button,
+        node_type: MenuNodeTypes.permission,
       })
       .orderBy('sort', 'ASC')
       .addOrderBy('updated_at', 'DESC')
@@ -86,10 +86,10 @@ export class MenuService {
         .createQueryBuilder('menu')
         .select('menu.menu_code')
         .leftJoin('menu.roles', 'role')
-        .where('menu.node_type = :type', { type: MenuNodeTypes.button })
+        .where('menu.node_type = :type', { type: MenuNodeTypes.permission })
         .andWhere('role.id in (:roles)', { roles })
         .getMany();
-      return data.map(v => v.menu_code);
+      return data.map(v => v.type);
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -127,31 +127,20 @@ export class MenuService {
     }
     console.log(menu);
     // 权限不允许相同的出现
-    // const existMenu = await this.menuRepository.findOne({
-    //   menu_code: menu.menu_code,
-    //   pid: menu.pid,
-    //   node_type: MenuNodeTypes.button,
-    // });
-    // if (existMenu) {
-    //   throw new HttpException('同一父节点下的子节点编码不能重复！', HttpStatus.BAD_REQUEST);
-    // }
+    const existMenu = await this.menuRepository.findOne({
+      permission_code: menu.permission_code,
+      pid: menu.pid,
+      type: MenuNodeTypes.permission,
+    });
+    if (existMenu) {
+      throw new HttpException('同一父节点下的子节点编码不能重复！', HttpStatus.BAD_REQUEST);
+    }
 
     try {
       if (menu.pid) {
         const parentMenu = await this.menuRepository.findOne({ id: menu.pid });
         if (!parentMenu) {
           throw new HttpException('未查找到对应的父节点！', HttpStatus.NOT_FOUND);
-        } else {
-          // 如果查找到父节点
-          // 则设置level为父节点level + 1
-          // 设置path为父节点path + ',' + 父节点id（保存所有父节点，方便查找）
-          menu = Object.assign(
-            {
-              level: parentMenu.level + 1,
-              path: parentMenu.path ? `${parentMenu.path},${parentMenu.id}` : `${parentMenu.id}`,
-            },
-            menu,
-          );
         }
       }
 
