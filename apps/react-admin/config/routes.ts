@@ -104,6 +104,7 @@
         name: '编辑文章',
         path: '/article/edit/:id',
         component: './article/edit',
+        layout: false,
         hideInMenu: true,
         hideInSearch: true,
       },

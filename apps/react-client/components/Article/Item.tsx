@@ -52,9 +52,11 @@ const ArticleItem: FC<{
         </div>
 
         {/* 封面图 */}
-        <div className={styles['content-right']}>
-          <Image src={dataSource.cover} alt={dataSource.title} width={120} height={80} />
-        </div>
+        {dataSource.cover && (
+          <div className={styles['content-right']}>
+            <Image src={dataSource.cover} alt={dataSource.title} width={120} height={80} />
+          </div>
+        )}
       </div>
     </li>
   );
