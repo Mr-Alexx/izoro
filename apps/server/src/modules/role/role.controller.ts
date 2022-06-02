@@ -23,7 +23,7 @@ import { Role } from './role.entity';
 import { RoleService } from './role.service';
 import { PermissionGuard } from '@/guards/permission.guard';
 import { Permission } from '@/decorators/permission.decorator';
-import { RoleCreateDto, RoleDeleteDto, RoleQueryDto } from './role.dto';
+import { RoleAuthorizeDto, RoleCreateDto, RoleDeleteDto, RoleQueryDto } from './role.dto';
 import { RoleEditDto } from './role.dto';
 
 @UseGuards(PermissionGuard)
@@ -67,8 +67,7 @@ export class RoleController {
 
   @ApiOperation({ summary: '角色授权' })
   @Patch('authorize')
-  async authorize(@Body() data: Record<string, any>): Promise<string> {
-    // 授权
+  async authorize(@Body() data: RoleAuthorizeDto): Promise<string> {
     return this.roleService.authorize(data);
   }
 }

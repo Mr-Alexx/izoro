@@ -13,8 +13,8 @@
     "dev:react-admin": "pnpm -C ./apps/react-admin start:no-mock",
     "dev:react-client": "pnpm -C ./apps/react-client dev",
     "dev:server": "pnpm -C ./apps/server dev",
-    "dev:admin-server": "pnpm -C ./apps/react-admin start:no-mock & pnpm -C ./apps/server dev",
-    "dev:client-server": "pnpm -C ./apps/react-client dev & pnpm -C ./apps/server dev"
+    "dev:admin-server": "pnpm -C ./apps/react-admin start:no-mock & pnpm -C ./apps/server start:debug",
+    "dev:client-server": "pnpm -C ./apps/react-client dev & pnpm -C ./apps/server start:debug"
   },
   "engines": {
     "node": ">=10",

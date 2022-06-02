@@ -6,7 +6,7 @@
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { Menu } from './menu.entity';
 import _ from '@/utils';
 import { MenuNodeTypes, MenuStatus } from '@/interfaces/status.interface';
@@ -28,27 +28,39 @@ export class MenuService {
       .leftJoin('menu.permissions', 'permission')
       .addSelect(['permission.name', 'permission.id']);
 
-    if (_.isObject(query)) {
-      const { node_type, menuIds, roleIds } = query;
+    // 角色具有的权限id数组
+    let rolePermissionIds;
 
-      if (node_type !== 'all') {
-        queryBuilder.andWhere('menu.node_type != :type', { type: MenuNodeTypes.permission });
+    if (_.isObject(query)) {
+      const { ids, roles } = query;
+
+      if (_.isArray(ids)) {
+        queryBuilder.andWhere({ id: In(ids) });
       }
-      if (_.isArray(menuIds) && menuIds.length > 0) {
-        queryBuilder.andWhere('menu.id IN (:menus)', { menus: query?.menuIds });
-      }
-      if (_.isArray(roleIds)) {
-        queryBuilder.leftJoinAndSelect('menu.roles', 'role', 'role.id IN (:ids)', { ids: roleIds });
+      if (_.isString(roles) || _.isArray(roles)) {
+        const roleIds = _.isString(roles) ? roles.split(',').map(Number) : roles;
+        queryBuilder.innerJoinAndSelect('menu.roles', 'role', 'role.id IN (:ids)', { ids: roleIds });
+
+        const { data } = await this.permissionService.findAll({ roleIds, page: 1, limit: 1000 });
+        rolePermissionIds = data.map(item => item.id);
       }
     }
 
     try {
       const data = await queryBuilder.orderBy('menu.sort', 'ASC').addOrderBy('menu.updated_at', 'DESC').getMany();
-      // 设置checked属性
-      data.forEach(v => {
-        v['checked'] = v.roles ? v.roles.length > 0 : false;
-        delete v.roles;
-      });
+
+      // 只有是通过角色查找其具有的菜单时，才具有checked属性
+      if (_.isString(query?.roles)) {
+        data.forEach(menuItem => {
+          menuItem['checked'] = menuItem.roles && menuItem.roles.length > 0;
+          delete menuItem.roles;
+          if (rolePermissionIds && _.isArray(menuItem.permissions) && menuItem.permissions.length > 0) {
+            menuItem.permissions.forEach(permissionItem => {
+              permissionItem['checked'] = rolePermissionIds.includes(permissionItem.id);
+            });
+          }
+        });
+      }
       return data;
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -56,14 +68,7 @@ export class MenuService {
   }
 
   async getMenuTree(query: MenuQueryDto): Promise<any[]> {
-    let newQuery;
-    if (_.isString(query?.roleIds)) {
-      newQuery = {
-        roleIds: query.roleIds.split(',').map(Number),
-      };
-    }
-
-    const data = await this.findAll(newQuery);
+    const data = await this.findAll(query);
     return this.makeTree(data);
   }
 
@@ -73,7 +78,6 @@ export class MenuService {
       .where({
         pid: id,
         status: Not(MenuStatus.deleted),
-        node_type: MenuNodeTypes.permission,
       })
       .orderBy('sort', 'ASC')
       .addOrderBy('updated_at', 'DESC')
@@ -90,7 +94,6 @@ export class MenuService {
         .createQueryBuilder('menu')
         .select('menu.menu_code')
         .leftJoin('menu.roles', 'role')
-        .where('menu.node_type = :type', { type: MenuNodeTypes.permission })
         .andWhere('role.id in (:roles)', { roles })
         .getMany();
       return data;

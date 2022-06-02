@@ -10,8 +10,9 @@ import { Like, Repository } from 'typeorm';
 import { Role } from './role.entity';
 import _ from '@/utils';
 import { MenuService } from '../menu/menu.service';
-import { RoleCreateDto, RoleDeleteDto, RoleEditDto } from './role.dto';
+import { RoleAuthorizeDto, RoleCreateDto, RoleDeleteDto, RoleEditDto } from './role.dto';
 import { RoleQueryDto } from './role.dto';
+import { PermissionService } from '../permission/permission.service';
 
 @Injectable()
 export class RoleService {
@@ -19,6 +20,7 @@ export class RoleService {
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
     private readonly menuService: MenuService,
+    private readonly permissionService: PermissionService,
   ) {}
 
   async findAll(query: RoleQueryDto): Promise<App.ListRes<Role[]>> {
@@ -91,27 +93,41 @@ export class RoleService {
 
   /**
    * @description 角色授权菜单/权限
-   * @param { data } { ids: 角色id, menuIds: 菜单id数组 }
+   * @param { RoleAuthorizeDto } data
    */
-  async authorize(data: Record<string, any>): Promise<string> {
+  async authorize(data: RoleAuthorizeDto): Promise<string> {
+    const { menus, permissions, roles } = data;
+    if (!Array.isArray(roles)) {
+      throw new HttpException('roles必填，且必须为 number[] 类型', HttpStatus.BAD_REQUEST);
+    } else if (!Array.isArray(menus)) {
+      throw new HttpException('menus必填，且必须为 number[] 类型', HttpStatus.BAD_REQUEST);
+    }
+
+    const oldRoles = await this.roleRepository.findByIds(roles);
+    if (oldRoles.length === 0) {
+      throw new HttpException('角色不存在，无法授权！', HttpStatus.NOT_FOUND);
+    }
+
     try {
-      const { roleIds, menuIds } = data;
-      const oldRoles = await this.roleRepository.findByIds(roleIds);
-      if (oldRoles.length === 0) {
-        throw new HttpException('角色不存在，无法授权！', HttpStatus.NOT_FOUND);
-      }
+      // 授权菜单，授权权限
+      const [menuList, permissionData] = await Promise.all([
+        this.menuService.findAll({ ids: menus }),
+        permissions.length === 0 ? [] : this.permissionService.findAll({ ids: permissions }),
+      ]);
 
-      if (!Array.isArray(menuIds)) {
-        throw new HttpException('授权菜单参数不正确！', HttpStatus.BAD_REQUEST);
-      }
-
-      const menus = menuIds.length > 0 ? await this.menuService.findAll({ menuIds, node_type: 'all' }) : [];
-      oldRoles.forEach(item => (item.menus = menus));
+      oldRoles.forEach(item => {
+        if (Array.isArray(menuList)) {
+          item.menus = menuList;
+        }
+        if (permissionData.total > 0) {
+          item.permissions = permissionData.data;
+        }
+      });
       await this.roleRepository.save(oldRoles);
+      return '授权成功';
     } catch (err) {
       console.error(err);
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
     }
-    // this.roleRepository.
-    return '授权成功';
   }
 }

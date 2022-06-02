@@ -7,12 +7,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MenuModule } from '../menu/menu.module';
+import { PermissionModule } from '../permission/permission.module';
 import { RoleController } from './role.controller';
 import { Role } from './role.entity';
 import { RoleService } from './role.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Role]), MenuModule],
+  imports: [TypeOrmModule.forFeature([Role]), MenuModule, PermissionModule],
   controllers: [RoleController],
   providers: [RoleService],
   exports: [RoleService],

@@ -55,7 +55,8 @@ export class UserController {
   @ApiHeader({ name: 'Authorization', description: 'bearer token' })
   @Permission(PERMISSIONS.用户详情)
   GetInfo(@Request() req: Record<string, any>): Promise<User> {
-    return this.userService.findById(req.user.id);
+    // return this.userService.findById(req.user.id);
+    return this.userService.findAllInfoById(req.user.id);
   }
 
   @ApiOperation({ summary: '更新用户信息' })

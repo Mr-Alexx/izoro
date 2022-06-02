@@ -3,7 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 // 查询参数
 export class MenuQueryDto {
   @ApiPropertyOptional({ description: '角色id，多个用英文逗号分隔' })
-  roleIds: string;
+  roles: string;
 }
 
 // 创建参数

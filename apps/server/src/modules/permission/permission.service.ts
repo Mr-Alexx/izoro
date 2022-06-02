@@ -26,25 +26,19 @@ export class PermissionService {
     );
 
     if (_.isObject(query)) {
-      const { roleIds, ids } = query;
+      const { roles, ids } = query;
 
       if (_.isArray(ids)) {
         queryBuilder.where({ id: In(ids) });
       }
 
-      if (_.isArray(roleIds)) {
-        queryBuilder.leftJoinAndSelect('permission.roles', 'role', 'role.id IN (:ids)', { ids: roleIds });
+      if (_.isArray(roles)) {
+        queryBuilder.innerJoinAndSelect('permission.roles', 'role', 'role.id IN (:ids)', { ids: roles });
       }
     }
 
     try {
-      // .addOrderBy('permission.id', 'DESC')
       const [data, total] = await queryBuilder.orderBy('permission.id', 'DESC').getManyAndCount();
-      // 设置checked属性
-      // data.forEach(v => {
-      //   v['checked'] = v.roles ? v.roles.length > 0 : false;
-      //   delete v.roles;
-      // });
       return {
         data,
         total,

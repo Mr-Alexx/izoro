@@ -5,6 +5,10 @@ import { RoleService } from '../role/role.service';
 import { User } from './user.entity';
 import { UserEditDto, UserQueryDto } from './user.dto';
 import { isEmpty } from 'class-validator';
+import { Permission } from '../permission/permission.entity';
+import { Menu } from '../menu/menu.entity';
+import { MenuService } from '../menu/menu.service';
+import { PermissionService } from '../permission/permission.service';
 
 @Injectable()
 export class UserService {
@@ -12,6 +16,8 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly roleService: RoleService,
+    private readonly menuService: MenuService,
+    private readonly permissionService: PermissionService,
   ) {}
 
   /**
@@ -107,6 +113,35 @@ export class UserService {
    */
   async findById(id: number): Promise<User> {
     return this.userRepository.findOne(id);
+  }
+
+  /**
+   * 根据id获取用户信息，且附着权限和菜单列表
+   */
+  async findAllInfoById(id: number): Promise<
+    User & {
+      permissions: Permission[];
+      menus: Menu[];
+    }
+  > {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.roles', 'role')
+      .addSelect('role.id')
+      .where({ id })
+      .getOne();
+    const roles = user.roles.map(item => item.id);
+    const [menus, permissionData] = await Promise.all([
+      this.menuService.findAll({ roles }),
+      this.permissionService.findAll({ roles }),
+    ]);
+
+    // @ts-ignore
+    return {
+      ...user,
+      menus,
+      permissions: permissionData.data,
+    };
   }
 
   async updateById(user: UserEditDto): Promise<User> {

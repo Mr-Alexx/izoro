@@ -16,6 +16,7 @@ import {
 } from 'typeorm';
 import { Menu } from '../menu/menu.entity';
 import { User } from '../user/user.entity';
+import { Permission } from '../permission/permission.entity';
 
 @Entity()
 export class Role {
@@ -40,11 +41,9 @@ export class Role {
   @JoinTable()
   menus: Array<Menu>;
 
-  @Column({
-    comment: '角色绑定的权限列表',
-    type: 'simple-array',
-  })
-  permissions: string[];
+  @ManyToMany(() => Permission, permission => permission.roles)
+  @JoinTable()
+  permissions: Array<Permission>;
 
   @CreateDateColumn({
     type: 'datetime',

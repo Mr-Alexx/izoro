@@ -29,7 +29,7 @@ export class Permission {
   @IsNumber()
   status: COMMON_STATUS_ENUM;
 
-  @ManyToMany(() => Role, role => role.menus, { cascade: true })
+  @ManyToMany(() => Role, role => role.permissions, { cascade: true })
   roles: Array<Role>;
 
   @ManyToMany(() => Menu, menu => menu.roles)

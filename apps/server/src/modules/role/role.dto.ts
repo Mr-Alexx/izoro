@@ -38,3 +38,15 @@ export class RoleDeleteDto {
   @ApiProperty({ description: '角色id数组' })
   readonly ids: number[];
 }
+
+// 授权参数
+export class RoleAuthorizeDto {
+  @ApiProperty({ description: '授权角色id数组' })
+  roles: number[];
+
+  @ApiProperty({ description: '菜单id数组' })
+  menus: number[];
+
+  @ApiProperty({ description: '权限id数组' })
+  permissions: number[];
+}
