@@ -83,7 +83,7 @@ const User: FC = () => {
           <Space size={5}>
             <TooltipButton iconType="edit" title="编辑角色" onClick={() => handleAction(ACTIONS.edit, row)} />
 
-            <TooltipButton color="#ffa940" title="菜单授权" onClick={() => setRoleId(row.id)}>
+            <TooltipButton style={{ color: '#1890ff' }} title="授权" onClick={() => setRoleId(row.id)}>
               <ToolFilled />
             </TooltipButton>
 
@@ -220,15 +220,7 @@ const User: FC = () => {
       </ModalForm>
 
       {/* 菜单授权 */}
-      <MenuTree
-        roleId={roleId}
-        onClose={() => setRoleId(undefined)}
-        // confirmLoading={drawerConfirmLoading}
-        // visible={drawerVisible}
-        // onClose={closeDrawer}
-        // onOk={editPermissions}
-        // request={getRoleMenu}
-      />
+      <MenuTree roleId={roleId} onClose={() => setRoleId(undefined)} />
     </AppPageContainer>
   );
 };

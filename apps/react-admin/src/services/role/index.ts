@@ -13,3 +13,4 @@ export const editRole = (data: RoleApi.RoleEditDto): Promise<RoleApi.Role> => pa
 export const deleteRole = (id: number): Promise<string> => del(`/role/${id}`);
 
 /** 角色授权 */
+export const authorizeRole = (data: any): Promise<string> => patch('/role/authorize', data);

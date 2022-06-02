@@ -29,6 +29,7 @@ const Menu: FC = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [title, setTitle] = useState<string>();
   const [permissions, setPermissions] = useState<PermissionApi.Permission[]>();
+  const [currentRow, setCurrentRow] = useState<MenuApi.Menu>();
   const access = useAccess();
   const actionRef = useRef<ActionType>();
   const formRef = useRef<FormInstance>();
@@ -48,10 +49,11 @@ const Menu: FC = () => {
   const handleAction = (action: ACTIONS, record?: MenuApi.Menu): void | boolean => {
     switch (action) {
       case ACTIONS.add:
-        formRef.current?.resetFields();
+      // formRef.current?.resetFields();
       case ACTIONS.edit:
         setTitle(record?.id ? `编辑菜单 - ${record?.name}` : '新增菜单');
-        formRef.current?.setFieldsValue({ ...record, permissions: record?.permissions?.map((item: any) => item.id) });
+        // formRef.current?.setFieldsValue({ ...record, permissions: record?.permissions?.map((item: any) => item.id) });
+        setCurrentRow({ ...record, permissions: record?.permissions?.map((item: any) => item.id) } as MenuApi.Menu);
         setVisible(true);
         break;
       case ACTIONS.del:
@@ -165,15 +167,18 @@ const Menu: FC = () => {
         formRef={formRef}
         title={title}
         drawerProps={{
-          forceRender: true,
-          // destroyOnClose: true,
+          // forceRender: true,
+          destroyOnClose: true,
         }}
         visible={visible}
         onVisibleChange={setVisible}
         onFinish={submitMenu}
         layout="horizontal"
         labelCol={{ flex: '100px' }}
-        wrapperCol={{ flex: '1' }}>
+        wrapperCol={{ flex: '1' }}
+        initialValues={{
+          ...currentRow,
+        }}>
         <ProFormDigit hidden name="id" />
         <ProFormTreeSelect
           name="pid"

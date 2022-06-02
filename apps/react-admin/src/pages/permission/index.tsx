@@ -1,14 +1,3 @@
-/**
- * @description 权限列表
- * 说明：
- * 因为后台将权限和路由分离的关系，具体操作需要先添加路由（api地址）
- * 再拿到路由地址的id，然后再添加权限，把id路由
- * 以上会在前端操作会比较麻烦，为了简化操作，采取如下措施：
- * 1. 去掉路由绑定操作，直接添加权限，在添加的时候输入路由地址
- * 2. 保存前，先调用新增路由接口，
- * 2.1 如果新增成功，则调用查询接口，查找该记录，拿到id
- * 2.2 否则，调用查询接口，查找该记录，拿到id
- */
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { useEffect, useRef, useState } from 'react';
 import { AutoComplete, FormInstance, Space } from 'antd';

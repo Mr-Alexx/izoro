@@ -36,9 +36,9 @@ declare namespace MenuApi {
      */
     status: number;
     /**
-     * 绑定的权限列表，所有权限在 @/constants/permission.constant.ts 内定义
+     * 绑定的权限列表
      */
-    permissions?: string[];
+    permissions?: PermissionApi.Permission[];
   };
 
   type MenuEditDto = MenuCreateDto & {
@@ -49,8 +49,8 @@ declare namespace MenuApi {
   };
 
   type Menu = MenuEditDto & {
-    checked?: number;
-    children?: Menu;
+    checked?: boolean;
+    children?: Menu[];
     created_at: Date;
     updated_at: Date;
   };

@@ -11,11 +11,11 @@ declare namespace PermissionApi {
     /**
      * 权限标识
      */
-    code;
+    code?: string;
     /**
      * 状态， 0废弃 1正常
      */
-    status: number;
+    status?: number;
   };
 
   type PermissionEditDto = PermissionCreateDto & {
@@ -26,9 +26,8 @@ declare namespace PermissionApi {
   };
 
   type Permission = PermissionEditDto & {
-    checked?: number;
-    children?: Permission;
-    created_at: Date;
-    updated_at: Date;
+    checked?: boolean;
+    created_at?: Date;
+    updated_at?: Date;
   };
 }

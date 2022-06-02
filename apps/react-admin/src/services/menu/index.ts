@@ -4,7 +4,7 @@ import { get, post, patch, del } from '@/utils/request';
 export const getPermissionsMap = () => get('/menu/permissions');
 
 /* 菜单列表 */
-export const getMenus = (params?: { roleIds?: number[] }) => get('/menu', params);
+export const getMenus = (params: { roles: string }) => get('/menu', params);
 
 /* 添加菜单 */
 export const addMenu = (data: MenuApi.MenuCreateDto): Promise<MenuApi.Menu> => post('/menu', data);
