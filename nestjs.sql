@@ -11,7 +11,7 @@
  Target Server Version : 80011
  File Encoding         : 65001
 
- Date: 01/06/2022 18:16:21
+ Date: 02/06/2022 17:59:37
 */
 
 SET NAMES utf8mb4;
@@ -172,8 +172,6 @@ CREATE TABLE `menu` (
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
   `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
   `description` varchar(255) DEFAULT NULL COMMENT '菜单描述',
-  `type` int(11) NOT NULL DEFAULT '1' COMMENT '节点类型：1 菜单，2 权限',
-  `permission_code` varchar(255) DEFAULT NULL COMMENT '权限编码',
   `url` varchar(255) DEFAULT NULL COMMENT '页面路径',
   `redirect` varchar(255) DEFAULT NULL COMMENT '重定向',
   `hidden` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否隐藏',
@@ -187,12 +185,49 @@ CREATE TABLE `menu` (
 -- Records of menu
 -- ----------------------------
 BEGIN;
-INSERT INTO `menu` VALUES (1, '菜单管理', 0, 'icon-menu', 1, '/menu', './menu/index', 1, '2022-05-11 10:56:59.509044', '2022-05-11 10:56:59.509044', NULL, 1, NULL, NULL, NULL, 0, 1, 0, NULL);
-INSERT INTO `menu` VALUES (2, '系统管理', 0, 'icon-setting', 1, '/system', NULL, 1, '2022-05-11 15:31:42.021956', '2022-05-11 15:56:35.000000', NULL, 1, NULL, NULL, NULL, 0, 1, 0, NULL);
-INSERT INTO `menu` VALUES (3, '系统管理', 0, 'icon-setting', 1, '/system', NULL, 0, '2022-05-11 15:31:49.031646', '2022-05-11 15:56:27.000000', NULL, 1, NULL, NULL, NULL, 0, 1, 0, NULL);
-INSERT INTO `menu` VALUES (4, '系统管理', 0, 'icon-setting', 1, '/system', NULL, 0, '2022-05-11 15:46:14.536001', '2022-05-11 15:56:04.000000', NULL, 1, NULL, NULL, NULL, 0, 1, 0, NULL);
-INSERT INTO `menu` VALUES (5, '角色管理', 0, 'icon-role', 1, '/role', './role/index', 1, '2022-05-11 16:36:36.639406', '2022-05-11 16:36:36.639406', NULL, 1, NULL, NULL, NULL, 0, 1, 0, NULL);
-INSERT INTO `menu` VALUES (6, '账号管理', 0, 'icon-account', 1, '/account', './account/index', 1, '2022-05-11 16:39:44.237306', '2022-05-11 16:39:44.237306', NULL, 1, NULL, NULL, NULL, 0, 1, 0, NULL);
+INSERT INTO `menu` VALUES (1, '菜单管理', 0, 'icon-menu', 1, '/menu', './menu/index', 1, '2022-05-11 10:56:59.509044', '2022-05-11 10:56:59.509044', NULL, NULL, NULL, 0, 1, 0, NULL);
+INSERT INTO `menu` VALUES (2, '系统管理', 0, 'icon-setting', 1, '/system', NULL, 1, '2022-05-11 15:31:42.021956', '2022-05-11 15:56:35.000000', NULL, NULL, NULL, 0, 1, 0, NULL);
+INSERT INTO `menu` VALUES (3, '系统管理', 0, 'icon-setting', 1, '/system', NULL, 0, '2022-05-11 15:31:49.031646', '2022-05-11 15:56:27.000000', NULL, NULL, NULL, 0, 1, 0, NULL);
+INSERT INTO `menu` VALUES (4, '系统管理', 0, 'icon-setting', 1, '/system', NULL, 0, '2022-05-11 15:46:14.536001', '2022-05-11 15:56:04.000000', NULL, NULL, NULL, 0, 1, 0, NULL);
+INSERT INTO `menu` VALUES (5, '角色管理', 0, 'icon-role', 1, '/role', './role/index', 1, '2022-05-11 16:36:36.639406', '2022-05-11 16:36:36.639406', NULL, NULL, NULL, 0, 1, 0, NULL);
+INSERT INTO `menu` VALUES (6, '账号管理', 0, 'icon-account', 1, '/account', './account/index', 1, '2022-05-11 16:39:44.237306', '2022-05-11 16:39:44.237306', NULL, NULL, NULL, 0, 1, 0, NULL);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for menu_permissions_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `menu_permissions_permission`;
+CREATE TABLE `menu_permissions_permission` (
+  `menuId` int(11) NOT NULL,
+  `permissionId` int(11) NOT NULL,
+  PRIMARY KEY (`menuId`,`permissionId`),
+  KEY `IDX_e7547a129cb17e1479fd739809` (`menuId`),
+  KEY `IDX_124acd90fba80e27bcc068168c` (`permissionId`),
+  CONSTRAINT `FK_124acd90fba80e27bcc068168cf` FOREIGN KEY (`permissionId`) REFERENCES `permission` (`id`),
+  CONSTRAINT `FK_e7547a129cb17e1479fd7398092` FOREIGN KEY (`menuId`) REFERENCES `menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Records of menu_permissions_permission
+-- ----------------------------
+BEGIN;
+INSERT INTO `menu_permissions_permission` VALUES (1, 1);
+INSERT INTO `menu_permissions_permission` VALUES (1, 2);
+INSERT INTO `menu_permissions_permission` VALUES (1, 3);
+INSERT INTO `menu_permissions_permission` VALUES (1, 4);
+INSERT INTO `menu_permissions_permission` VALUES (1, 5);
+INSERT INTO `menu_permissions_permission` VALUES (2, 38);
+INSERT INTO `menu_permissions_permission` VALUES (2, 39);
+INSERT INTO `menu_permissions_permission` VALUES (5, 11);
+INSERT INTO `menu_permissions_permission` VALUES (5, 12);
+INSERT INTO `menu_permissions_permission` VALUES (5, 13);
+INSERT INTO `menu_permissions_permission` VALUES (5, 14);
+INSERT INTO `menu_permissions_permission` VALUES (5, 15);
+INSERT INTO `menu_permissions_permission` VALUES (6, 6);
+INSERT INTO `menu_permissions_permission` VALUES (6, 7);
+INSERT INTO `menu_permissions_permission` VALUES (6, 8);
+INSERT INTO `menu_permissions_permission` VALUES (6, 9);
+INSERT INTO `menu_permissions_permission` VALUES (6, 10);
 COMMIT;
 
 -- ----------------------------
@@ -202,8 +237,7 @@ DROP TABLE IF EXISTS `permission`;
 CREATE TABLE `permission` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(255) NOT NULL COMMENT '权限名称',
-  `sort` int(11) NOT NULL DEFAULT '1' COMMENT '状态',
-  `status` int(11) NOT NULL DEFAULT '1' COMMENT '排序',
+  `status` int(11) NOT NULL DEFAULT '1' COMMENT '状态',
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
   `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
   `code` varchar(255) NOT NULL COMMENT '权限编码',
@@ -214,45 +248,45 @@ CREATE TABLE `permission` (
 -- Records of permission
 -- ----------------------------
 BEGIN;
-INSERT INTO `permission` VALUES (1, '创建菜单', 1, 1, '2022-06-01 18:06:07.487074', '2022-06-01 18:06:07.487074', 'menu:add');
-INSERT INTO `permission` VALUES (2, '删除菜单', 1, 1, '2022-06-01 18:10:30.904230', '2022-06-01 18:10:30.904230', 'menu:del');
-INSERT INTO `permission` VALUES (3, '编辑菜单', 1, 1, '2022-06-01 18:10:33.722349', '2022-06-01 18:10:33.722349', 'menu:edit');
-INSERT INTO `permission` VALUES (4, '菜单列表', 1, 1, '2022-06-01 18:10:37.246629', '2022-06-01 18:10:37.246629', 'menu:list');
-INSERT INTO `permission` VALUES (5, '菜单详情', 1, 1, '2022-06-01 18:10:41.311487', '2022-06-01 18:10:41.311487', 'menu:detail');
-INSERT INTO `permission` VALUES (6, '创建用户', 1, 1, '2022-06-01 18:10:45.520237', '2022-06-01 18:10:45.520237', 'user:add');
-INSERT INTO `permission` VALUES (7, '编辑用户', 1, 1, '2022-06-01 18:10:50.852839', '2022-06-01 18:10:50.852839', 'user:edit');
-INSERT INTO `permission` VALUES (8, '删除用户', 1, 1, '2022-06-01 18:10:57.015129', '2022-06-01 18:10:57.015129', 'user:del');
-INSERT INTO `permission` VALUES (9, '用户列表', 1, 1, '2022-06-01 18:11:03.400832', '2022-06-01 18:11:03.400832', 'user:list');
-INSERT INTO `permission` VALUES (10, '用户详情', 1, 1, '2022-06-01 18:11:58.265325', '2022-06-01 18:11:58.265325', 'user:detail');
-INSERT INTO `permission` VALUES (11, '创建角色', 1, 1, '2022-06-01 18:12:02.828762', '2022-06-01 18:12:02.828762', 'role:add');
-INSERT INTO `permission` VALUES (12, '删除角色', 1, 1, '2022-06-01 18:12:07.451774', '2022-06-01 18:12:07.451774', 'role:del');
-INSERT INTO `permission` VALUES (13, '编辑角色', 1, 1, '2022-06-01 18:12:15.355954', '2022-06-01 18:12:15.355954', 'role:edit');
-INSERT INTO `permission` VALUES (14, '角色列表', 1, 1, '2022-06-01 18:12:20.609352', '2022-06-01 18:12:20.609352', 'role:list');
-INSERT INTO `permission` VALUES (15, '角色详情', 1, 1, '2022-06-01 18:12:25.220127', '2022-06-01 18:12:25.220127', 'role:detail');
-INSERT INTO `permission` VALUES (16, '创建分类', 1, 1, '2022-06-01 18:12:30.525571', '2022-06-01 18:12:30.525571', 'category:add');
-INSERT INTO `permission` VALUES (17, '删除分类', 1, 1, '2022-06-01 18:12:35.096669', '2022-06-01 18:12:35.096669', 'category:del');
-INSERT INTO `permission` VALUES (18, '编辑分类', 1, 1, '2022-06-01 18:12:46.612574', '2022-06-01 18:12:46.612574', 'category:edit');
-INSERT INTO `permission` VALUES (19, '分类列表', 1, 1, '2022-06-01 18:12:53.849659', '2022-06-01 18:12:53.849659', 'category:list');
-INSERT INTO `permission` VALUES (20, '分类详情', 1, 1, '2022-06-01 18:13:01.056181', '2022-06-01 18:13:01.056181', 'category:detail');
-INSERT INTO `permission` VALUES (21, '创建标签', 1, 1, '2022-06-01 18:13:13.996554', '2022-06-01 18:13:13.996554', 'tag:add');
-INSERT INTO `permission` VALUES (22, '删除标签', 1, 1, '2022-06-01 18:13:27.988639', '2022-06-01 18:13:27.988639', 'tag:del');
-INSERT INTO `permission` VALUES (23, '编辑标签', 1, 1, '2022-06-01 18:13:33.227092', '2022-06-01 18:13:33.227092', 'tag:edit');
-INSERT INTO `permission` VALUES (24, '标签列表', 1, 1, '2022-06-01 18:13:38.019002', '2022-06-01 18:13:38.019002', 'tag:list');
-INSERT INTO `permission` VALUES (25, '标签详情', 1, 1, '2022-06-01 18:13:45.943265', '2022-06-01 18:13:45.943265', 'tag:detail');
-INSERT INTO `permission` VALUES (26, '创建文章', 1, 1, '2022-06-01 18:13:52.936665', '2022-06-01 18:13:52.936665', 'article:add');
-INSERT INTO `permission` VALUES (27, '删除文章', 1, 1, '2022-06-01 18:13:59.412560', '2022-06-01 18:13:59.412560', 'article:del');
-INSERT INTO `permission` VALUES (28, '编辑文章', 1, 1, '2022-06-01 18:14:03.394296', '2022-06-01 18:14:03.394296', 'article:edit');
-INSERT INTO `permission` VALUES (29, '文章列表', 1, 1, '2022-06-01 18:14:06.930546', '2022-06-01 18:14:06.930546', 'article:list');
-INSERT INTO `permission` VALUES (30, '文章详情', 1, 1, '2022-06-01 18:14:12.021513', '2022-06-01 18:14:12.021513', 'article:detail');
-INSERT INTO `permission` VALUES (31, '查看密码', 1, 1, '2022-06-01 18:14:17.044091', '2022-06-01 18:14:17.044091', 'article:view-password');
-INSERT INTO `permission` VALUES (32, '创建定时任务', 1, 1, '2022-06-01 18:14:22.914282', '2022-06-01 18:14:22.914282', 'schedule:add');
-INSERT INTO `permission` VALUES (33, '删除定时任务', 1, 1, '2022-06-01 18:14:27.064991', '2022-06-01 18:14:27.064991', 'schedule:del');
-INSERT INTO `permission` VALUES (34, '编辑定时任务', 1, 1, '2022-06-01 18:14:34.074161', '2022-06-01 18:14:34.074161', 'schedule:edit');
-INSERT INTO `permission` VALUES (35, '定时任务列表', 1, 1, '2022-06-01 18:14:37.145945', '2022-06-01 18:14:37.145945', 'schedule:list');
-INSERT INTO `permission` VALUES (36, '定时任务详情', 1, 1, '2022-06-01 18:14:41.435587', '2022-06-01 18:14:41.435587', 'schedule:detail');
-INSERT INTO `permission` VALUES (37, '图片上传', 1, 1, '2022-06-01 18:14:44.924042', '2022-06-01 18:14:44.924042', 'file:uploadImage');
-INSERT INTO `permission` VALUES (38, '编辑系统配置', 1, 1, '2022-06-01 18:14:47.996438', '2022-06-01 18:14:47.996438', 'setting:edit');
-INSERT INTO `permission` VALUES (39, '系统配置详情', 1, 1, '2022-06-01 18:14:52.129416', '2022-06-01 18:14:52.129416', 'setting:detail');
+INSERT INTO `permission` VALUES (1, '创建菜单', 1, '2022-06-01 18:06:07.487074', '2022-06-01 18:06:07.487074', 'menu:add');
+INSERT INTO `permission` VALUES (2, '删除菜单', 1, '2022-06-01 18:10:30.904230', '2022-06-01 18:10:30.904230', 'menu:del');
+INSERT INTO `permission` VALUES (3, '编辑菜单', 1, '2022-06-01 18:10:33.722349', '2022-06-01 18:10:33.722349', 'menu:edit');
+INSERT INTO `permission` VALUES (4, '菜单列表', 1, '2022-06-01 18:10:37.246629', '2022-06-01 18:10:37.246629', 'menu:list');
+INSERT INTO `permission` VALUES (5, '菜单详情', 1, '2022-06-01 18:10:41.311487', '2022-06-01 18:10:41.311487', 'menu:detail');
+INSERT INTO `permission` VALUES (6, '创建用户', 1, '2022-06-01 18:10:45.520237', '2022-06-01 18:10:45.520237', 'user:add');
+INSERT INTO `permission` VALUES (7, '编辑用户', 1, '2022-06-01 18:10:50.852839', '2022-06-01 18:10:50.852839', 'user:edit');
+INSERT INTO `permission` VALUES (8, '删除用户', 1, '2022-06-01 18:10:57.015129', '2022-06-01 18:10:57.015129', 'user:del');
+INSERT INTO `permission` VALUES (9, '用户列表', 1, '2022-06-01 18:11:03.400832', '2022-06-01 18:11:03.400832', 'user:list');
+INSERT INTO `permission` VALUES (10, '用户详情', 1, '2022-06-01 18:11:58.265325', '2022-06-01 18:11:58.265325', 'user:detail');
+INSERT INTO `permission` VALUES (11, '创建角色', 1, '2022-06-01 18:12:02.828762', '2022-06-01 18:12:02.828762', 'role:add');
+INSERT INTO `permission` VALUES (12, '删除角色', 1, '2022-06-01 18:12:07.451774', '2022-06-01 18:12:07.451774', 'role:del');
+INSERT INTO `permission` VALUES (13, '编辑角色', 1, '2022-06-01 18:12:15.355954', '2022-06-01 18:12:15.355954', 'role:edit');
+INSERT INTO `permission` VALUES (14, '角色列表', 1, '2022-06-01 18:12:20.609352', '2022-06-01 18:12:20.609352', 'role:list');
+INSERT INTO `permission` VALUES (15, '角色详情', 1, '2022-06-01 18:12:25.220127', '2022-06-01 18:12:25.220127', 'role:detail');
+INSERT INTO `permission` VALUES (16, '创建分类', 1, '2022-06-01 18:12:30.525571', '2022-06-01 18:12:30.525571', 'category:add');
+INSERT INTO `permission` VALUES (17, '删除分类', 1, '2022-06-01 18:12:35.096669', '2022-06-01 18:12:35.096669', 'category:del');
+INSERT INTO `permission` VALUES (18, '编辑分类', 1, '2022-06-01 18:12:46.612574', '2022-06-01 18:12:46.612574', 'category:edit');
+INSERT INTO `permission` VALUES (19, '分类列表', 1, '2022-06-01 18:12:53.849659', '2022-06-01 18:12:53.849659', 'category:list');
+INSERT INTO `permission` VALUES (20, '分类详情', 1, '2022-06-01 18:13:01.056181', '2022-06-01 18:13:01.056181', 'category:detail');
+INSERT INTO `permission` VALUES (21, '创建标签', 1, '2022-06-01 18:13:13.996554', '2022-06-01 18:13:13.996554', 'tag:add');
+INSERT INTO `permission` VALUES (22, '删除标签', 1, '2022-06-01 18:13:27.988639', '2022-06-01 18:13:27.988639', 'tag:del');
+INSERT INTO `permission` VALUES (23, '编辑标签', 1, '2022-06-01 18:13:33.227092', '2022-06-01 18:13:33.227092', 'tag:edit');
+INSERT INTO `permission` VALUES (24, '标签列表', 1, '2022-06-01 18:13:38.019002', '2022-06-01 18:13:38.019002', 'tag:list');
+INSERT INTO `permission` VALUES (25, '标签详情', 1, '2022-06-01 18:13:45.943265', '2022-06-01 18:13:45.943265', 'tag:detail');
+INSERT INTO `permission` VALUES (26, '创建文章', 1, '2022-06-01 18:13:52.936665', '2022-06-01 18:13:52.936665', 'article:add');
+INSERT INTO `permission` VALUES (27, '删除文章', 1, '2022-06-01 18:13:59.412560', '2022-06-01 18:13:59.412560', 'article:del');
+INSERT INTO `permission` VALUES (28, '编辑文章', 1, '2022-06-01 18:14:03.394296', '2022-06-01 18:14:03.394296', 'article:edit');
+INSERT INTO `permission` VALUES (29, '文章列表', 1, '2022-06-01 18:14:06.930546', '2022-06-01 18:14:06.930546', 'article:list');
+INSERT INTO `permission` VALUES (30, '文章详情', 1, '2022-06-01 18:14:12.021513', '2022-06-01 18:14:12.021513', 'article:detail');
+INSERT INTO `permission` VALUES (31, '查看密码', 1, '2022-06-01 18:14:17.044091', '2022-06-01 18:14:17.044091', 'article:view-password');
+INSERT INTO `permission` VALUES (32, '创建定时任务', 1, '2022-06-01 18:14:22.914282', '2022-06-01 18:14:22.914282', 'schedule:add');
+INSERT INTO `permission` VALUES (33, '删除定时任务', 1, '2022-06-01 18:14:27.064991', '2022-06-01 18:14:27.064991', 'schedule:del');
+INSERT INTO `permission` VALUES (34, '编辑定时任务', 1, '2022-06-01 18:14:34.074161', '2022-06-01 18:14:34.074161', 'schedule:edit');
+INSERT INTO `permission` VALUES (35, '定时任务列表', 1, '2022-06-01 18:14:37.145945', '2022-06-01 18:14:37.145945', 'schedule:list');
+INSERT INTO `permission` VALUES (36, '定时任务详情', 1, '2022-06-01 18:14:41.435587', '2022-06-01 18:14:41.435587', 'schedule:detail');
+INSERT INTO `permission` VALUES (37, '图片上传', 1, '2022-06-01 18:14:44.924042', '2022-06-01 18:14:44.924042', 'file:uploadImage');
+INSERT INTO `permission` VALUES (38, '编辑系统配置', 1, '2022-06-01 18:14:47.996438', '2022-06-01 18:14:47.996438', 'setting:edit');
+INSERT INTO `permission` VALUES (39, '系统配置详情', 1, '2022-06-01 18:14:52.129416', '2022-06-01 18:14:52.129416', 'setting:detail');
 COMMIT;
 
 -- ----------------------------
@@ -804,7 +838,6 @@ CREATE TABLE `role` (
   `status` int(11) NOT NULL DEFAULT '1' COMMENT '状态，0禁用 1启用',
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
   `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
-  `permissions` text NOT NULL COMMENT '角色绑定的权限列表',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -812,9 +845,9 @@ CREATE TABLE `role` (
 -- Records of role
 -- ----------------------------
 BEGIN;
-INSERT INTO `role` VALUES (2, '超级管理员', '天下唯我独尊', 1, '2021-07-24 14:44:36.337760', '2021-07-24 14:44:36.480300', '');
-INSERT INTO `role` VALUES (3, 'test', '测试角色', 1, '2021-07-24 14:44:36.337760', '2021-07-24 14:44:36.480300', '');
-INSERT INTO `role` VALUES (4, '次管理员', '一人之下，万人之上', 1, '2021-07-24 14:44:36.337760', '2021-07-24 14:44:36.480300', '');
+INSERT INTO `role` VALUES (1, '超级管理员', '天下唯我独尊', 1, '2021-07-24 14:44:36.337760', '2022-06-02 13:40:30.945923');
+INSERT INTO `role` VALUES (2, '次管理员', '一人之下，万人之上', 1, '2021-07-24 14:44:36.337760', '2022-06-02 13:40:32.080107');
+INSERT INTO `role` VALUES (3, 'test', '测试角色', 1, '2021-07-24 14:44:36.337760', '2021-07-24 14:44:36.480300');
 COMMIT;
 
 -- ----------------------------
@@ -830,6 +863,40 @@ CREATE TABLE `role_menus_menu` (
   CONSTRAINT `FK_eec9c5cb17157b2294fd9f0edbf` FOREIGN KEY (`roleId`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_f1adc6be166630ee2476d7bbf09` FOREIGN KEY (`menuId`) REFERENCES `menu` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Records of role_menus_menu
+-- ----------------------------
+BEGIN;
+INSERT INTO `role_menus_menu` VALUES (1, 5);
+INSERT INTO `role_menus_menu` VALUES (1, 6);
+INSERT INTO `role_menus_menu` VALUES (3, 1);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for role_permissions_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `role_permissions_permission`;
+CREATE TABLE `role_permissions_permission` (
+  `roleId` int(11) NOT NULL,
+  `permissionId` int(11) NOT NULL,
+  PRIMARY KEY (`roleId`,`permissionId`),
+  KEY `IDX_b36cb2e04bc353ca4ede00d87b` (`roleId`),
+  KEY `IDX_bfbc9e263d4cea6d7a8c9eb3ad` (`permissionId`),
+  CONSTRAINT `FK_b36cb2e04bc353ca4ede00d87b9` FOREIGN KEY (`roleId`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_bfbc9e263d4cea6d7a8c9eb3ad2` FOREIGN KEY (`permissionId`) REFERENCES `permission` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Records of role_permissions_permission
+-- ----------------------------
+BEGIN;
+INSERT INTO `role_permissions_permission` VALUES (1, 7);
+INSERT INTO `role_permissions_permission` VALUES (1, 8);
+INSERT INTO `role_permissions_permission` VALUES (1, 12);
+INSERT INTO `role_permissions_permission` VALUES (3, 1);
+INSERT INTO `role_permissions_permission` VALUES (3, 3);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for role_users_user
@@ -849,13 +916,13 @@ CREATE TABLE `role_users_user` (
 -- Records of role_users_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `role_users_user` VALUES (2, 1);
-INSERT INTO `role_users_user` VALUES (2, 9);
+INSERT INTO `role_users_user` VALUES (1, 1);
+INSERT INTO `role_users_user` VALUES (1, 9);
+INSERT INTO `role_users_user` VALUES (2, 5);
+INSERT INTO `role_users_user` VALUES (2, 6);
 INSERT INTO `role_users_user` VALUES (3, 6);
 INSERT INTO `role_users_user` VALUES (3, 7);
 INSERT INTO `role_users_user` VALUES (3, 9);
-INSERT INTO `role_users_user` VALUES (4, 5);
-INSERT INTO `role_users_user` VALUES (4, 6);
 COMMIT;
 
 -- ----------------------------
