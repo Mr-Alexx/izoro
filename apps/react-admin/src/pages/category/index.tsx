@@ -1,4 +1,3 @@
-import AppPageContainer from '@/components/AppPageContainer';
 import AppTable from '@/components/AppTable';
 import ConfirmButton from '@/components/Button/ConfirmButton';
 import TooltipButton from '@/components/Button/TooltipButton';
@@ -6,8 +5,8 @@ import { ACTIONS } from '@/constants';
 import { addCategory, deleteCategory, editCategory, getCategories } from '@/services/category';
 import ProForm, { ModalForm, ProFormText, ProFormTreeSelect } from '@ant-design/pro-form';
 import type { ProColumnType } from '@ant-design/pro-table';
-import { Button, FormInstance, message, Popconfirm, Space } from 'antd';
-import { useState, useMemo, useRef } from 'react';
+import { Button, FormInstance, message, Space } from 'antd';
+import { useState, useRef } from 'react';
 import { Access, useAccess } from 'umi';
 
 const CategoryPage = () => {
@@ -119,8 +118,9 @@ const CategoryPage = () => {
   };
 
   return (
-    <AppPageContainer>
+    <>
       <AppTable
+        headerTitle="分类列表"
         columns={columns}
         request={getCategories}
         toolBarRender={() => [
@@ -140,7 +140,7 @@ const CategoryPage = () => {
         <ProFormText name="name" label="分类名称" rules={[{ required: true, message: '分类名称必填' }]} />
         <ProFormTreeSelect name="pid" label="父类" rules={[{ required: true, message: '父类必选' }]} />
       </ModalForm>
-    </AppPageContainer>
+    </>
   );
 };
 

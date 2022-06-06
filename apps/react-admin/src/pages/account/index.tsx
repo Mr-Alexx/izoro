@@ -10,7 +10,6 @@ import { getUsers, createUser, editUser, deleteUser } from '@/services/user';
 import { useState, useRef, FC } from 'react';
 import { ACTIONS, STATUS_ENUM, STATUS_OPTIONS } from '@/constants';
 import { Access, useAccess } from 'umi';
-import AppPageContainer from '@/components/AppPageContainer';
 import AppTable from '@/components/AppTable';
 import copy from 'copy-to-clipboard';
 import { ProFormDigit } from '@ant-design/pro-form';
@@ -270,8 +269,9 @@ const UserPage: FC = () => {
   };
 
   return (
-    <AppPageContainer>
+    <>
       <AppTable<UserApi.User>
+        headerTitle="账号列表"
         actionRef={actionRef}
         toolBarRender={() => [
           <Access key="primary" accessible={access.system.user.create}>
@@ -357,7 +357,7 @@ const UserPage: FC = () => {
           }}
         />
       </ModalForm>
-    </AppPageContainer>
+    </>
   );
 };
 

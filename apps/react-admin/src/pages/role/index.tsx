@@ -9,11 +9,10 @@ import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import { useState, useRef } from 'react';
 import { ProFormSelect } from '@ant-design/pro-form';
 import MenuTree from './components/MenuTree';
-import { getRoles, addRole, editRole, grantRole, getRoleMenu, deleteRole } from '@/services/role';
+import { getRoles, addRole, editRole, deleteRole } from '@/services/role';
 import { ACTIONS, STATUS_OPTIONS } from '@/constants';
 import { Access, useAccess } from 'umi';
 import { STATUS_ENUM } from '@/constants';
-import AppPageContainer from '@/components/AppPageContainer';
 import AppTable from '@/components/AppTable';
 import ConfirmButton from '@/components/Button/ConfirmButton';
 import TooltipButton from '@/components/Button/TooltipButton';
@@ -180,7 +179,7 @@ const User: FC = () => {
   };
 
   return (
-    <AppPageContainer>
+    <>
       <AppTable<RoleApi.Role>
         actionRef={actionRef}
         toolbar={{
@@ -221,7 +220,7 @@ const User: FC = () => {
 
       {/* 菜单授权 */}
       <MenuTree roleId={roleId} onClose={() => setRoleId(undefined)} />
-    </AppPageContainer>
+    </>
   );
 };
 

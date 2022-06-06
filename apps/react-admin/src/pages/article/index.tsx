@@ -9,7 +9,6 @@ import ProForm, { ProFormText, ProFormSelect, ModalForm, ProFormDependency } fro
 import { useState, useRef, FC } from 'react';
 import { ACTIONS, STATUS_ENUM, STATUS_OPTIONS } from '@/constants';
 import { Access, useAccess } from 'umi';
-import AppPageContainer from '@/components/AppPageContainer';
 import AppTable from '@/components/AppTable';
 import { ProFormDigit } from '@ant-design/pro-form';
 import ConfirmButton from '@/components/Button/ConfirmButton';
@@ -43,7 +42,7 @@ const randomPassword = (len: number = 8): string => {
   return password;
 };
 
-const UserPage: FC = () => {
+const ArticlePage: FC = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [title, setTitle] = useState<string>();
 
@@ -230,8 +229,9 @@ const UserPage: FC = () => {
   };
 
   return (
-    <AppPageContainer>
+    <>
       <AppTable<ArticleApi.Article>
+        headerTitle="文章列表"
         actionRef={actionRef}
         toolBarRender={() => [
           <Access key="primary" accessible={access.system.user.create}>
@@ -318,8 +318,8 @@ const UserPage: FC = () => {
           }}
         />
       </ModalForm>
-    </AppPageContainer>
+    </>
   );
 };
 
-export default UserPage;
+export default ArticlePage;
