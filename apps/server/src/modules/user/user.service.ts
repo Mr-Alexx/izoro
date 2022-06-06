@@ -127,14 +127,16 @@ export class UserService {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .leftJoin('user.roles', 'role')
-      .addSelect('role.id')
+      .addSelect(['role.id', 'role.name'])
       .where({ id })
       .getOne();
     const roles = user.roles.map(item => item.id);
     const [menus, permissionData] = await Promise.all([
-      this.menuService.findAll({ roles }),
+      this.menuService.findAll({ roles, checked: true }),
       this.permissionService.findAll({ roles }),
     ]);
+
+    delete user.password;
 
     // @ts-ignore
     return {

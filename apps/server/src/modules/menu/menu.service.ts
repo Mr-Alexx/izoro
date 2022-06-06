@@ -31,15 +31,16 @@ export class MenuService {
     // 角色具有的权限id数组
     let rolePermissionIds;
 
+    const roleIds = !query.roles ? [] : _.isString(query.roles) ? query.roles.split(',').map(Number) : query.roles;
+
     if (_.isObject(query)) {
       const { ids, roles } = query;
 
       if (_.isArray(ids)) {
         queryBuilder.andWhere({ id: In(ids) });
       }
-      if (_.isString(roles) || _.isArray(roles)) {
-        const roleIds = _.isString(roles) ? roles.split(',').map(Number) : roles;
-        queryBuilder.innerJoinAndSelect('menu.roles', 'role', 'role.id IN (:ids)', { ids: roleIds });
+      if (roleIds.length > 0) {
+        queryBuilder.leftJoinAndSelect('menu.roles', 'role', 'role.id IN (:ids)', { ids: roleIds });
 
         const { data } = await this.permissionService.findAll({ roleIds, page: 1, limit: 1000 });
         rolePermissionIds = data.map(item => item.id);
@@ -50,7 +51,7 @@ export class MenuService {
       const data = await queryBuilder.orderBy('menu.sort', 'ASC').addOrderBy('menu.updated_at', 'DESC').getMany();
 
       // 只有是通过角色查找其具有的菜单时，才具有checked属性
-      if (_.isString(query?.roles)) {
+      if (roleIds.length > 0) {
         data.forEach(menuItem => {
           menuItem['checked'] = menuItem.roles && menuItem.roles.length > 0;
           delete menuItem.roles;
@@ -61,7 +62,19 @@ export class MenuService {
           }
         });
       }
-      return data;
+      return query.checked
+        ? data
+            .filter(item => !!item['checked'])
+            .map(item => ({
+              name: item.name,
+              path: item.path,
+              icon: item.icon,
+              component: item.component,
+              hidenInMenu: item.hidden,
+              id: item.id,
+              pid: item.pid,
+            }))
+        : data;
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
