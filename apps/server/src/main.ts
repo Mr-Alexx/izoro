@@ -19,6 +19,7 @@ import fastifySwagger from 'fastify-swagger';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'; // api文档插件
 import { ClassSerializerInterceptor } from '@nestjs/common';
 import * as path from 'path';
+import { loggerMiddleware } from './middlewares/logger.middleware';
 
 async function bootstrap() {
   const adapter = new FastifyAdapter({
@@ -99,6 +100,9 @@ async function bootstrap() {
   //   console.log('dsfsdf');
   //   next();
   // });
+
+  adapter.use(loggerMiddleware);
+
   app.useGlobalFilters(new HttpExceptionFilter()); // 自定义接口异常详情
   app.useGlobalPipes(new ValidationPipe()); // 数据验证器
   app.useGlobalInterceptors(

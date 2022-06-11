@@ -11,17 +11,13 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const url = ctx.getRequest().url; // 请求路由地址
-    // 获取错误码，默认服务器错误码（500）
-    let errorCode = 200; // HttpStatus.INTERNAL_SERVER_ERROR;
-    if (exception) {
-      errorCode = exception?.getStatus?.() || errorCode;
-    }
+    const url = ctx.getRequest().url;
+    let errorCode = 200;
+
     const err = {
-      errorCode,
-      errorMessage: exception.message,
+      code: exception?.getStatus?.() ?? 200,
+      msg: exception.message,
       success: false,
-      // _t: new Date().getTime(),
     };
 
     // 返回错误响应
