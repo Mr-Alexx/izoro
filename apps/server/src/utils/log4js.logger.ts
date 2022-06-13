@@ -6,10 +6,9 @@ import * as dayjs from 'dayjs';
 import config from '@/config/log4js.config';
 // import chalk from 'chalk'
 
-// const chalk = () => {}
-// chalk = (color: string, info): string => {
-//   return `color: ${color}`
-// }
+const coloringString = (target: string, color: string): string => {
+  return `%c${target}`;
+};
 
 //日志级别
 export enum LoggerLevel {
@@ -23,6 +22,17 @@ export enum LoggerLevel {
   FATAL = 'FATAL',
   OFF = 'OFF',
 }
+const LOGGER_LEVEL_COLOR_MAP = {
+  ALL: '#bfbfbf',
+  MARK: '#bfbfbf',
+  TRACE: '#bfbfbf',
+  DEBUG: '#bae637',
+  INFO: '#36cfc9',
+  WARN: '#ffec3d',
+  ERROR: '#ff4d4f',
+  FATAL: '#DD4C35',
+  OFF: '#bfbfbf',
+};
 
 // 内容跟踪类
 export class ContextTrace {
@@ -62,6 +72,7 @@ log4js.addLayout('Awesome-nest', (logConfig: any) => {
     const dateOutput: string = `${dayjs(logEvent.startTime).format('YYYY-MM-DD HH:mm:ss')}`;
     const moduleOutput: string = moduleName ? `[${moduleName}]` : '[LoggerService]';
     let levelOutput: string = `[${logEvent.level}]${messageOutput}`;
+    console.log('sdf');
     return levelOutput;
     //根据日志级别，用不同颜色区分
     // switch (logEvent.level.toString()) {

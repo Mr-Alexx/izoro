@@ -14,6 +14,12 @@ import { PERMISSIONS } from '@/constants/permission.constant';
 export class TagController {
   constructor(private readonly tagService: TagService) {}
 
+  @Post('test')
+  test(@Body() body): Promise<string> {
+    console.log('body', body);
+    return Promise.resolve('标签测试');
+  }
+
   @ApiOperation({ summary: '标签列表' })
   @Get()
   findAll(): Promise<any> {

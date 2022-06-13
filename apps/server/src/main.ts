@@ -1,3 +1,4 @@
+// @ts-nocheck
 declare const module: any;
 
 import config from '@/config/app.config';
@@ -20,6 +21,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'; // api文档�
 import { ClassSerializerInterceptor } from '@nestjs/common';
 import * as path from 'path';
 import { loggerMiddleware } from './middlewares/logger.middleware';
+import fastify from 'fastify';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const adapter = new FastifyAdapter({
@@ -90,18 +93,28 @@ async function bootstrap() {
       produces: ['application/json'],
     },
   });
+  // adapter.register((fastify: Fas, options, next) => {
+  //   console
+  //   next()
+  // })
+  adapter.register((instance, body, done) => {
+    console.log('我叼: ', body);
+    // instance.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, next) => {
+    //   done(null, {
+    //     raw: body,
+    //     body: JSON.parse(body),
+    //   });
+    // });
+    done();
+  });
 
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter);
   // const app = await NestFactory.create(AppModule);
 
   app.enableCors(); // 允许跨域
 
-  // app.use((req, res, next) => {
-  //   console.log('dsfsdf');
-  //   next();
-  // });
-
-  adapter.use(loggerMiddleware);
+  // app.use(bodyParser.json());
+  app.use(loggerMiddleware);
 
   app.useGlobalFilters(new HttpExceptionFilter()); // 自定义接口异常详情
   app.useGlobalPipes(new ValidationPipe()); // 数据验证器
