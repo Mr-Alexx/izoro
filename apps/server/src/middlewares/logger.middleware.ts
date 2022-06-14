@@ -7,7 +7,7 @@ import { Logger } from '@/utils/log4js.logger';
 import { FastifyRequest, FastifyReply } from 'fastify';
 
 export function loggerMiddleware(req: FastifyRequest, res: FastifyReply, next: () => void) {
-  console.log('next', next);
+  console.log('next', req.body);
   next();
   const code = res.statusCode;
   // 组装日志信息：方法、请求路径、ip、状态

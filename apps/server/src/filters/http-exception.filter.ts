@@ -23,7 +23,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // 返回错误响应
     const response = ctx.getResponse();
     response.code(errorCode).send(err);
-
-    errorLogger.error(url, err);
+    console.log(exception);
+    // errorLogger.error(url, err);
   }
 }

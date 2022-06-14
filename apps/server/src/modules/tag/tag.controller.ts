@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { Tag } from './tag.entity';
@@ -14,9 +14,9 @@ import { PERMISSIONS } from '@/constants/permission.constant';
 export class TagController {
   constructor(private readonly tagService: TagService) {}
 
-  @Post('test')
-  test(@Body() body): Promise<string> {
-    console.log('body', body);
+  @Post('test/:id')
+  test(@Body() body, @Param('id') id): Promise<string> {
+    console.log('body', body, `id: ${id}`);
     return Promise.resolve('标签测试');
   }
 

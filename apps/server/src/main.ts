@@ -22,6 +22,7 @@ import { ClassSerializerInterceptor } from '@nestjs/common';
 import * as path from 'path';
 import { loggerMiddleware } from './middlewares/logger.middleware';
 import fastify from 'fastify';
+import * as fastifyPlugin from 'fastify-plugin';
 import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
@@ -67,7 +68,7 @@ async function bootstrap() {
     contentSecurityPolicy: false,
   });
   // 压缩请求
-  adapter.register(fastifyCompress);
+  // adapter.register(fastifyCompress);
   // 文件上传解析file
   adapter.register(fastifyMultipart, {
     limits: {
@@ -93,28 +94,66 @@ async function bootstrap() {
       produces: ['application/json'],
     },
   });
-  // adapter.register((fastify: Fas, options, next) => {
-  //   console
-  //   next()
-  // })
-  adapter.register((instance, body, done) => {
-    console.log('我叼: ', body);
-    // instance.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, next) => {
-    //   done(null, {
-    //     raw: body,
-    //     body: JSON.parse(body),
-    //   });
-    // });
-    done();
-  });
+
+  // middleware先于contentTypeParser执行。。。
+  // 此法无效
+  // adapter.register(
+  //   fastifyPlugin((instance, opts, next) => {
+  //     function contentParser(req, body, done) {
+  //       const bodyFormat = body.toString();
+  //       console.log('body, d: ', bodyFormat);
+  //       req.body = bodyFormat;
+  //       done(null, bodyFormat);
+  //     }
+
+  //     instance.addContentTypeParser('application/json', { parseAs: 'buffer' }, contentParser);
+  //     next();
+  //   }),
+  // );
+
+  // 这里使用插件的形式是因为如果使用middleware，request拿到的body会一直是空，因为middleware比插件先执行
+  adapter.register(
+    fastifyPlugin((instance, opts, next) => {
+      // onRequest、preParsing钩子 body为空，还没处理
+      // https://www.fastify.io/docs/latest/Reference/Hooks/
+      // preValidation body已经被处理完成并挂载到request中
+      instance.addHook('preValidation', (request, reply, done) => {
+        loggerMiddleware(request, reply, done);
+        // Some code
+        // done();
+      });
+      next();
+    }),
+  );
 
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter);
-  // const app = await NestFactory.create(AppModule);
 
   app.enableCors(); // 允许跨域
 
-  // app.use(bodyParser.json());
-  app.use(loggerMiddleware);
+  // app.use((req, res, next) => {
+  //   bodyParser.json()(req, res, next);
+  //   // console.log(bodyParser.json()(req, res, next));
+  //   next(req, res);
+  //   // if (req.headers['content-type'] === 'application/json') {
+  //   //   let body: string = '';
+  //   //   req.on('data', chunk => {
+  //   //     body += chunk.toString();
+  //   //   });
+  //   //   req.on('end', () => {
+  //   //     req.body = JSON.parse(body);
+  //   //     console.log(req.body);
+  //   //     next(1);
+  //   //   });
+  //   //   req.on('error', e => {
+  //   //     console.error(e);
+  //   //     next(req);
+  //   //   });
+  //   // } else {
+  //   //   next(req);
+  //   // }
+  // });
+  // app.use(bodyParser());
+  // app.use(loggerMiddleware);
 
   app.useGlobalFilters(new HttpExceptionFilter()); // 自定义接口异常详情
   app.useGlobalPipes(new ValidationPipe()); // 数据验证器
