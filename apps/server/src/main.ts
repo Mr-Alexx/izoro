@@ -26,8 +26,20 @@ import * as fastifyPlugin from 'fastify-plugin';
 import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
+  /**
+   * fastify从3.0.0版本开始已经不再内建地支持中间件了，
+   * 而是采取插件的形式来集成功能，
+   * 如果需要继续使用中间件，需要引入fastify-express或middie模块，参考下面链接
+   * @see https://www.fastify.cn/docs/latest/Middleware/
+   */
   const adapter = new FastifyAdapter({
     // http2: true, // 设为true需要nginx配置
+    /**
+     * fastify内建支持日志服务，并使用pino作为日志工具
+     * 详细配置参数下面链接
+     * @see https://www.fastify.cn/docs/latest/Logging/
+     */
+    // logger: true
   });
   // 静态文件查看
   adapter.register(fastifyStatic, {
@@ -68,7 +80,7 @@ async function bootstrap() {
     contentSecurityPolicy: false,
   });
   // 压缩请求
-  // adapter.register(fastifyCompress);
+  adapter.register(fastifyCompress);
   // 文件上传解析file
   adapter.register(fastifyMultipart, {
     limits: {
@@ -130,28 +142,46 @@ async function bootstrap() {
 
   app.enableCors(); // 允许跨域
 
-  // app.use((req, res, next) => {
-  //   bodyParser.json()(req, res, next);
-  //   // console.log(bodyParser.json()(req, res, next));
-  //   next(req, res);
-  //   // if (req.headers['content-type'] === 'application/json') {
-  //   //   let body: string = '';
-  //   //   req.on('data', chunk => {
-  //   //     body += chunk.toString();
-  //   //   });
-  //   //   req.on('end', () => {
-  //   //     req.body = JSON.parse(body);
-  //   //     console.log(req.body);
-  //   //     next(1);
-  //   //   });
-  //   //   req.on('error', e => {
-  //   //     console.error(e);
-  //   //     next(req);
-  //   //   });
-  //   // } else {
-  //   //   next(req);
-  //   // }
-  // });
+  // 请求进来先经中间件
+  // 由于对body参数时在中间件之后处理，所以logger中间件无法拿到body、query和params参数
+  // 此处做个简单处理，仅对content-type为json的处理
+  app.use((req, res, next) => {
+    req.on('data', chunk => {
+      if (req.headers['content-type'] === 'application/json') {
+        // const body = JSON.parse(chunk.toString());
+        // console.log('res', body);
+        // req['body'] = body;
+      }
+      next();
+    });
+
+    // bodyParser.json()(req, res, next);
+    // console.log(bodyParser.json()(req, res, next));
+    // next(req, res);
+    // if (req.headers['content-type'] === 'application/json') {
+    //   let body: string = '';
+    //   req.on('data', chunk => {
+    //     body += chunk.toString();
+    //   });
+    //   req.on('end', () => {
+    //     req.body = JSON.parse(body);
+    //     console.log(req.body);
+    //     next(1);
+    //   });
+    //   req.on('error', e => {
+    //     console.error(e);
+    //     next(req);
+    //   });
+    // } else {
+    //   next(req);
+    // }
+  });
+
+  app.use((req, res, next) => {
+    console.log('中间件2： ', req);
+    next();
+  });
+
   // app.use(bodyParser());
   // app.use(loggerMiddleware);
 
